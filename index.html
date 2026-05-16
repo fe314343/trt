@@ -37,7 +37,8 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
         body { font-family: 'Noto Sans TC', sans-serif; scroll-behavior: smooth; }
-        .hero-overlay { background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.95)); }
+        /* 調整遮罩透明度，讓背景更清楚 (原本是 0.75 / 0.95) */
+        .hero-overlay { background: linear-gradient(rgba(15, 23, 42, 0.55), rgba(15, 23, 42, 0.75)); }
         .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
@@ -90,11 +91,11 @@
                         </div>
                     </nav>
 
-                    {/* 首頁視覺區 - 圖片路徑已更新至 assets/ 資料夾 */}
+                    {/* 首頁視覺區 - 圖片透明度調高為 80% (原本是 60%) */}
                     <section className="relative h-[90vh] flex items-center justify-center overflow-hidden bg-slate-900">
                         <img 
                             src="assets/pouring-chemicals-into-flask-3d-rendering-scaled-DM-YLBmA.webp" 
-                            className="absolute inset-0 w-full h-full object-cover opacity-60" 
+                            className="absolute inset-0 w-full h-full object-cover opacity-80" 
                             alt="藥劑倒入角錐瓶背景" 
                         />
                         <div className="absolute inset-0 hero-overlay"></div>
