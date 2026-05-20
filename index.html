@@ -51,7 +51,7 @@
 
         /* 經典高質感漸層遮罩 */
         .hero-overlay { 
-            background: linear-gradient(135deg, rgba(0, 40, 85, 0.65) 0%, rgba(15, 23, 42, 0.85) 100%); 
+            background: linear-gradient(135deg, rgba(0, 40, 85, 0.55) 0%, rgba(15, 23, 42, 0.8) 100%); 
         }
         
         /* 輕薄精緻玻璃卡片 */
@@ -78,7 +78,7 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // 圖標組件，確保在瀏覽器環境正確渲染 Lucide
+        // 圖裝組件，確保在瀏覽器環境正確渲染 Lucide
         const Icon = ({ name, size = 20, className = "" }) => {
             useEffect(() => {
                 if (window.lucide) {
@@ -138,7 +138,7 @@
                         </div>
                     </nav>
 
-                    {/* 首頁視覺區 - 日系大器質感 */}
+                    {/* 首頁視覺區 - 已更換主題標題與小標籤 */}
                     <section className="relative h-[95vh] flex items-center justify-center overflow-hidden bg-slate-950">
                         <img 
                             src="assets/pouring-chemicals-into-flask-3d-rendering-scaled-DM-YLBmA.webp" 
@@ -147,15 +147,18 @@
                         />
                         <div className="absolute inset-0 hero-overlay"></div>
                         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+                            {/* 更精確的技術型小標籤 */}
                             <span className="inline-block text-trt-gold font-extrabold tracking-[0.4em] text-xs md:text-sm uppercase mb-6 animate-fade-in-up">
-                                Waste Reduction Technology
+                                Efficient Chemicals & Durable Equipment
                             </span>
+                            {/* 將「源頭減廢 · 循環共生」替換為提煉出的黃金重點 */}
                             <h1 className="text-4xl md:text-7xl font-black text-white leading-tight mb-8 tracking-widest animate-fade-in-up">
-                                源頭減廢 · <span className="text-trt-gold">循環共生</span>
+                                精益環工 · <span className="text-trt-gold">務實解決</span>
                             </h1>
                             <div className="w-16 h-[2px] bg-trt-gold mx-auto mb-8"></div>
-                            <p className="text-base md:text-lg text-slate-200 mb-14 max-w-4xl mx-auto leading-relaxed tracking-wide font-light">
-                                台灣雷德斯減廢科技專注於工業廢水處理與污泥乾燥減量。我們提供低溫真空脫水乾燥一體化設備，實現污泥含水率從 85% 降至 20% 以下的極致目標，務實解決企業環保與成本雙重挑戰。
+                            {/* 核心專業技術文案 */}
+                            <p className="text-sm md:text-base text-slate-200 mb-14 max-w-5xl mx-auto leading-relaxed tracking-wider font-light">
+                                台灣雷德斯減廢科技（雷德斯 TRT）秉持精益求精的環境工程專業技術，因應各項環保法規及放流水標準，開發出高效 <span className="text-trt-gold font-medium">工業廢水處理藥劑與穩固耐用之廢水處理設備</span>，務實解決 <span className="text-white font-medium">COD、重金屬、氰化物、氟、總氮（氨氮、亞硝酸鹽、硝酸鹽氮）</span> 等不同濃度廢水廢液需求，如 <span className="text-white font-medium">振動研磨廢水處理</span> 及 <span className="text-white font-medium">化學鎳工業製程高濃度廢液處理</span>，廣泛得到各大廠青睞肯定與長期配合。
                             </p>
                             <div className="flex flex-wrap justify-center gap-5">
                                 <a href="#核心業務" className="bg-trt-blue text-white hover:bg-white hover:text-trt-blue px-9 py-4 font-bold text-sm tracking-widest transition-all duration-300 border border-trt-blue flex items-center gap-3">
@@ -222,7 +225,7 @@
                                         {[
                                             { label: '設計領先：多效合一', desc: '集脫水、乾燥、殺菌、除臭、造粒於一體。模組化結構，可依工程規模靈活增減，極大化投資效率。' },
                                             { label: '運行經濟：極致節能', desc: '善用低溫餘熱熱源，大幅降低電力開銷；創新的可拆卸隔膜板設計，無須更換整塊濾板，運維成本大降。' },
-                                            { label: '安全可靠：全封閉負壓', desc: '安全控制於 70-85℃ 溫度，過程絕不與運動部件磨損，無粉塵、無異味、無爆炸隱憂。' }
+                                            { label: '安全可靠：全封閉負壓', desc: '安全控制於 70-85℃ 溫度，過程絕不與運動部件磨損，無粉塵、無異味，無爆炸隱憂。' }
                                         ].map((adv, i) => (
                                             <div key={i} className="flex gap-6 border-b border-white/5 pb-8 last:border-0 last:pb-0">
                                                 <div className="text-2xl font-light text-trt-gold font-mono">{`0${i+1}`}</div>
