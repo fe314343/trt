@@ -105,7 +105,7 @@
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
-            // 產品資料庫 (原網頁藥劑型號 + PDF 設備)
+            // 產品資料庫
             const products = {
                 chemicals: [
                     { 
@@ -164,7 +164,7 @@
                         id: 'rst-3500',
                         name: 'RST-3500 精密刮泥沈澱槽',
                         type: '專利設備',
-                        desc: '集合沈澱與污泥濃縮於一體，完全無死角，不積泥、不溢泥。整體採高耐候 FRP 與 304 不銹鋼精密雷射切割包覆，幾無損耗。',
+                        desc: '集合沈澱與污泥濃縮於一體，完全無死角，不積泥、不溢泥。整體採高耐候 FRP 與 304 不鏽鋼精密雷射切割包覆，幾無損耗。',
                         spec: '模組化結構，處理水量 50 - 500 CMD。',
                         features: '顯著提高出泥濃度，將污泥烘乾脫水效能提升 100% 以上。'
                     },
@@ -207,7 +207,7 @@
 
             return (
                 <div className="min-h-screen">
-                    {/* 導覽列 - 頂級簡約細膩排版 */}
+                    {/* 導覽列 */}
                     <nav className={`fixed w-full z-50 transition-all duration-500 border-b ${scrolled ? 'bg-white/95 backdrop-blur-md border-slate-200/80 shadow-sm py-3' : 'bg-transparent border-white/10 py-5'}`}>
                         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
                             <div className="flex items-center gap-4">
@@ -221,11 +221,12 @@
                                     </span>
                                 </div>
                             </div>
-                            <div className={`hidden lg:flex gap-10 font-bold text-sm tracking-widest ${scrolled ? 'text-slate-600' : 'text-white/90'}`}>
-                                <a href="#核心業務" className="hover:text-trt-gold transition-colors relative group py-2">核心業務</a>
-                                <a href="#核心技術" className="hover:text-trt-gold transition-colors relative group py-2">技術優勢</a>
-                                <a href="#產品展廳" className="hover:text-trt-gold transition-colors relative group py-2">產品與服務</a>
-                                <a href="#成本效益" className="hover:text-trt-gold transition-colors relative group py-2">成本估算</a>
+                            <div className={`hidden lg:flex gap-8 font-bold text-sm tracking-widest ${scrolled ? 'text-slate-600' : 'text-white/90'}`}>
+                                <a href="#公司特點" className="hover:text-trt-gold transition-colors relative group py-2">公司特點</a>
+                                <a href="#核心業務" className="hover:text-trt-gold transition-colors relative group py-2">核心技術</a>
+                                <a href="#產品展廳" className="hover:text-trt-gold transition-colors relative group py-2">技術產品</a>
+                                <a href="#實際案例" className="hover:text-trt-gold transition-colors relative group py-2">實際案例</a>
+                                <a href="#成本效益" className="hover:text-trt-gold transition-colors relative group py-2">效益估算</a>
                             </div>
                             <a href="#聯絡資訊" className="hidden md:block bg-trt-gold text-white hover:bg-trt-blue px-7 py-2.5 rounded-none font-bold text-xs tracking-widest uppercase transition-all duration-300 border border-trt-gold hover:border-trt-blue">
                                 聯絡我們
@@ -233,7 +234,7 @@
                         </div>
                     </nav>
 
-                    {/* 首頁視覺區 - 日系大器質感 */}
+                    {/* 首頁視覺區 */}
                     <section className="relative h-[95vh] flex items-center justify-center overflow-hidden bg-slate-950">
                         <img 
                             src="assets/pouring-chemicals-into-flask-3d-rendering-scaled-DM-YLBmA.webp" 
@@ -253,37 +254,81 @@
                                 台灣雷德斯減廢科技（雷德斯 TRT）秉持精益求精的環境工程專業技術，因應各項環保法規及放流水標準，開發出高效 <span className="text-trt-gold font-medium">工業廢水處理藥劑與穩固耐用之廢水處理設備</span>，務實解決 <span className="text-white font-medium">COD、重金屬、氰化物、氟、總氮（氨氮、亞硝酸鹽、硝酸鹽氮）</span> 等不同濃度廢水廢液需求，如 <span className="text-white font-medium">振動研磨廢水處理</span> 及 <span className="text-white font-medium">化學鎳工業製程高濃度廢液處理</span>，廣泛得到各大廠青睞肯定與長期配合。
                             </p>
                             <div className="flex flex-wrap justify-center gap-5">
-                                <a href="#核心業務" className="bg-trt-blue text-white hover:bg-white hover:text-trt-blue px-9 py-4 font-bold text-sm tracking-widest transition-all duration-300 border border-trt-blue flex items-center gap-3">
-                                    核心業務模塊 <Icon name="arrow-right" size={16} />
+                                <a href="#公司特點" className="bg-trt-blue text-white hover:bg-white hover:text-trt-blue px-9 py-4 font-bold text-sm tracking-widest transition-all duration-300 border border-trt-blue flex items-center gap-3">
+                                    核心特點 <Icon name="arrow-right" size={16} />
                                 </a>
-                                <a href="#成本效益" className="bg-transparent text-white hover:bg-trt-gold/10 px-9 py-4 font-bold text-sm tracking-widest transition-all duration-300 border border-white/20">
-                                    污泥成本節省計算
+                                <a href="#實際案例" className="bg-transparent text-white hover:bg-trt-gold/10 px-9 py-4 font-bold text-sm tracking-widest transition-all duration-300 border border-white/20">
+                                    檢視實績案例
                                 </a>
                             </div>
                         </div>
                     </section>
 
-                    {/* Section 1: 核心業務模塊 (分析 PDF 頁面 3-4) */}
-                    <section id="核心業務" className="py-28 bg-white">
+                    {/* Section 1: 公司特點顯露區 */}
+                    <section id="公司特點" className="py-24 bg-slate-900 text-white relative">
+                        <div className="max-w-7xl mx-auto px-6">
+                            <div className="text-center max-w-3xl mx-auto mb-16">
+                                <span className="text-trt-gold font-bold tracking-widest text-xs uppercase block mb-3">Our Three Pillars</span>
+                                <h2 className="text-3xl md:text-5xl font-black text-white tracking-wide">雷德斯 TRT 三大技術特點</h2>
+                                <div className="w-12 h-[2px] bg-trt-gold mx-auto mt-6"></div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                                <div className="glass-card p-10 border border-white/10 flex flex-col justify-between relative group hover:border-trt-gold/50 transition-all duration-500">
+                                    <div>
+                                        <div className="text-trt-gold mb-6"><Icon name="cpu" size={40} /></div>
+                                        <h3 className="text-xl font-bold mb-4 text-white">1. 設計領先：多效合一</h3>
+                                        <p className="text-slate-400 text-sm leading-relaxed font-light">
+                                            一體化集成「脫水、乾燥、殺菌、除臭、造粒」五大效能，實現源頭徹底減量，完全消除運輸二次污染，模組化設計靈活度極高。
+                                        </p>
+                                    </div>
+                                    <div className="mt-8 text-xs text-trt-gold font-bold tracking-widest uppercase">技術指標：縮短投資回報期</div>
+                                </div>
+                                <div className="glass-card p-10 border border-white/10 flex flex-col justify-between relative group hover:border-trt-gold/50 transition-all duration-500">
+                                    <div>
+                                        <div className="text-trt-gold mb-6"><Icon name="line-chart" size={40} /></div>
+                                        <h3 className="text-xl font-bold mb-4 text-white">2. 運行經濟：極致節能</h3>
+                                        <p className="text-slate-400 text-sm leading-relaxed font-light">
+                                            可靈活介接廠內「熱水、低品位餘熱蒸汽或煙道熱氣」，能源成本極低。隔膜配件可拆卸式保養，無需更換整塊高價濾板。
+                                        </p>
+                                    </div>
+                                    <div className="mt-8 text-xs text-trt-gold font-bold tracking-widest uppercase">運行指標：節省運作費用50%+</div>
+                                </div>
+                                <div className="glass-card p-10 border border-white/10 flex flex-col justify-between relative group hover:border-trt-gold/50 transition-all duration-500">
+                                    <div>
+                                        <div className="text-trt-gold mb-6"><Icon name="shield-check" size={40} /></div>
+                                        <h3 className="text-xl font-bold mb-4 text-white">3. 安全可靠：全封閉負壓</h3>
+                                        <p className="text-slate-400 text-sm leading-relaxed font-light">
+                                            在 70~85°C 的低溫真空負壓下安全運轉。系統內部絕無磨損部件生熱，完全杜絕有害粉塵逸散與易爆氣體風險。
+                                        </p>
+                                    </div>
+                                    <div className="mt-8 text-xs text-trt-gold font-bold tracking-widest uppercase">安全指標：無異味與粉塵風險</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Section 2: 核心技術與服務 (六大技術整合) */}
+                    <section id="核心業務" className="py-24 bg-white">
                         <div className="max-w-7xl mx-auto px-6">
                             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-20 gap-6">
                                 <div>
-                                    <span className="text-trt-gold font-bold tracking-widest text-xs uppercase block mb-3">Six Core Businesses</span>
-                                    <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide">核心業務領域</h2>
+                                    <span className="text-trt-gold font-bold tracking-widest text-xs uppercase block mb-3">Six Core Expertise</span>
+                                    <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide">領先技術與專業服務</h2>
                                 </div>
                                 <p className="text-slate-500 max-w-lg leading-relaxed font-light text-sm">
-                                    台灣雷德斯深入研究各大製程細節，提供從廢水源頭到放流水及污泥處置的整體優化工藝。
+                                    從實驗室水質診斷分析，到客製化工廠配方加藥與專利一體機，我們提供最完整的工業閉環服務流程。
                                 </p>
                             </div>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {[
-                                    { num: '01', title: '低溫真空乾燥', icon: 'wind', desc: '集脫水、乾燥、除臭、造粒於一體，實現源頭最優減容，大幅降低運維與清運壓力。' },
-                                    { num: '02', title: '高效工業廢水處理', icon: 'droplet', desc: '客製化配方藥品與全自動化處理單元，強效解決有機 COD 及加嚴重金屬排放。' },
-                                    { num: '03', title: '熱泵真空濃縮', icon: 'zap', desc: '利用高效能真空負壓濃縮系統，將酸液、鹼液及有價金屬廢液進行高倍率回收。' },
-                                    { num: '04', title: '離子交換樹脂系統', icon: 'layers', desc: '針對低濃度含金屬製程排水，精準進行選擇性吸附，達到回用水質與合規。' },
-                                    { num: '05', title: '薄膜分離技術 (UF/RO)', icon: 'filter', desc: '提供超濾、反滲透膜技術的前置與深度整合處理，實現企業中水回收目標。' },
-                                    { num: '06', title: '水回收及飲用水規劃', icon: 'refresh-cw', desc: '從工廠生產源頭到供水全盤規劃規劃，提供全系列災害應變供水技術支撐。' }
+                                    { num: '01', title: '低溫真空脫水乾燥', icon: 'wind', desc: '雷德斯明星技術，能直接將 85% 廢水污泥含水率降至 20% 以下，徹底解決後端清運壓力。' },
+                                    { num: '02', title: '高效工業廢水處理', icon: 'droplet', desc: '針對 COD、重金屬、氰化物、氟與高難度有機廢液，開發專屬藥劑並配置處理設備。' },
+                                    { num: '03', title: '熱泵真空濃縮系統', icon: 'zap', desc: '利用高效真空負壓蒸發技術，對電鍍、酸洗等有價酸鹼廢液進行高倍數純化回收再利用。' },
+                                    { num: '04', title: '離子交換與重金屬捕捉', icon: 'layers', desc: '針對含鎳、銅等低濃度重金屬排水進行深度處理，吸附穩定，確保符合加嚴重金屬排放標準。' },
+                                    { num: '05', title: '超濾與薄膜分離系統 (UF/RO)', icon: 'filter', desc: '提供製程排水之前置過濾與多級反滲透，提高工業廢水回用率，實現水循環共生。' },
+                                    { num: '06', title: '災害應變與緊急水處理', icon: 'refresh-cw', desc: '結合專利移動式整合濾膜淨水技術，提供工業備援供水與災害中緊急救助用水的務實方案。' }
                                 ].map((item, i) => (
                                     <div key={i} className="tafu-card p-10 border border-slate-100 bg-slate-50/50 flex flex-col justify-between relative group">
                                         <div>
@@ -305,63 +350,138 @@
                         </div>
                     </section>
 
-                    {/* Section 2: 技術優勢 (分析 PDF 頁面 5-7) */}
-                    <section id="核心技術" className="py-28 bg-slate-900 text-white relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-1/3 h-full bg-trt-blue/10 blur-3xl rounded-full"></div>
-                        <div className="max-w-7xl mx-auto px-6 relative z-10">
-                            <div className="grid lg:grid-cols-2 gap-24 items-center">
-                                <div>
-                                    <span className="text-trt-gold font-bold tracking-widest text-xs uppercase block mb-3">Technical Value</span>
-                                    <h2 className="text-3xl md:text-5xl font-black mb-12 tracking-wide leading-tight">三大核心技術壁壘</h2>
-                                    <div className="space-y-10">
-                                        {[
-                                            { label: '設計領先：多效合一與模組化', desc: '單一單元集脫水、乾燥、殺菌、除臭、造粒於一體。搭配模組化拼接，可配合專案規模彈性分期建設，將客戶投資回報期縮到最短。' },
-                                            { label: '運行經濟：低品位熱源利用', desc: '可直接串接廠內低溫餘熱熱源（如廢熱水、蒸汽冷凝水或煙道熱氣），極低能耗；配合最少用藥量與可拆卸隔膜配件，大幅度省下維護與運作費用。' },
-                                            { label: '安全可靠：全封閉低溫負壓', desc: '系統嚴格控制在 70-85℃ 的低溫真空運行。無粉塵飄逸與異味逸散，無摩擦生熱爆炸風險，全密閉運行兼顧環境衛生。' }
-                                        ].map((adv, i) => (
-                                            <div key={i} className="flex gap-6 border-b border-white/5 pb-8 last:border-0 last:pb-0">
-                                                <div className="text-2xl font-light text-trt-gold font-mono">{`0${i+1}`}</div>
-                                                <div>
-                                                    <h3 className="text-lg font-bold mb-2 text-trt-gold">{adv.label}</h3>
-                                                    <p className="text-slate-400 text-sm leading-relaxed font-light">{adv.desc}</p>
-                                                </div>
-                                            </div>
-                                        ))}
+                    {/* Section 3: 實際案例實績展示 (PDF / SGS 實測成效展示) */}
+                    <section id="實際案例" className="py-24 bg-slate-50 border-t border-b border-slate-200/50">
+                        <div className="max-w-7xl mx-auto px-6">
+                            <div className="text-center max-w-2xl mx-auto mb-20">
+                                <span className="text-trt-gold font-bold tracking-widest text-xs uppercase block mb-3">Proven Success Case Studies</span>
+                                <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide mb-6">實績大廠案場案例</h2>
+                                <p className="text-slate-500 font-light text-sm leading-relaxed">
+                                    雷德斯技術已於多家上市櫃指標大廠與高科技園區中實際落地運轉多年。以下為驗收與官方檢測之真實減量與處理數據：
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                                {/* 案例 1: 燁興企業 */}
+                                <div className="bg-white border border-slate-100 p-8 md:p-10 relative group hover:shadow-xl transition-all duration-500">
+                                    <div className="absolute top-0 left-0 w-2 h-full bg-trt-gold"></div>
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div>
+                                            <span className="text-xs font-black text-trt-gold tracking-widest block uppercase mb-1">STAINLESS STEEL SLUDGE</span>
+                                            <h3 className="text-2xl font-bold text-trt-blue">燁興企業股份有限公司</h3>
+                                        </div>
+                                        <span className="text-[10px] font-bold text-slate-400 bg-slate-100 py-1 px-2.5">岡山廠驗收實績</span>
+                                    </div>
+                                    <p className="text-slate-500 text-sm font-light mb-8 leading-relaxed">
+                                        對不銹鋼酸洗與機械生產重金屬污泥進行低溫真空乾燥，取代原本傳統的昂貴委外烘乾。
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-4 bg-slate-50 p-6">
+                                        <div>
+                                            <div className="text-xs text-slate-400 mb-1">原始污泥含水率</div>
+                                            <div className="text-xl font-bold text-slate-600 font-mono">85.0% 以上</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-xs text-trt-gold mb-1">TRT 處理後含水率</div>
+                                            <div className="text-2xl font-black text-trt-blue font-mono">11.3% <span className="text-xs text-trt-gold font-bold">極致成效</span></div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-6 text-xs text-slate-400 flex items-center gap-2">
+                                        <Icon name="file-check" size={14} className="text-emerald-500" />
+                                        <span>環境科技官方實驗室檢驗方法 (NIEA R203.020) 認證通過</span>
                                     </div>
                                 </div>
-                                
-                                <div className="glass-card p-12 rounded-none border border-white/10">
-                                    <h3 className="text-xl font-bold mb-8 flex items-center gap-3 border-b border-white/10 pb-6">
-                                        <Icon name="activity" className="text-trt-gold" /> 技術實務現場對比
-                                    </h3>
-                                    <div className="space-y-8">
+
+                                {/* 案例 2: 允強實業 */}
+                                <div className="bg-white border border-slate-100 p-8 md:p-10 relative group hover:shadow-xl transition-all duration-500">
+                                    <div className="absolute top-0 left-0 w-2 h-full bg-trt-gold"></div>
+                                    <div className="flex justify-between items-start mb-6">
                                         <div>
-                                            <h4 className="text-red-400 font-bold mb-3 flex items-center gap-2 text-xs tracking-widest uppercase">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-red-400"></span> 傳統乾燥工法面臨之挑戰
-                                            </h4>
-                                            <ul className="text-sm text-slate-400 space-y-2 font-light">
-                                                <li>• 多段設備、高昂的電耗、濾板常需整塊更換</li>
-                                                <li>• 開放式或高溫烘乾，極易溢散強烈惡臭及危險粉塵</li>
-                                                <li>• 原始泥餅含水率仍在 80% 以上，清運費負擔重</li>
-                                            </ul>
+                                            <span className="text-xs font-black text-trt-gold tracking-widest block uppercase mb-1">INDUSTRIAL WASTE SLUDGE</span>
+                                            <h3 className="text-2xl font-bold text-trt-blue">允強實業股份有限公司</h3>
                                         </div>
-                                        <div className="border-t border-white/10 pt-8">
-                                            <h4 className="text-emerald-400 font-bold mb-3 flex items-center gap-2 text-xs tracking-widest uppercase">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 雷德斯 TRT 一體化低溫乾燥
-                                            </h4>
-                                            <ul className="text-sm text-slate-300 space-y-2 font-light">
-                                                <li>• 真空負壓低溫乾燥，直接降低運行能耗達 50% 以上</li>
-                                                <li>• 泥餅含水率可穩定降至 20% 以下，污泥體積大減</li>
-                                                <li>• 全封閉運轉無惡臭溢散，提供一流的廠房清潔度</li>
-                                            </ul>
+                                        <span className="text-[10px] font-bold text-slate-400 bg-slate-100 py-1 px-2.5">斗六廠運轉實績</span>
+                                    </div>
+                                    <p className="text-slate-500 text-sm font-light mb-8 leading-relaxed">
+                                        運用 TRT 一體機進行現場全自動脫水乾燥，無任何環境惡臭，極限壓縮泥餅體積。
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-4 bg-slate-50 p-6">
+                                        <div>
+                                            <div className="text-xs text-slate-400 mb-1">原始污泥含水率</div>
+                                            <div className="text-xl font-bold text-slate-600 font-mono">80.0%</div>
                                         </div>
+                                        <div>
+                                            <div className="text-xs text-trt-gold mb-1">TRT 處理後含水率</div>
+                                            <div className="text-2xl font-black text-trt-blue font-mono">17.2% <span className="text-xs text-trt-gold font-bold">穩定運轉</span></div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-6 text-xs text-slate-400 flex items-center gap-2">
+                                        <Icon name="file-check" size={14} className="text-emerald-500" />
+                                        <span>連續無故障連續運轉實測，年度省下數百萬清運費用</span>
+                                    </div>
+                                </div>
+
+                                {/* 案例 3: 振動研磨廢液處理 */}
+                                <div className="bg-white border border-slate-100 p-8 md:p-10 relative group hover:shadow-xl transition-all duration-500">
+                                    <div className="absolute top-0 left-0 w-2 h-full bg-trt-gold"></div>
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div>
+                                            <span className="text-xs font-black text-trt-gold tracking-widest block uppercase mb-1">HIGH COD WASTEWATER</span>
+                                            <h3 className="text-2xl font-bold text-trt-blue">振動研磨與電泳漆排水廠</h3>
+                                        </div>
+                                        <span className="text-[10px] font-bold text-slate-400 bg-slate-100 py-1 px-2.5">化學藥劑導入</span>
+                                    </div>
+                                    <p className="text-slate-500 text-sm font-light mb-8 leading-relaxed">
+                                        導入 TRT-NAO 與 TRT-L1 強效混凝劑，務實解決生物法難以處理的高難度 COD 廢水。
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-4 bg-slate-50 p-6">
+                                        <div>
+                                            <div className="text-xs text-slate-400 mb-1">原始 COD 濃度</div>
+                                            <div className="text-xl font-bold text-slate-600 font-mono">24,000 ppm</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-xs text-trt-gold mb-1">TRT 處理後放流水</div>
+                                            <div className="text-2xl font-black text-trt-blue font-mono">&lt; 600 ppm <span className="text-xs text-trt-gold font-bold">符合法規</span></div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-6 text-xs text-slate-400 flex items-center gap-2">
+                                        <Icon name="file-check" size={14} className="text-emerald-500" />
+                                        <span>解決化學鎳老化液高濃度廢液處理、電泳漆排水成效卓越</span>
+                                    </div>
+                                </div>
+
+                                {/* 案例 4: 國內電子與PCB大廠 */}
+                                <div className="bg-white border border-slate-100 p-8 md:p-10 relative group hover:shadow-xl transition-all duration-500">
+                                    <div className="absolute top-0 left-0 w-2 h-full bg-trt-gold"></div>
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div>
+                                            <span className="text-xs font-black text-trt-gold tracking-widest block uppercase mb-1">HEAVY METAL CAPTURE</span>
+                                            <h3 className="text-2xl font-bold text-trt-blue">半導體與 PCB 指標大廠</h3>
+                                        </div>
+                                        <span className="text-[10px] font-bold text-slate-400 bg-slate-100 py-1 px-2.5">金屬捕集與氰化物</span>
+                                    </div>
+                                    <p className="text-slate-500 text-sm font-light mb-8 leading-relaxed">
+                                        處理強螯合金屬與劇毒氰化物原液。利用 TRT-MC2 與 TRT-DOW 技術突破螯合瓶頸。
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-4 bg-slate-50 p-6">
+                                        <div>
+                                            <div className="text-xs text-slate-400 mb-1">原始重金屬含量</div>
+                                            <div className="text-xl font-bold text-slate-600 font-mono">鎳 60,000 ppm</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-xs text-trt-gold mb-1">TRT 處理後排放水</div>
+                                            <div className="text-2xl font-black text-trt-blue font-mono">&lt; 0.5 ppm <span className="text-xs text-trt-gold font-bold">加嚴標準</span></div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-6 text-xs text-slate-400 flex items-center gap-2">
+                                        <Icon name="file-check" size={14} className="text-emerald-500" />
+                                        <span>氰化物廢液 120,000ppm 降至 100ppm 以下，除氰率 99.9% 以上</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* Section 3: 互動式產品展廳 */}
+                    {/* Section 4: 互動式產品展廳 */}
                     <section id="產品展廳" className="py-28 bg-white">
                         <div className="max-w-7xl mx-auto px-6">
                             <div className="text-center max-w-2xl mx-auto mb-20">
@@ -439,40 +559,8 @@
                         </div>
                     </section>
 
-                    {/* Section 4: 服務流程 */}
-                    <section className="py-28 bg-slate-50">
-                        <div className="max-w-7xl mx-auto px-6">
-                            <div className="text-center max-w-2xl mx-auto mb-20">
-                                <span className="text-trt-gold font-bold tracking-widest text-xs uppercase block mb-3">Service Process</span>
-                                <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide mb-6">一站式環工服務流程</h2>
-                                <p className="text-slate-500 font-light text-sm leading-relaxed">
-                                    我們不只提供產品，更從原水、配方、一體化設計與 24H 售後維護等四大層面，給予客戶最實踐的工程承諾。
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                                {[
-                                    { step: '01', title: '原水分析與檢測', desc: '收集廠內廢水與污泥原水樣品，送回雷德斯實驗室進行精密的成分分析。' },
-                                    { step: '02', title: '客製配方與加藥優化', desc: '依原水水質成分，調配最合適之 TRT 複配藥劑，並預先在小試中驗證成效與劑量。' },
-                                    { step: '03', title: '一體化工程規劃施工', desc: '根據現場佔地與日處理量，客製化設計低溫真空一體化設備，快速落實案場安裝。' },
-                                    { step: '04', title: '售後定期檢測與回檢', desc: '系統上線運轉後，工程師定期至案場進行回檢，確保含水率及水質持續達標。' }
-                                ].map((srv, i) => (
-                                    <div key={i} className="p-8 bg-white border border-slate-100 flex flex-col justify-between h-80 relative group hover:shadow-xl transition-all duration-500">
-                                        <div>
-                                            <span className="text-4xl font-light text-trt-gold/40 font-mono block mb-6 group-hover:text-trt-gold transition-colors duration-300">
-                                                {srv.step}
-                                            </span>
-                                            <h3 className="text-lg font-bold text-trt-blue mb-4">{srv.title}</h3>
-                                            <p className="text-slate-400 text-xs leading-relaxed font-light group-hover:text-slate-500 transition-colors duration-300">{srv.desc}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-
                     {/* Section 5: 污泥減量與處理成本計算器 */}
-                    <section id="成本效益" className="py-28 bg-white">
+                    <section id="成本效益" className="py-28 bg-white border-t border-slate-100">
                         <div className="max-w-7xl mx-auto px-6">
                             <div className="grid lg:grid-cols-2 gap-20 items-center">
                                 <div>
@@ -488,7 +576,7 @@
                                     <div className="p-6 border-l-4 border-trt-gold bg-slate-50">
                                         <h4 className="font-bold text-trt-blue mb-2">💡 雷德斯技術價值：</h4>
                                         <p className="text-xs text-slate-500 leading-relaxed font-light">
-                                            降低含水率不仅代表污泥噸數減少，更代表污泥中的可燃物含量上升，有利於後端資源化。依照各大食品與電子廠案場驗收數據，脫水能效十分卓越。
+                                            降低含水率不僅代表污泥噸數減少，更代表污泥中的可燃物比例上升，有利於後端資源化。依照各大食品與電子廠案場驗收數據，脫水能效十分卓越。
                                         </p>
                                     </div>
                                 </div>
@@ -560,6 +648,44 @@
                                             <div className="text-[10px] text-slate-400 mt-2 italic font-light">
                                                 * 估算基於每年運行 300 天，TRT 乾燥至標稱含水率 20% 計算。
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* 災害應變與緊急水處理 */}
+                    <section id="災害應變" className="py-28 bg-slate-50 border-t border-slate-100">
+                        <div className="max-w-7xl mx-auto px-6">
+                            <div className="grid lg:grid-cols-2 gap-20 items-center">
+                                <div className="grid grid-cols-2 gap-6">
+                                    {[
+                                        { label: '災前部署設備', icon: 'truck', color: 'bg-white text-trt-blue border-slate-100' },
+                                        { label: '災中提供用水', icon: 'waves', color: 'bg-trt-blue text-white border-trt-blue shadow-lg' },
+                                        { label: '災後支援重建', icon: 'home', color: 'bg-trt-blue text-white border-trt-blue shadow-lg' },
+                                        { label: '降低運輸壓力', icon: 'package-check', color: 'bg-white text-trt-blue border-slate-100' }
+                                    ].map((box, i) => (
+                                        <div key={i} className={`aspect-square p-8 flex flex-col items-center justify-center text-center tafu-card border ${box.color}`}>
+                                            <Icon name={box.icon} size={36} className="mb-5 text-trt-gold" />
+                                            <span className="font-bold text-sm md:text-base tracking-widest">{box.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div>
+                                    <span className="text-trt-gold font-bold tracking-widest text-xs uppercase block mb-3">Emergency Supply</span>
+                                    <h2 className="text-3xl md:text-5xl font-black text-trt-blue mb-8 tracking-wide">災害應變與緊急供水</h2>
+                                    <p className="text-slate-600 text-base leading-relaxed mb-10 font-light">
+                                        我們特別將高規格膜分離整合系統技術轉化為可移動式淨水應變設備。當面臨極端氣候或天然災害時，能於關鍵時間點迅速部署、提供緊急與備援供水，切實分擔水資源在面臨中斷時的運輸壓力。
+                                    </p>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-4 p-5 bg-white border border-slate-200/60 font-bold text-slate-700">
+                                            <Icon name="check-circle" className="text-trt-gold" size={18} />
+                                            <span className="text-sm">模組化靈活移動、部署效率極佳</span>
+                                        </div>
+                                        <div className="flex items-center gap-4 p-5 bg-white border border-slate-200/60 font-bold text-slate-700">
+                                            <Icon name="check-circle" className="text-trt-gold" size={18} />
+                                            <span className="text-sm">災前、災中、災後閉環保障計劃</span>
                                         </div>
                                     </div>
                                 </div>
