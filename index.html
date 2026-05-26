@@ -52,12 +52,12 @@
             scroll-behavior: smooth; 
         }
 
-        /* 幻燈片容器與遮罩 */
+        /* 幻燈片容器與遮罩 - 改為純白底，使淡出效果極致乾淨 */
         .slideshow-container {
             position: absolute;
             inset: 0;
             z-index: 0;
-            background-color: #000;
+            background-color: #ffffff;
         }
         
         .slide {
@@ -76,17 +76,18 @@
         .slide:nth-child(3) { animation-delay: 8s; }
         .slide:nth-child(4) { animation-delay: 12s; }
 
+        /* 大幅調低最高透明度至 18%，使其呈現高雅白皙浮水印質感 */
         @keyframes slideFade {
-            0% { opacity: 0; transform: scale(1.05); }
-            5% { opacity: 0.8; transform: scale(1); }
-            25% { opacity: 0.8; }
+            0% { opacity: 0; transform: scale(1.03); }
+            5% { opacity: 0.18; transform: scale(1); }
+            25% { opacity: 0.18; }
             30% { opacity: 0; }
             100% { opacity: 0; }
         }
 
-        /* 頂層遮罩，確保文字可讀性與色溫統一 */
+        /* 頂層遮罩：更換為白皙亮麗透光遮罩，提高對比度 */
         .hero-overlay { 
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.65) 0%, rgba(13, 82, 69, 0.85) 100%); 
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 252, 0.92) 100%); 
         }
         
         .glass-card { 
@@ -220,49 +221,55 @@
 
             return (
                 <div className="min-h-screen">
-                    <nav className={`fixed w-full z-50 transition-all duration-300 border-b ${scrolled ? 'bg-white/95 backdrop-blur-md border-slate-200/80 shadow-sm py-3' : 'bg-transparent border-white/10 py-5'}`}>
+                    {/* 導覽列：初始狀態改為磨砂半透明白底，與白色首頁完美融合 */}
+                    <nav className={`fixed w-full z-50 transition-all duration-300 border-b ${scrolled ? 'bg-white/95 backdrop-blur-md border-slate-200/80 shadow-sm py-3' : 'bg-white/40 backdrop-blur-md border-slate-100 py-5'}`}>
                         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
                             <div className="flex items-center gap-4">
                                 <img src="assets/favicon.webp" alt="TRT Logo" className="w-11 h-11 object-contain rounded-lg" />
-                                <div className="flex flex-col border-l border-white/20 pl-4 h-9 justify-center">
-                                    <span className={`text-base md:text-lg font-extrabold tracking-wide ${scrolled ? 'text-slate-900' : 'text-white'}`}>台灣雷德斯減廢科技</span>
-                                    <span className={`text-[8px] md:text-[9px] font-bold uppercase ${scrolled ? 'text-slate-500' : 'text-slate-300/90'}`}>Taiwan Raiders Waste Reduction Technology Corp.</span>
+                                <div className="flex flex-col border-l border-slate-200 pl-4 h-9 justify-center">
+                                    <span className="text-base md:text-lg font-extrabold tracking-wide text-slate-900">台灣雷德斯減廢科技</span>
+                                    <span className="text-[8px] md:text-[9px] font-bold uppercase text-slate-500">Taiwan Raiders Waste Reduction Technology Corp.</span>
                                 </div>
                             </div>
-                            <div className={`hidden lg:flex gap-8 font-bold text-sm tracking-widest ${scrolled ? 'text-slate-600' : 'text-white/90'}`}>
-                                <a href="#公司特點">技術特點</a><a href="#核心業務">核心技術</a><a href="#實際案例">實際案例</a><a href="#產品展廳">技術產品</a><a href="#成本效益">效益估算</a>
+                            <div className="hidden lg:flex gap-8 font-bold text-sm tracking-widest text-slate-700">
+                                <a href="#公司特點" className="hover:text-trt-green transition-colors">技術特點</a>
+                                <a href="#核心業務" className="hover:text-trt-green transition-colors">核心技術</a>
+                                <a href="#實際案例" className="hover:text-trt-green transition-colors">實際案例</a>
+                                <a href="#產品展廳" className="hover:text-trt-green transition-colors">技術產品</a>
+                                <a href="#成本效益" className="hover:text-trt-green transition-colors">效益估算</a>
                             </div>
                             <a href="#線上詢問" className="hidden md:block bg-trt-green text-white hover:bg-trt-blue px-7 py-2.5 font-bold text-xs uppercase tracking-widest transition-all">預約索樣</a>
                         </div>
                     </nav>
 
-                    {/* 首頁視覺區 - 已更換幻燈片幻燈片 */}
+                    {/* 首頁視覺區：完全白皙化重構 */}
                     <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
-                        {/* 幻燈片容器 */}
+                        {/* 幻燈片容器 (純白背景，18% 超低不透明度，打造輕盈灰白質感) */}
                         <div className="slideshow-container">
                             <img src="assets/hero-1.webp" className="slide" alt="現場合照" />
                             <img src="assets/hero-2.webp" className="slide" alt="藍色主設備" />
                             <img src="assets/hero-3.webp" className="slide" alt="精密工件" />
                             <img src="assets/hero-4.webp" className="slide" alt="工業罐體" />
                         </div>
+                        {/* 白皙透亮覆蓋層 */}
                         <div className="absolute inset-0 hero-overlay z-10"></div>
                         
                         <div className="relative z-20 max-w-6xl mx-auto px-6 text-center">
                             <span className="inline-block text-trt-green font-extrabold tracking-[0.4em] text-xs md:text-sm uppercase mb-6 animate-fade-in-up">Taiwan No.1 Waste Reduction Technology</span>
-                            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-8 tracking-widest animate-fade-in-up">
+                            <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-8 tracking-widest animate-fade-in-up">
                                 35年環工經驗<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-400 to-trt-tech-cyan">一站式工業廢水與減廢資源化方案</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-trt-green via-teal-600 to-trt-tech-cyan">一站式工業廢水與減廢資源化方案</span>
                             </h1>
                             <div className="w-20 h-[3px] bg-trt-green mx-auto mb-8"></div>
-                            <p className="text-base md:text-lg text-slate-200 mb-12 max-w-4xl mx-auto leading-relaxed tracking-wider font-light">雷德斯 TRT 結合「自主研發高效藥劑 ＋ 專利耐用設備」，務實解決高難度廢水放流與污泥難題，協助企業輕鬆合規、降低 80% 清運成本。</p>
+                            <p className="text-base md:text-lg text-slate-600 mb-12 max-w-4xl mx-auto leading-relaxed tracking-wider font-light">雷德斯 TRT 結合「自主研發高效藥劑 ＋ 專利耐用設備」，務實解決高難度廢水放流與污泥難題，協助企業輕鬆合規、降低 80% 清運成本。</p>
                             <div className="flex flex-wrap justify-center gap-5">
-                                <a href="#線上詢問" className="bg-trt-green text-white hover:bg-white hover:text-trt-blue px-10 py-4.5 font-extrabold text-sm tracking-widest transition-all shadow-lg shadow-trt-green/20">立即預約檢測 / 索取樣品</a>
-                                <a href="#實際案例" className="bg-transparent text-white hover:bg-white/10 px-10 py-4.5 font-bold text-sm tracking-widest border border-white/20 transition-all">檢視實績案例</a>
+                                <a href="#線上詢問" className="bg-trt-green text-white hover:bg-trt-blue px-10 py-4.5 font-extrabold text-sm tracking-widest transition-all shadow-lg shadow-trt-green/20">立即預約檢測 / 索取樣品</a>
+                                <a href="#實際案例" className="bg-transparent text-slate-700 hover:bg-slate-100 px-10 py-4.5 font-bold text-sm tracking-widest border border-slate-300 transition-all">檢視實績案例</a>
                             </div>
                         </div>
 
                         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 cursor-pointer opacity-80" onClick={() => document.getElementById('客戶痛點')?.scrollIntoView({ behavior: 'smooth' })}>
-                            <span className="text-[10px] text-slate-300 tracking-[0.3em] uppercase font-bold">向下探索</span>
+                            <span className="text-[10px] text-slate-500 tracking-[0.3em] uppercase font-bold">向下探索</span>
                             <div className="w-5 h-9 border-2 border-trt-green rounded-full flex justify-center p-1"><div className="w-1 h-2 bg-trt-green rounded-full animate-bounce-slow"></div></div>
                         </div>
                     </section>
