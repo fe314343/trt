@@ -76,18 +76,18 @@
         .slide:nth-child(3) { animation-delay: 8s; }
         .slide:nth-child(4) { animation-delay: 12s; }
 
-        /* 大幅調低最高透明度至 18%，使其呈現高雅白皙浮水印質感 */
+        /* 調整最高不透明度至 55%（原為 18%），大幅提高背景圖片的清晰度與明顯度 */
         @keyframes slideFade {
             0% { opacity: 0; transform: scale(1.03); }
-            5% { opacity: 0.18; transform: scale(1); }
-            25% { opacity: 0.18; }
+            5% { opacity: 0.55; transform: scale(1); }
+            25% { opacity: 0.55; }
             30% { opacity: 0; }
             100% { opacity: 0; }
         }
 
-        /* 頂層遮罩：更換為白皙亮麗透光遮罩，提高對比度 */
+        /* 頂層遮罩：調降白色遮罩的濃度（從 0.85/0.92 調降至 0.45/0.65），確保背景圖片清晰透出，同時維持黑綠色文字的完美易讀性 */
         .hero-overlay { 
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 252, 0.92) 100%); 
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(248, 250, 252, 0.65) 100%); 
         }
         
         .glass-card { 
@@ -244,7 +244,7 @@
 
                     {/* 首頁視覺區：完全白皙化重構 */}
                     <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
-                        {/* 幻燈片容器 (純白背景，18% 超低不透明度，打造輕盈灰白質感) */}
+                        {/* 幻燈片容器 (純白背景，55% 超高不透明度，打造清晰的實機背景視覺) */}
                         <div className="slideshow-container">
                             <img src="assets/hero-1.webp" className="slide" alt="現場合照" />
                             <img src="assets/hero-2.webp" className="slide" alt="藍色主設備" />
