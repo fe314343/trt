@@ -17,10 +17,11 @@
             theme: {
                 extend: {
                     colors: {
-                        'trt-blue': '#0A1E3F',       // 深邃靛藍：代表水資源與專業
-                        'trt-tech-cyan': '#0083FF',  // 科技青藍：代表先進工藝技術
-                        'trt-green': '#00B175',      // 永續翠綠：代表法規符合度與減廢
-                        'trt-light-green': '#E6F7F0',// 淺綠背景：營造乾淨安全感
+                        'trt-blue': '#0F172A',       // 科技深藍 (Slate 900)：沉穩、權威
+                        'trt-tech-cyan': '#0083FF',  // 科技亮藍：先進工藝
+                        'trt-green': '#0D5245',      // 松石松綠：代表減廢、環保、法規與信任
+                        'trt-light-green': '#F0F6F4',// 超淡灰綠底：營造乾淨安全感
+                        'trt-soft-gray': '#F8FAFC',  // 極淡灰藍底：用於背景色交替
                     },
                     animation: {
                         'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
@@ -53,7 +54,7 @@
 
         /* 乾淨、高對比的現代科技遮罩 */
         .hero-overlay { 
-            background: linear-gradient(135deg, rgba(10, 30, 63, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%); 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(13, 82, 69, 0.8) 100%); 
         }
         
         /* 輕薄精緻玻璃卡片 */
@@ -63,17 +64,17 @@
             border: 1px solid rgba(255, 255, 255, 0.1); 
         }
 
-        /* 現代感卡片懸停動畫 */
+        /* 現代感卡片懸停動畫 - 永續松石綠過渡 */
         .tafu-card {
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .tafu-card:hover {
             transform: translateY(-4px);
-            border-color: #00B175;
-            box-shadow: 0 15px 30px rgba(0, 177, 117, 0.08);
+            border-color: #0D5245;
+            box-shadow: 0 15px 30px rgba(13, 82, 69, 0.08);
         }
 
-        /* 自定義滾動條，維持精緻感 */
+        /* 自定義滾動條 */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -81,7 +82,7 @@
             background: #f1f5f9;
         }
         ::-webkit-scrollbar-thumb {
-            background: #00B175;
+            background: #0D5245;
             border-radius: 3px;
         }
     </style>
@@ -105,7 +106,7 @@
         const App = () => {
             const [scrolled, setScrolled] = useState(false);
             const [activeFeatureTab, setActiveFeatureTab] = useState(0); // 4大獨家特點互動
-            const [activeCaseTab, setActiveCaseTab] = useState(0); // 實際案例分頁
+            const [selectedCase, setSelectedCase] = useState(null); // 用於實際案例彈窗 (Modal)
             const [activeCatalog, setActiveCatalog] = useState('chemicals'); 
             const [chemFilter, setChemFilter] = useState('all'); 
             const [selectedProduct, setSelectedProduct] = useState(null); 
@@ -132,14 +133,14 @@
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
-            // 在狀態變更時，觸發 Lucide 的渲染
+            // 狀態變更時，觸發 Lucide 的渲染
             useEffect(() => {
                 if (window.lucide) {
                     window.lucide.createIcons();
                 }
-            }, [activeFeatureTab, activeCaseTab, activeCatalog, chemFilter, selectedProduct, formSubmitted]);
+            }, [activeFeatureTab, selectedCase, activeCatalog, chemFilter, selectedProduct, formSubmitted]);
 
-            // 四大核心特點數據 (已深度擴充細節介紹)
+            // 四大核心特點數據 (已更新為藥品與設備完美整合之優勢)
             const coreFeatures = [
                 {
                     title: "鉻酸深度純化回收",
@@ -165,7 +166,7 @@
                 {
                     title: "生物污泥高真空乾燥",
                     icon: "flame",
-                    short: "專利物理中壓物理擠壓與高真空低溫蒸發複合工藝。專為突破傳統生物污泥（如活性污泥、有機食品污泥）難脫水之世紀難題開發。",
+                    short: "專利加熱型板框擠壓與高真空物理技術，完美攻克生物污泥脫水世紀難題。",
                     pain: [
                         "常規帶濾機或一般板框壓濾機處理後，泥餅含水率仍在 70%~80% 的高點，體積龐大。",
                         "傳統烘乾常需要消耗極大的蒸汽、重油或高壓電能，且極易引發惡臭外溢與粉塵自燃安全隱憂。",
@@ -186,14 +187,13 @@
                 {
                     title: "高 COD 特異性裂解",
                     icon: "flask-conical",
-                    short: "小佔地、高能量物理觸媒裂解系統。搭配專利特異化學藥劑，針對高濃度高難度廢液進行結構化分解，免除化學污泥二次污染。",
+                    short: "小佔地高能裂解系統搭配專利特異藥劑，深度清除難降解有機廢水。",
                     pain: [
-                        "高濃度廢液（如振動研磨廢水、化學鎳廢液）毒性極高，傳統生物池微生物常會大面積中毒死亡。",
+                        "化學鎳廢液、振動研磨廢水濃度極高，生物法常會毒死微生物；而芬頓法（Fenton）則會產生鋪天蓋地的廢鐵污泥，得不償失。",
                         "使用傳統芬頓法（Fenton）需要添加海量鐵鹽，會產出鋪天蓋地的廢鐵污泥，衍生更多二度污染與處置費。"
                     ],
                     solution: [
-                        "開發出小佔地的「高 COD 裂解系統規劃」，極大化節省廠房寶貴空間，提升處理時效。",
-                        "利用獨家專業藥劑（如 TRT-OC 溶解性 COD 分解劑、搭配專屬觸媒塔之 CaO 催化劑）進行高級氧化反應。",
+                        "「高 COD 裂解系統」佔地極小。配合自研專業藥劑（如 TRT-OC 溶解性 COD 分解劑、CaO 催化劑搭配觸媒塔），針對特異性 COD、硝酸鹽氮進行高能深度裂解與清除，無化學鐵污泥負擔。",
                         "在極短時間內切斷廢水中強螯合鍵，將大分子有機物、氨氮、硝酸鹽氮深度裂解成無害氮氣與二氧化碳，完全不產生鐵污泥。"
                     ],
                     specs: [
@@ -206,15 +206,13 @@
                 {
                     title: "藥劑設備跨領域整合",
                     icon: "layers",
-                    short: "跨學科、跨領域一體化客製設計。打破賣藥不懂設備、賣設備不懂化學的傳統推諉，提供真正具備連續運轉數十年實力的閉環工程。",
+                    short: "「藥劑 ＋ 設備 ＋ 跨領域」客製整合，全套規劃，運維零推諉。",
                     pain: [
                         "業界藥劑商與設備商各自獨立，遇到案場水質變動或不達標時，雙方常互相推諉，造成業主孤立無援。",
                         "套用通用設備導致佔地面積過大、運行能耗高、管路與加藥控制無法精準契合，導致加藥量居高不下。"
                     ],
                     solution: [
-                        "針對客戶水質提供客製化配方藥劑，並與自主設計、極致耐磨的小佔地專利設備進行軟硬體深度標定。",
-                        "將電化學反應、UF/RO超濾逆滲透薄膜、高真空低溫濃縮、離子交換樹脂等跨學科工藝無縫熔接於同一系統。",
-                        "因為系統化加藥精確，能由源頭大減混凝劑投加量，從最前端直接降低污泥產出，實現極低綜合運維費用。"
+                        "我們提供「客製藥劑與自研專利一體機」雙管齊下的完美配套。無縫融合電化學、超濾/逆滲透薄膜分離、真空濃縮與離子交換樹脂，大幅減少混凝劑投加，從源頭降低後端污泥產量。"
                     ],
                     specs: [
                         { label: "設備壽命設計", val: "連續穩定運轉 10 - 20 年" },
@@ -225,55 +223,83 @@
                 }
             ];
 
-            // 實績案例數據
+            // 實績案例數據 (結構化瘦身，將繁重文字移至彈窗)
             const cases = [
                 {
                     company: "燁興企業股份有限公司",
-                    industry: "不銹鋼酸洗與機械重金屬污泥",
+                    industry: "不鏽鋼酸洗",
                     site: "高雄岡山廠驗收實績",
-                    desc: "採用雷德斯低溫真空乾燥工藝，徹底解決原本不銹鋼酸洗有害重金屬污泥委外清運費用龐大、且容易有二次環保風險的痛點。",
-                    metricTitle: "污泥含水率變化",
+                    badges: ["不鏽鋼酸洗", "重金屬污泥", "SGS認證"],
+                    shortOutcome: "污泥含水率降至 11.3%，年度清運處置費節省數百萬",
+                    desc: "燁興企業岡山廠產生之重金屬污泥委外清運費用龐大，且具高環境污染風險。導入雷德斯真空乾燥工藝後，污泥體積大減、脫水烘乾能效極佳。",
+                    metricTitle: "污泥乾燥效能對比",
                     beforeVal: "85.0% 以上",
                     afterVal: "11.3%",
-                    afterSub: "極致減量成效",
+                    afterSub: "極致乾化成效",
                     icon: "check-circle",
-                    standard: "環境科技官方認證檢驗方法 (NIEA R203.020)"
+                    standard: "符合環境部官方標準檢測方法 (NIEA R203.020)",
+                    economics: [
+                        { item: "原污泥年處理成本", val: "約 NT$ 12,000,000" },
+                        { item: "導入 TRT 後處理成本", val: "約 NT$ 2,100,000" },
+                        { item: "年度淨省費用", val: "NT$ 9,900,000 (省 82.5%)" }
+                    ]
                 },
                 {
                     company: "允強實業股份有限公司",
-                    industry: "工業生物難降解廢水污泥",
+                    industry: "工業生物污泥",
                     site: "雲林斗六廠運轉實績",
-                    desc: "運用 TRT 低溫真空一體化脫水乾燥機，全封閉自動化連續運轉，廠房內完全沒有傳統烘乾工法造成的任何惡臭與毒粉塵逸散。",
+                    badges: ["活性生物污泥", "餘熱利用", "零粉塵溢散"],
+                    shortOutcome: "突破生物污泥難乾燥瓶頸，泥餅含水率穩定維持在 17.2%",
+                    desc: "生物污泥含水率通常難以低於 80%。TRT 利用專利加熱板框配合高真空技術，利用廠區低溫餘熱進行一體化乾燥，零異味及零粉塵飄散。",
                     metricTitle: "烘乾泥餅含水率",
                     beforeVal: "80.0%",
                     afterVal: "17.2%",
-                    afterSub: "自動化穩定運轉",
+                    afterSub: "全自動連續運轉",
                     icon: "cpu",
-                    standard: "經受多年現場連續高強度運作測試，清運成本大省"
+                    standard: "耐受现场 24 小時高強度連續工作壓力",
+                    economics: [
+                        { item: "原污泥年清運量", val: "3,200 公噸" },
+                        { item: "導入 TRT 後年清運量", val: "約 640 公噸" },
+                        { item: "清運量減幅", val: "直接減量高達 80%" }
+                    ]
                 },
                 {
                     company: "高難度製程廢水廠",
-                    industry: "振動研磨與電泳漆排水處理",
+                    industry: "振動研磨廢液",
                     site: "TRT 高效化學藥劑導入",
-                    desc: "導入 TRT-NAO 與 TRT-L1 混凝系統，切實解決傳統沉澱藥劑用量過大、且難以將 COD 降解至放流水標準以下的痛點。",
+                    badges: ["高濃度 COD", "振動研磨", "電泳漆排水"],
+                    shortOutcome: "原水高濃度 COD 自 24,000ppm 劇降至 600ppm 以下",
+                    desc: "振動研磨與化學電鍍製程產生的廢水毒性高且含有高濃度有機物，傳統生物法極易死菌。導入 TRT-NAO 與 TRT-L1 混凝系統後實現極佳沉澱與裂解。",
                     metricTitle: "放流水 COD 濃度",
                     beforeVal: "24,000 ppm",
                     afterVal: "< 600 ppm",
-                    afterSub: "符合放流水標準",
+                    afterSub: "完美符合放流水標準",
                     icon: "activity",
-                    standard: "大幅降低化學鎳、研磨等工業廢水之表面活性劑污染"
+                    standard: "完全無常規芬頓法產生之鋪天蓋地廢鐵污泥二次負擔",
+                    economics: [
+                        { item: "原化學用藥與處置成本", val: "NT$ 4,500 / 噸" },
+                        { item: "導入 TRT 後用藥成本", val: "NT$ 1,200 / 噸" },
+                        { item: "藥劑成本節省率", val: "降低達 73.3%" }
+                    ]
                 },
                 {
                     company: "半導體與 PCB 指標大廠",
-                    industry: "高濃度化學鎳及氰化物廢液",
-                    site: "重金屬捕集與氰化分解系統",
-                    desc: "應用 TRT-MC2 金屬捕集劑與 TRT-DOW 劇毒氰化物破壞系統，成功突破錯合物與螯合作用，避免產生傳統海量化學污泥。",
-                    metricTitle: "出水重金屬 (鎳) 含量",
+                    industry: "化學鎳與劇毒氰化物",
+                    site: "金屬捕集與氰化裂解系統",
+                    badges: ["化學鎳重金屬", "劇毒氰化物", "加嚴排放"],
+                    shortOutcome: "重金屬鎳離子直接降至 0.5ppm 以下，超越國家加嚴標準",
+                    desc: "半導體與封裝製程中，強螯合物鎳離子及高濃度劇毒氰化物極難處理。應用 TRT-MC2 金屬捕集劑與 TRT-DOW 系統，切斷螯合鍵，極低化學污泥量。",
+                    metricTitle: "放流水鎳離子(Ni)濃度",
                     beforeVal: "60,000 ppm",
                     afterVal: "< 0.5 ppm",
-                    afterSub: "超越國家加嚴放流水標準",
+                    afterSub: "極致安全性過濾",
                     icon: "shield",
-                    standard: "氰化物(120,000ppm)分解率達 99.99% 以上，完美合規"
+                    standard: "氰化物 (120,000ppm) 分解率高達 99.99% 以上",
+                    economics: [
+                        { item: "鎳離子去除效率", val: "99.99%" },
+                        { item: "氰基（CN-）破壞率", val: "99.99%" },
+                        { item: "二次重金屬污泥產生量", val: "較常規方法降低 60%" }
+                    ]
                 }
             ];
 
@@ -408,7 +434,7 @@
             return (
                 <div className="min-h-screen">
                     {/* 導覽列 */}
-                    <nav className={`fixed w-full z-50 transition-all duration-500 border-b ${scrolled ? 'bg-white/95 backdrop-blur-md border-slate-200/80 shadow-sm py-3' : 'bg-transparent border-white/10 py-5'}`}>
+                    <nav className={`fixed w-full z-50 transition-all duration-300 border-b ${scrolled ? 'bg-white/95 backdrop-blur-md border-slate-200/80 shadow-sm py-3' : 'bg-transparent border-white/10 py-5'}`}>
                         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
                             <div className="flex items-center gap-4">
                                 <img src="assets/favicon.webp" alt="Taiwan Raiders Logo" className="w-11 h-11 object-contain rounded-lg shadow-sm" />
@@ -424,8 +450,8 @@
                             <div className={`hidden lg:flex gap-8 font-bold text-sm tracking-widest ${scrolled ? 'text-slate-600' : 'text-white/90'}`}>
                                 <a href="#公司特點" className="hover:text-trt-green transition-colors relative group py-2">技術特點</a>
                                 <a href="#核心業務" className="hover:text-trt-green transition-colors relative group py-2">核心技術</a>
-                                <a href="#產品展廳" className="hover:text-trt-green transition-colors relative group py-2">技術產品</a>
                                 <a href="#實際案例" className="hover:text-trt-green transition-colors relative group py-2">實際案例</a>
+                                <a href="#產品展廳" className="hover:text-trt-green transition-colors relative group py-2">技術產品</a>
                                 <a href="#成本效益" className="hover:text-trt-green transition-colors relative group py-2">效益估算</a>
                             </div>
                             <a href="#線上詢問" className="hidden md:block bg-trt-green text-white hover:bg-trt-blue px-7 py-2.5 rounded-none font-bold text-xs tracking-widest uppercase transition-all duration-300 border border-trt-green">
@@ -434,7 +460,7 @@
                         </div>
                     </nav>
 
-                    {/* 首頁視覺區 */}
+                    {/* 首頁視覺區 - 已優化文案，更為精煉直接，降低閱讀疲勞 */}
                     <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden bg-slate-950">
                         <img 
                             src="assets/pouring-chemicals-into-flask-3d-rendering-scaled-DM-YLBmA.webp" 
@@ -499,10 +525,10 @@
                         </div>
                     </div>
 
-                    {/* ⚡ 1. 客戶痛點導向：一進站即擊中需求 */}
-                    <section id="客戶痛點" className="py-24 bg-slate-50 border-b border-slate-100">
+                    {/* ⚡ 1. 客戶痛點導向：一進站即擊中需求 (Padding 加大為 py-32，完美留白) */}
+                    <section id="客戶痛點" className="py-32 bg-white border-b border-slate-100">
                         <div className="max-w-7xl mx-auto px-6">
-                            <div className="text-center max-w-3xl mx-auto mb-16">
+                            <div className="text-center max-w-3xl mx-auto mb-20">
                                 <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Industrial Pain Points</span>
                                 <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide">您的工廠，是否也正面臨以下水處置難題？</h2>
                                 <p className="text-slate-500 font-light text-sm mt-4">環安衛主管與廠長常遇到的麻煩，雷德斯 TRT 協助您完美擊碎</p>
@@ -511,7 +537,7 @@
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 {/* 痛點 1 */}
-                                <div className="bg-white p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 hover:shadow-lg transition-all duration-300 relative group">
+                                <div className="bg-trt-soft-gray p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 hover:shadow-lg transition-all duration-300 relative group">
                                     <div className="absolute top-0 left-0 w-full h-[3px] bg-red-400"></div>
                                     <div>
                                         <div className="text-red-400 mb-6 font-bold flex items-center gap-2">
@@ -529,7 +555,7 @@
                                 </div>
 
                                 {/* 痛點 2 */}
-                                <div className="bg-white p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 hover:shadow-lg transition-all duration-300 relative group">
+                                <div className="bg-trt-soft-gray p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 hover:shadow-lg transition-all duration-300 relative group">
                                     <div className="absolute top-0 left-0 w-full h-[3px] bg-red-400"></div>
                                     <div>
                                         <div className="text-red-400 mb-6 font-bold flex items-center gap-2">
@@ -547,12 +573,12 @@
                                 </div>
 
                                 {/* 痛點 3 */}
-                                <div className="bg-white p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 hover:shadow-lg transition-all duration-300 relative group">
+                                <div className="bg-trt-soft-gray p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 hover:shadow-lg transition-all duration-300 relative group">
                                     <div className="absolute top-0 left-0 w-full h-[3px] bg-red-400"></div>
                                     <div>
                                         <div className="text-red-400 mb-6 font-bold flex items-center gap-2">
                                             <Icon name="dollar-sign" size={32} />
-                                            <span className="text-xs font-bold tracking-widest uppercase">劇劇毒原料資源浪費</span>
+                                            <span className="text-xs font-bold tracking-widest uppercase">劇毒原料資源浪費</span>
                                         </div>
                                         <h3 className="text-xl font-bold mb-4 text-slate-900">硬鉻電鍍等劇毒原料未回收？</h3>
                                         <p className="text-slate-500 text-sm leading-relaxed font-light">
@@ -567,13 +593,13 @@
                         </div>
                     </section>
 
-                    {/* Section 2: 互動式四大特點對比展示 (四大核心 - 已擴充深度技術細節介紹) */}
-                    <section id="公司特點" className="py-24 bg-slate-900 text-white relative">
+                    {/* Section 2: 互動式四大特點對比展示 (四大核心 - 背景交替為 bg-slate-50，內距 py-32) */}
+                    <section id="公司特點" className="py-32 bg-slate-50">
                         <div className="max-w-7xl mx-auto px-6">
                             <div id="company-features-title" className="text-center max-w-3xl mx-auto mb-16">
                                 <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Our Core Strengths</span>
-                                <h2 className="text-3xl md:text-5xl font-black text-white tracking-wide">雷德斯 TRT 四大獨家技術特點</h2>
-                                <p className="text-slate-400 font-light text-sm leading-relaxed mt-4">點擊下方技術分類，快速對比傳統做法與雷德斯的創新突破</p>
+                                <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide">雷德斯 TRT 四大獨家技術特點</h2>
+                                <p className="text-slate-500 font-light text-sm mt-4">點擊下方技術分類，快速對比傳統做法與雷德斯的創新突破</p>
                                 <div className="w-12 h-[2px] bg-trt-green mx-auto mt-6"></div>
                             </div>
                             
@@ -583,7 +609,7 @@
                                     <button
                                         key={index}
                                         onClick={() => setActiveFeatureTab(index)}
-                                        className={`p-6 border transition-all duration-300 text-left flex flex-col justify-between h-40 group ${activeFeatureTab === index ? 'border-trt-green bg-trt-green/10 shadow-lg' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
+                                        className={`p-6 border transition-all duration-300 text-left flex flex-col justify-between h-40 group ${activeFeatureTab === index ? 'border-trt-green bg-white shadow-lg shadow-trt-green/10' : 'border-slate-200 bg-white/60 hover:bg-white'}`}
                                     >
                                         <div className="flex justify-between items-center w-full">
                                             <Icon name={feat.icon} size={28} className={activeFeatureTab === index ? 'text-trt-green' : 'text-slate-400 group-hover:text-trt-green'} />
@@ -591,28 +617,28 @@
                                         </div>
                                         <div>
                                             <span className="text-xs text-trt-green font-bold block mb-1">{feat.badge}</span>
-                                            <span className="font-bold text-sm tracking-wider">{feat.title}</span>
+                                            <span className="font-bold text-sm tracking-wider text-slate-800">{feat.title}</span>
                                         </div>
                                     </button>
                                 ))}
                             </div>
 
                             {/* 特點對比內容區 - 技術白皮書形式重構 */}
-                            <div className="glass-card p-8 md:p-12 border border-white/10 min-h-[450px] transition-all duration-500 animate-fade-in-up">
+                            <div className="bg-white p-8 md:p-12 border border-slate-200/60 min-h-[450px] transition-all duration-500 shadow-sm">
                                 <div className="grid lg:grid-cols-12 gap-10 items-start">
                                     
                                     {/* 左側：核心概述與關鍵技術指標 */}
                                     <div className="lg:col-span-5 space-y-6">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-xs text-trt-green font-bold tracking-widest uppercase bg-trt-green/20 px-3 py-1 rounded-full">
+                                            <span className="text-xs text-trt-green font-bold tracking-widest uppercase bg-trt-light-green px-3 py-1 rounded-full">
                                                 {coreFeatures[activeFeatureTab].badge}
                                             </span>
                                             <span className="text-xs text-slate-400 font-mono">Pillar 0{activeFeatureTab + 1}</span>
                                         </div>
-                                        <h3 className="text-3xl font-black text-white">
+                                        <h3 className="text-3xl font-black text-trt-blue">
                                             {coreFeatures[activeFeatureTab].title}
                                         </h3>
-                                        <p className="text-slate-300 text-sm leading-relaxed font-light border-b border-white/10 pb-6">
+                                        <p className="text-slate-600 text-sm leading-relaxed font-light border-b border-slate-100 pb-6">
                                             {coreFeatures[activeFeatureTab].short}
                                         </p>
                                         
@@ -621,9 +647,9 @@
                                             <h4 className="text-xs font-bold text-trt-green tracking-wider uppercase">📊 專利系統關鍵技術指標：</h4>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 {coreFeatures[activeFeatureTab].specs.map((spec, i) => (
-                                                    <div key={i} className="bg-white/5 p-4 border border-white/5 rounded-none">
-                                                        <span className="block text-[11px] text-slate-400 font-bold mb-1">{spec.label}</span>
-                                                        <span className="text-sm font-black text-white">{spec.val}</span>
+                                                    <div key={i} className="bg-slate-50 p-4 border border-slate-100">
+                                                        <span className="block text-[11px] text-slate-500 font-bold mb-1">{spec.label}</span>
+                                                        <span className="text-sm font-black text-trt-blue">{spec.val}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -635,7 +661,7 @@
                                         {/* 傳統做法痛點 */}
                                         <div className="bg-red-500/5 border border-red-500/10 p-8 rounded-none flex flex-col justify-between">
                                             <div>
-                                                <div className="flex items-center gap-2 text-red-400 font-bold mb-6 border-b border-red-500/10 pb-3">
+                                                <div className="flex items-center gap-2 text-red-600 font-bold mb-6 border-b border-red-500/10 pb-3">
                                                     <Icon name="x-circle" size={18} />
                                                     <span className="text-xs tracking-wider uppercase">傳統常規工藝瓶頸</span>
                                                 </div>
@@ -643,31 +669,31 @@
                                                     {coreFeatures[activeFeatureTab].pain.map((item, i) => (
                                                         <li key={i} className="flex items-start gap-3">
                                                             <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0"></span>
-                                                            <p className="text-slate-400 text-xs leading-relaxed font-light">{item}</p>
+                                                            <p className="text-slate-600 text-xs leading-relaxed font-light">{item}</p>
                                                         </li>
                                                     ))}
                                                 </ul>
                                             </div>
-                                            <span className="text-[10px] text-red-400/50 font-bold tracking-widest uppercase mt-8 block">高成本 · 高風險 · 二次污染</span>
+                                            <span className="text-[10px] text-red-500 font-bold tracking-widest uppercase mt-8 block">高成本 · 高風險 · 二次污染</span>
                                         </div>
 
                                         {/* 雷德斯專利突破 */}
                                         <div className="bg-emerald-500/5 border border-emerald-500/10 p-8 rounded-none flex flex-col justify-between">
                                             <div>
-                                                <div className="flex items-center gap-2 text-emerald-400 font-bold mb-6 border-b border-emerald-500/10 pb-3">
+                                                <div className="flex items-center gap-2 text-emerald-600 font-bold mb-6 border-b border-emerald-500/10 pb-3">
                                                     <Icon name="check-circle" size={18} />
                                                     <span className="text-xs tracking-wider uppercase">雷德斯 TRT 專利工藝突破</span>
                                                 </div>
                                                 <ul className="space-y-4">
                                                     {coreFeatures[activeFeatureTab].solution.map((item, i) => (
                                                         <li key={i} className="flex items-start gap-3">
-                                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 shrink-0"></span>
-                                                            <p className="text-slate-300 text-xs leading-relaxed font-light">{item}</p>
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0"></span>
+                                                            <p className="text-slate-700 text-xs leading-relaxed font-light">{item}</p>
                                                         </li>
                                                     ))}
                                                 </ul>
                                             </div>
-                                            <span className="text-[10px] text-emerald-400/50 font-bold tracking-widest uppercase mt-8 block">重循環 · 高省藥 · 穩定連續</span>
+                                            <span className="text-[10px] text-emerald-600 font-bold tracking-widest uppercase mt-8 block">重循環 · 高省藥 · 穩定連續</span>
                                         </div>
                                     </div>
 
@@ -676,8 +702,8 @@
                         </div>
                     </section>
 
-                    {/* Section 3: 核心技術服務 */}
-                    <section id="核心業務" className="py-24 bg-white">
+                    {/* Section 3: 核心技術服務 (背景交替為 bg-white，內距 py-32) */}
+                    <section id="核心業務" className="py-32 bg-white">
                         <div className="max-w-7xl mx-auto px-6">
                             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-20 gap-6">
                                 <div>
@@ -718,87 +744,82 @@
                         </div>
                     </section>
 
-                    {/* Section 4: 實蹟與信任背書 (大廠案例數據對比) */}
-                    <section id="實際案例" className="py-24 bg-slate-100/50 border-t border-b border-slate-200/50">
+                    {/* Section 4: 實際案例展示區 (已根據優化建議瘦身：圖(上)+標記(中)+結果(下)+彈窗白皮書，內距 py-32) */}
+                    <section id="實際案例" className="py-32 bg-slate-50 border-t border-b border-slate-200/40">
                         <div className="max-w-7xl mx-auto px-6">
-                            <div className="text-center max-w-2xl mx-auto mb-16">
+                            <div className="text-center max-w-2xl mx-auto mb-20">
                                 <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Proven Success Case Studies</span>
                                 <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide">實績大廠案例與驗收數據</h2>
-                                <p className="text-slate-500 font-light text-sm leading-relaxed mt-4">
-                                    實務數據經得起檢驗。點擊下方指標案例查看 TRT 落地運轉的真實Before & After成效：
+                                <p className="text-slate-500 font-light text-sm mt-4">
+                                    點選案例查看細節，透過最硬實的實際測試結果，驗證台灣雷德斯 TRT 專利實力。
                                 </p>
                             </div>
 
-                            {/* 案例選擇標籤 */}
-                            <div className="flex flex-wrap justify-center gap-2 mb-12 max-w-4xl mx-auto">
+                            {/* 瘦身後的卡片網格 (圖+Pill標記+一句核心結果+閱讀更多) */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                                 {cases.map((cs, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setActiveCaseTab(i)}
-                                        className={`px-6 py-3 text-xs font-bold tracking-widest uppercase transition-all duration-300 ${activeCaseTab === i ? 'bg-trt-green text-white shadow-sm' : 'bg-white border border-slate-200/80 text-slate-500 hover:bg-slate-50'}`}
-                                    >
-                                        {cs.company.split('股份')[0]}
-                                    </button>
+                                    <div key={i} className="bg-white border border-slate-200/60 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                                        {/* 1. 頂部科技感幾何配圖 (附帶淡淡遮罩) */}
+                                        <div className="relative h-48 bg-slate-900 flex items-center justify-center overflow-hidden">
+                                            {/* 使用幾何線條 SVG 代替一般網格圖，色溫調為冷色調 */}
+                                            <svg className="absolute inset-0 w-full h-full opacity-25" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                                <defs>
+                                                    <linearGradient id="cool-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                        <stop offset="0%" stopColor="#0A1E3F" />
+                                                        <stop offset="100%" stopColor="#0D5245" />
+                                                    </linearGradient>
+                                                </defs>
+                                                <path d="M0,50 Q25,30 50,50 T100,50 L100,100 L0,100 Z" fill="url(#cool-grad)" />
+                                                <line x1="0" y1="20" x2="100" y2="80" stroke="#00B175" strokeWidth="0.2" />
+                                                <line x1="0" y1="80" x2="100" y2="20" stroke="#00B175" strokeWidth="0.2" />
+                                            </svg>
+                                            <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[1px]"></div>
+                                            <div className="relative z-10 text-center">
+                                                <div className="w-12 h-12 bg-white/10 text-trt-green rounded-full flex items-center justify-center mx-auto mb-2 border border-white/20">
+                                                    <Icon name={cs.icon} size={24} className="text-white" />
+                                                </div>
+                                                <span className="text-white text-xs font-bold tracking-widest block uppercase">{cs.industry}</span>
+                                            </div>
+                                        </div>
+
+                                        {/* 2. 中間標題與 Pill 標籤 */}
+                                        <div className="p-8 flex-grow">
+                                            <div className="flex flex-wrap gap-2 mb-4">
+                                                {cs.badges.map((badge, bi) => (
+                                                    <span key={bi} className="px-3 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold tracking-wider rounded-full">
+                                                        {badge}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            <h3 className="text-xl font-black text-trt-blue mb-2 leading-tight">
+                                                {cs.company}
+                                            </h3>
+                                            <p className="text-slate-400 text-xs font-bold block mb-4">{cs.site}</p>
+                                            
+                                            {/* 3. 底部一句簡短結果 */}
+                                            <p className="text-slate-600 text-sm leading-relaxed font-light mb-6">
+                                                {cs.shortOutcome}
+                                            </p>
+                                        </div>
+
+                                        {/* 4. 行動呼籲：彈窗查看詳情 */}
+                                        <div className="px-8 pb-8">
+                                            <button 
+                                                onClick={() => setSelectedCase(cs)}
+                                                className="w-full border border-slate-200 hover:border-trt-green text-trt-blue hover:text-white hover:bg-trt-green py-3 text-xs font-black tracking-widest uppercase transition-all duration-300 text-center flex items-center justify-center gap-2"
+                                            >
+                                                <span>檢視驗收白皮書</span>
+                                                <Icon name="file-text" size={14} />
+                                            </button>
+                                        </div>
+                                    </div>
                                 ))}
-                            </div>
-
-                            {/* 案例數據面板 */}
-                            <div className="bg-white border border-slate-200/80 p-8 md:p-12 shadow-sm transition-all duration-500 animate-fade-in-up">
-                                <div className="grid lg:grid-cols-12 gap-12 items-center">
-                                    {/* 案例文字介紹 */}
-                                    <div className="lg:col-span-5 space-y-6">
-                                        <span className="text-xs text-trt-green font-bold tracking-widest uppercase block border-b border-slate-100 pb-3">
-                                            {cases[activeCaseTab].industry}
-                                        </span>
-                                        <span className="text-xs font-bold text-trt-blue bg-blue-50 py-1.5 px-3.5 inline-block">
-                                            {cases[activeCaseTab].site}
-                                        </span>
-                                        <h3 className="text-2xl font-black text-slate-900 leading-tight">
-                                            {cases[activeCaseTab].company}
-                                        </h3>
-                                        <p className="text-slate-500 text-sm leading-relaxed font-light">
-                                            {cases[activeCaseTab].desc}
-                                        </p>
-                                        <div className="text-[11px] text-slate-400 flex items-center gap-2 font-medium">
-                                            <Icon name="check" size={14} className="text-emerald-500" />
-                                            <span>{cases[activeCaseTab].standard}</span>
-                                        </div>
-                                    </div>
-
-                                    {/* 案例核心數值對比盤 */}
-                                    <div className="lg:col-span-7 bg-slate-50 p-8 border border-slate-100 flex flex-col md:flex-row justify-around items-center gap-8 text-center relative overflow-hidden">
-                                        <div className="absolute top-0 left-0 w-1 h-full bg-trt-green"></div>
-                                        
-                                        {/* 處理前 */}
-                                        <div className="space-y-2">
-                                            <span className="text-xs text-slate-400 tracking-wider font-bold block">傳統處理現況</span>
-                                            <div className="text-3xl font-extrabold text-slate-500 font-mono tracking-tight">
-                                                {cases[activeCaseTab].beforeVal}
-                                            </div>
-                                            <div className="w-12 h-1 bg-slate-300 mx-auto rounded-full"></div>
-                                        </div>
-
-                                        {/* 引導圖標 */}
-                                        <div className="text-trt-green rotate-90 md:rotate-0">
-                                            <Icon name="chevrons-right" size={32} />
-                                        </div>
-
-                                        {/* 處理後 */}
-                                        <div className="space-y-2">
-                                            <span className="text-xs text-trt-green tracking-wider font-extrabold block">TRT 處理後數據</span>
-                                            <div className="text-5xl font-black text-trt-blue font-mono tracking-tight">
-                                                {cases[activeCaseTab].afterVal}
-                                            </div>
-                                            <span className="text-xs text-trt-green font-bold block">{cases[activeCaseTab].afterSub}</span>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* Section 5: 產品與藥劑目錄 */}
-                    <section id="產品展廳" className="py-24 bg-white">
+                    {/* Section 5: 產品與藥劑目錄 (表格按細節建議優化：無縱向粗黑線，border-b，大 Padding，text-sm) */}
+                    <section id="產品展廳" className="py-32 bg-white">
                         <div className="max-w-7xl mx-auto px-6">
                             <div className="text-center max-w-2xl mx-auto mb-20">
                                 <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Product Catalog</span>
@@ -812,13 +833,13 @@
                             <div className="flex justify-center mb-12 border-b border-slate-200">
                                 <button 
                                     onClick={() => setActiveCatalog('chemicals')}
-                                    className={`px-8 py-4 font-bold text-base tracking-widest transition-all duration-300 ${activeCatalog === 'chemicals' ? 'border-b-2 border-trt-green text-trt-green' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`px-8 py-4 font-bold text-base tracking-widest transition-all duration-300 ${activeCatalog === 'chemicals' ? 'border-b-2 border-trt-green text-trt-green' : 'text-slate-400 hover:text-slate-700'}`}
                                 >
                                     水處理高效藥劑
                                 </button>
                                 <button 
                                     onClick={() => setActiveCatalog('equipment')}
-                                    className={`px-8 py-4 font-bold text-base tracking-widest transition-all duration-300 ${activeCatalog === 'equipment' ? 'border-b-2 border-trt-green text-trt-green' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`px-8 py-4 font-bold text-base tracking-widest transition-all duration-300 ${activeCatalog === 'equipment' ? 'border-b-2 border-trt-green text-trt-green' : 'text-slate-400 hover:text-slate-700'}`}
                                 >
                                     專利技術設備
                                 </button>
@@ -837,7 +858,7 @@
                                         <button
                                             key={tab.id}
                                             onClick={() => setChemFilter(tab.id)}
-                                            className={`px-5 py-2 text-xs font-bold tracking-wider transition-all duration-300 ${chemFilter === tab.id ? 'bg-trt-blue text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                                            className={`px-5 py-2 text-xs font-bold tracking-wider transition-all duration-300 ${chemFilter === tab.id ? 'bg-trt-green text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
                                         >
                                             {tab.label}
                                         </button>
@@ -845,38 +866,48 @@
                                 </div>
                             )}
 
-                            {/* 產品卡片網格 */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {productData[activeCatalog]
-                                    .filter(p => activeCatalog === 'equipment' || chemFilter === 'all' || p.category === chemFilter)
-                                    .map((prod) => (
-                                        <div key={prod.id} className="tafu-card p-10 border border-slate-100 bg-slate-50/50 flex flex-col justify-between relative group">
-                                            <div>
-                                                <div className="flex justify-between items-center mb-6">
-                                                    <span className="text-xs font-black tracking-widest uppercase text-trt-green bg-trt-green/10 px-3 py-1">
-                                                        {prod.type}
-                                                    </span>
-                                                    <span className="text-slate-300 group-hover:text-trt-green transition-colors duration-300">
-                                                        <Icon name="arrow-up-right" size={20} />
-                                                    </span>
-                                                </div>
-                                                <h3 className="text-xl font-bold mb-4 text-trt-blue leading-tight">{prod.name}</h3>
-                                                <p className="text-slate-500 text-sm leading-relaxed font-light mb-8 line-clamp-3">{prod.desc}</p>
-                                            </div>
-                                            <button 
-                                                onClick={() => setSelectedProduct(prod)}
-                                                className="border border-trt-blue/20 hover:border-trt-gold hover:bg-trt-gold text-trt-blue hover:text-white py-3 px-6 text-xs font-bold tracking-widest uppercase transition-all duration-300 text-center w-full"
-                                            >
-                                                查看規格技術細節
-                                            </button>
-                                        </div>
-                                    ))}
+                            {/* 產品規格表 - 極致白皮書簡約感：無縱向線條，寬襯Padding，文字13px */}
+                            <div className="overflow-x-auto border border-slate-150 shadow-sm">
+                                <table className="w-full text-left border-collapse bg-white">
+                                    <thead>
+                                        <tr className="bg-slate-50 border-b border-slate-200/80">
+                                            <th className="px-6 py-5 text-[13px] font-black tracking-widest text-trt-blue uppercase">產品名稱</th>
+                                            <th className="px-6 py-5 text-[13px] font-black tracking-widest text-trt-blue uppercase">技術類別</th>
+                                            <th className="px-6 py-5 text-[13px] font-black tracking-widest text-trt-blue uppercase">工藝特徵與優勢</th>
+                                            <th className="px-6 py-5 text-[13px] font-black tracking-widest text-trt-blue uppercase text-right">規格細節</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100">
+                                        {productData[activeCatalog]
+                                            .filter(p => activeCatalog === 'equipment' || chemFilter === 'all' || p.category === chemFilter)
+                                            .map((prod) => (
+                                                <tr key={prod.id} className="hover:bg-slate-50/50 transition-colors">
+                                                    <td className="px-6 py-5 text-[13px] font-black text-trt-blue leading-snug">{prod.name}</td>
+                                                    <td className="px-6 py-5 text-[13px]">
+                                                        <span className="px-2.5 py-1 bg-trt-light-green text-trt-green text-[10px] font-bold rounded-full">
+                                                            {prod.type}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-5 text-[13px] text-slate-500 leading-relaxed font-light">{prod.desc}</td>
+                                                    <td className="px-6 py-5 text-right text-[13px]">
+                                                        <button 
+                                                            onClick={() => setSelectedProduct(prod)}
+                                                            className="text-trt-green hover:text-trt-blue font-bold tracking-wider inline-flex items-center gap-1 hover:underline"
+                                                        >
+                                                            <span>查看規格</span>
+                                                            <Icon name="chevron-right" size={14} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </section>
 
-                    {/* Section 6: 污泥減量與處理成本計算器 */}
-                    <section id="成本效益" className="py-28 bg-white border-t border-slate-100">
+                    {/* Section 6: 污泥減量與處理成本計算器 (背景交替為 bg-slate-50，內距 py-32) */}
+                    <section id="成本效益" className="py-32 bg-slate-50 border-t border-slate-100">
                         <div className="max-w-7xl mx-auto px-6">
                             <div className="grid lg:grid-cols-2 gap-20 items-center">
                                 <div>
@@ -889,7 +920,7 @@
                                         請在右方拖動數值，即時試算貴工廠採用 TRT 系統後，每年可減少的污泥處置費與總體清運開銷。
                                     </p>
                                     
-                                    <div className="p-6 border-l-4 border-trt-green bg-slate-50">
+                                    <div className="p-6 border-l-4 border-trt-green bg-white">
                                         <h4 className="font-bold text-trt-blue mb-2">💡 雷德斯技術價值：</h4>
                                         <p className="text-xs text-slate-500 leading-relaxed font-light">
                                             降低含水率不僅代表污泥噸數減少，更代表污泥中的可燃物比例上升，有利於後端資源化。依照各大食品與電子廠案場驗收數據，脫水能效十分卓越。
@@ -897,7 +928,7 @@
                                     </div>
                                 </div>
 
-                                <div className="bg-slate-50 border border-slate-100 p-8 md:p-12">
+                                <div className="bg-white border border-slate-200 p-8 md:p-12">
                                     <h3 className="text-xl font-bold mb-8 text-trt-blue border-b border-slate-200 pb-4">
                                         費用節省即時試算
                                     </h3>
@@ -944,7 +975,7 @@
                                                 type="number" 
                                                 value={disposalCost}
                                                 onChange={(e) => setDisposalCost(Number(e.target.value))}
-                                                className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green font-mono text-slate-700 text-sm font-bold"
+                                                className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green font-mono text-slate-700 text-sm font-bold"
                                             />
                                         </div>
                                     </div>
@@ -971,8 +1002,8 @@
                         </div>
                     </section>
 
-                    {/* Section 7: B2B 結構化線上詢問系統 */}
-                    <section id="線上詢問" className="py-24 bg-slate-50 border-t border-slate-200/50">
+                    {/* Section 7: B2B 結構化線上詢問系統 (背景交替為 bg-white，內距 py-32) */}
+                    <section id="線上詢問" className="py-32 bg-white">
                         <div className="max-w-4xl mx-auto px-6">
                             <div className="text-center max-w-2xl mx-auto mb-16">
                                 <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Structured Consult</span>
@@ -999,7 +1030,7 @@
                                     </button>
                                 </div>
                             ) : (
-                                <div className="bg-white border border-slate-200/80 p-8 md:p-12 shadow-sm">
+                                <div className="bg-slate-50 border border-slate-200 p-8 md:p-12 shadow-sm">
                                     <form onSubmit={handleFormSubmit} className="space-y-8">
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <div>
@@ -1009,7 +1040,7 @@
                                                     required
                                                     value={formData.name}
                                                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                                    className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm" 
+                                                    className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm" 
                                                     placeholder="例：陳經理" 
                                                 />
                                             </div>
@@ -1020,7 +1051,7 @@
                                                     required
                                                     value={formData.phone}
                                                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                                                    className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm" 
+                                                    className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm" 
                                                     placeholder="例：0912-345678" 
                                                 />
                                             </div>
@@ -1034,7 +1065,7 @@
                                                     required
                                                     value={formData.company}
                                                     onChange={(e) => setFormData({...formData, company: e.target.value})}
-                                                    className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm" 
+                                                    className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm" 
                                                     placeholder="例：雷德斯電子(股)公司" 
                                                 />
                                             </div>
@@ -1043,7 +1074,7 @@
                                                 <select 
                                                     value={formData.waterType}
                                                     onChange={(e) => setFormData({...formData, waterType: e.target.value})}
-                                                    className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm"
+                                                    className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm"
                                                 >
                                                     <option>PCB 印刷電路板</option>
                                                     <option>半導體 / 光電業</option>
@@ -1079,7 +1110,7 @@
                                             <select 
                                                 value={formData.needType}
                                                 onChange={(e) => setFormData({...formData, needType: e.target.value})}
-                                                className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm"
+                                                className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm"
                                             >
                                                 <option>索取高效藥劑樣品進行分析試驗</option>
                                                 <option>低溫真空一體機現場踏勘規劃</option>
@@ -1142,9 +1173,100 @@
                         </div>
                     </footer>
 
-                    {/* 規格詳情互動彈窗 */}
+                    {/* 1. 實際案例規格白皮書彈窗 (Modal) - 採用乾淨表格排版 */}
+                    {selectedCase && (
+                        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                            <div className="bg-white max-w-3xl w-full p-8 border border-slate-200 shadow-2xl relative animate-fade-in-up">
+                                <button 
+                                    onClick={() => setSelectedCase(null)}
+                                    className="absolute top-6 right-6 text-slate-400 hover:text-slate-800 transition-colors"
+                                >
+                                    <Icon name="x" size={24} />
+                                </button>
+                                
+                                <span className="text-xs font-black tracking-widest uppercase text-trt-green bg-trt-light-green px-3 py-1 mb-4 inline-block">
+                                    {selectedCase.industry} 驗收白皮書
+                                </span>
+                                <h3 className="text-2xl font-black text-trt-blue mb-2">{selectedCase.company}</h3>
+                                <p className="text-slate-400 text-xs font-bold mb-6">{selectedCase.site}</p>
+                                
+                                <p className="text-slate-600 text-sm leading-relaxed mb-8 font-light">
+                                    {selectedCase.desc}
+                                </p>
+
+                                {/* 檢驗指標對比 - 精緻無豎線表格 */}
+                                <div className="space-y-6">
+                                    <div>
+                                        <h4 className="text-xs font-bold text-trt-green tracking-wider uppercase mb-3">📈 現場實測與官方認證檢測數據</h4>
+                                        <div className="border border-slate-100 overflow-hidden">
+                                            <table className="w-full text-left border-collapse">
+                                                <thead>
+                                                    <tr className="bg-slate-50 border-b border-slate-200">
+                                                        <th className="px-6 py-4 text-[13px] font-black text-trt-blue">檢驗檢測項目</th>
+                                                        <th className="px-6 py-4 text-[13px] font-black text-slate-500">導入前 (常規)</th>
+                                                        <th className="px-6 py-4 text-[13px] font-black text-trt-green text-right">TRT 處理後 (驗收)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-100">
+                                                    <tr>
+                                                        <td className="px-6 py-4 text-[13px] font-bold text-slate-800">{selectedCase.metricTitle}</td>
+                                                        <td className="px-6 py-4 text-[13px] text-slate-500 font-mono">{selectedCase.beforeVal}</td>
+                                                        <td className="px-6 py-4 text-[13px] text-trt-green font-black font-mono text-right">{selectedCase.afterVal}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <p className="text-[11px] text-slate-400 mt-2 italic font-light">
+                                            * {selectedCase.standard}
+                                        </p>
+                                    </div>
+
+                                    {/* 經濟效益清單 */}
+                                    <div>
+                                        <h4 className="text-xs font-bold text-trt-green tracking-wider uppercase mb-3">💰 運營經濟效益回報</h4>
+                                        <div className="border border-slate-100 overflow-hidden">
+                                            <table className="w-full text-left border-collapse">
+                                                <thead>
+                                                    <tr className="bg-slate-50 border-b border-slate-200">
+                                                        <th className="px-6 py-4 text-[13px] font-black text-trt-blue">評估分析項目</th>
+                                                        <th className="px-6 py-4 text-[13px] font-black text-trt-green text-right">實測數值 / 比例</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-100">
+                                                    {selectedCase.economics.map((eco, idx) => (
+                                                        <tr key={idx}>
+                                                            <td className="px-6 py-4 text-[13px] text-slate-600 font-light">{eco.item}</td>
+                                                            <td className="px-6 py-4 text-[13px] text-trt-blue font-bold text-right">{eco.val}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="mt-8 flex justify-end gap-4 border-t border-slate-100 pt-6">
+                                    <button 
+                                        onClick={() => setSelectedCase(null)}
+                                        className="bg-slate-100 text-slate-600 font-bold text-xs py-3.5 px-6 hover:bg-slate-200 transition-colors"
+                                    >
+                                        關閉
+                                    </button>
+                                    <a 
+                                        href="#線上詢問" 
+                                        onClick={() => setSelectedCase(null)}
+                                        className="bg-trt-green text-white font-bold text-xs py-3.5 px-6 hover:bg-trt-blue transition-colors"
+                                    >
+                                        立即預約免費樣品配方分析
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* 2. 產品規格細節彈窗 (Modal) */}
                     {selectedProduct && (
-                        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                             <div className="bg-white max-w-2xl w-full p-8 border border-slate-200 shadow-2xl relative animate-fade-in-up">
                                 <button 
                                     onClick={() => setSelectedProduct(null)}
@@ -1153,8 +1275,8 @@
                                     <Icon name="x" size={24} />
                                 </button>
                                 
-                                <span className="text-xs font-black tracking-widest uppercase text-trt-green bg-trt-green/10 px-3 py-1 mb-4 inline-block">
-                                    {selectedProduct.type}
+                                <span className="text-xs font-black tracking-widest uppercase text-trt-green bg-trt-light-green px-3 py-1 mb-4 inline-block">
+                                    {selectedProduct.type} 技術指標
                                 </span>
                                 <h3 className="text-2xl font-black text-trt-blue mb-4">{selectedProduct.name}</h3>
                                 <p className="text-slate-500 text-sm leading-relaxed mb-6 font-light">{selectedProduct.desc}</p>
@@ -1173,9 +1295,9 @@
                                         </div>
                                     )}
                                     {selectedProduct.case && (
-                                        <div className="bg-blue-50/50 p-4 border-l-2 border-trt-blue">
+                                        <div className="bg-trt-light-green p-4 border-l-2 border-trt-green">
                                             <h4 className="font-bold text-trt-blue text-sm mb-1">📈 案場成效實測：</h4>
-                                            <p className="text-slate-600 text-sm font-light">{selectedProduct.case}</p>
+                                            <p className="text-slate-700 text-sm font-light">{selectedProduct.case}</p>
                                         </div>
                                     )}
                                     {selectedProduct.spec && (
@@ -1185,9 +1307,9 @@
                                         </div>
                                     )}
                                     {selectedProduct.features && (
-                                        <div className="bg-blue-50/50 p-4 border-l-2 border-trt-blue">
+                                        <div className="bg-trt-light-green p-4 border-l-2 border-trt-green">
                                             <h4 className="font-bold text-trt-blue text-sm mb-1">🛠️ 技術效能優勢：</h4>
-                                            <p className="text-slate-600 text-sm font-light">{selectedProduct.features}</p>
+                                            <p className="text-slate-700 text-sm font-light">{selectedProduct.features}</p>
                                         </div>
                                     )}
                                 </div>
@@ -1195,16 +1317,16 @@
                                 <div className="mt-8 flex justify-end gap-4 border-t border-slate-100 pt-6">
                                     <button 
                                         onClick={() => setSelectedProduct(null)}
-                                        className="bg-slate-100 text-slate-600 font-bold text-xs py-3 px-6 hover:bg-slate-200 transition-colors"
+                                        className="bg-slate-100 text-slate-600 font-bold text-xs py-3.5 px-6 hover:bg-slate-200 transition-colors"
                                     >
                                         關閉
                                     </button>
                                     <a 
                                         href="#線上詢問" 
                                         onClick={() => setSelectedProduct(null)}
-                                        className="bg-trt-gold text-white font-bold text-xs py-3 px-6 hover:bg-trt-blue transition-colors"
+                                        className="bg-trt-green text-white font-bold text-xs py-3.5 px-6 hover:bg-trt-blue transition-colors"
                                     >
-                                        立即預約水質檢測
+                                        立即索取此藥劑/設備規劃
                                     </a>
                                 </div>
                             </div>
