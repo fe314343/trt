@@ -52,19 +52,49 @@
             scroll-behavior: smooth; 
         }
 
-        /* 乾淨、高對比的現代科技遮罩 */
-        .hero-overlay { 
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(13, 82, 69, 0.8) 100%); 
+        /* 幻燈片容器與遮罩 */
+        .slideshow-container {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-color: #000;
         }
         
-        /* 輕薄精緻玻璃卡片 */
+        .slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: slideFade 16s infinite;
+        }
+
+        /* 幻燈片動畫邏輯：4張圖片，每張4秒 */
+        .slide:nth-child(1) { animation-delay: 0s; }
+        .slide:nth-child(2) { animation-delay: 4s; }
+        .slide:nth-child(3) { animation-delay: 8s; }
+        .slide:nth-child(4) { animation-delay: 12s; }
+
+        @keyframes slideFade {
+            0% { opacity: 0; transform: scale(1.05); }
+            5% { opacity: 0.8; transform: scale(1); }
+            25% { opacity: 0.8; }
+            30% { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* 頂層遮罩，確保文字可讀性與色溫統一 */
+        .hero-overlay { 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.65) 0%, rgba(13, 82, 69, 0.85) 100%); 
+        }
+        
         .glass-card { 
             background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(12px); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
         }
 
-        /* 現代感卡片懸停動畫 - 永續松石綠過渡 */
         .tafu-card {
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -72,18 +102,6 @@
             transform: translateY(-4px);
             border-color: #0D5245;
             box-shadow: 0 15px 30px rgba(13, 82, 69, 0.08);
-        }
-
-        /* 自定義滾動條 */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #0D5245;
-            border-radius: 3px;
         }
     </style>
 </head>
@@ -93,7 +111,6 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // 圖標組件，確保在瀏覽器環境正確渲染 Lucide
         const Icon = ({ name, size = 20, className = "" }) => {
             useEffect(() => {
                 if (window.lucide) {
@@ -105,26 +122,19 @@
 
         const App = () => {
             const [scrolled, setScrolled] = useState(false);
-            const [activeFeatureTab, setActiveFeatureTab] = useState(0); // 4大獨家特點互動
-            const [selectedCase, setSelectedCase] = useState(null); // 用於實際案例彈窗 (Modal)
+            const [activeFeatureTab, setActiveFeatureTab] = useState(0);
+            const [selectedCase, setSelectedCase] = useState(null);
             const [activeCatalog, setActiveCatalog] = useState('chemicals'); 
             const [chemFilter, setChemFilter] = useState('all'); 
             const [selectedProduct, setSelectedProduct] = useState(null); 
             
-            // 計算器狀態
             const [sludgeWeight, setSludgeWeight] = useState(10); 
             const [initialMoisture, setInitialMoisture] = useState(85); 
             const [disposalCost, setDisposalCost] = useState(12000); 
 
-            // 表單狀態
             const [formSubmitted, setFormSubmitted] = useState(false);
             const [formData, setFormData] = useState({
-                name: '',
-                phone: '',
-                company: '',
-                waterType: 'PCB 印刷電路板',
-                compounds: [],
-                needType: '索取藥劑樣品'
+                name: '', phone: '', company: '', waterType: 'PCB 印刷電路板', compounds: [], needType: '索取藥劑樣品'
             });
 
             useEffect(() => {
@@ -133,1205 +143,211 @@
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
-            // 狀態變更時，觸發 Lucide 的渲染
             useEffect(() => {
-                if (window.lucide) {
-                    window.lucide.createIcons();
-                }
+                if (window.lucide) { window.lucide.createIcons(); }
             }, [activeFeatureTab, selectedCase, activeCatalog, chemFilter, selectedProduct, formSubmitted]);
 
-            // 四大核心特點數據 (已更新為藥品與設備完美整合之優勢)
             const coreFeatures = [
                 {
                     title: "鉻酸深度純化回收",
                     icon: "recycle",
                     short: "台灣唯一大型落地運轉實績。打破傳統化學還原法，將含有劇毒六價鉻的廢水深度純化，轉化為高純度製程原料重複再利用。",
-                    pain: [
-                        "使用海量還原劑（如亞硫酸氫鈉）與鹼中和進行沉澱，藥劑消耗極大。",
-                        "沉澱法會產生鋪天蓋地的劇毒六價鉻污泥，屬於高度危險的事業廢棄物，外運清運處理費用驚人。",
-                        "製程原料一次性損耗，企業無法回收高價鉻酸，加重製程物料成本負擔。"
-                    ],
-                    solution: [
-                        "利用高選擇性離子分離純化系統，精準將電鍍硬鉻液中的鐵、銅、鎳等雜質陽離子徹底剝離。",
-                        "在不稀釋、不還原的物理狀態下，使高純度鉻酸（六價鉻）直接回到前端製程循環使用。",
-                        "電鍍過程中的電流效率大增，有效降低電鍍產品的毛刺，提升鍍層均勻度與產品質感。"
-                    ],
-                    specs: [
-                        { label: "清運減量率", val: "劇毒污泥趨於 0" },
-                        { label: "鉻酸回收率", val: "最高達 95%" },
-                        { label: "均勻度提升", val: "有效消除鍍件毛刺" }
-                    ],
+                    pain: ["使用海量還原劑與鹼中和進行沉澱，藥劑消耗極大。", "產生海量六價鉻劇毒污泥，清運費用驚人。", "無法回收高價鉻酸，原料成本負擔沉重。"],
+                    solution: ["精密將硬鉻液中的雜質陽離子徹底剝離。", "高純度鉻酸直接回到前端製程循環使用。", "提升產品均勻度並減少毛刺。"],
+                    specs: [{ label: "清運減量率", val: "劇毒污泥趨於 0" }, { label: "鉻酸回收率", val: "最高達 95%" }, { label: "產品品質", val: "消除鍍件毛刺" }],
                     badge: "台灣唯一實績"
                 },
                 {
                     title: "生物污泥高真空乾燥",
                     icon: "flame",
-                    short: "專利加熱型板框擠壓與高真空物理技術，完美攻克生物污泥脫水世紀難題。",
-                    pain: [
-                        "常規帶濾機或一般板框壓濾機處理後，泥餅含水率仍在 70%~80% 的高點，體積龐大。",
-                        "傳統烘乾常需要消耗極大的蒸汽、重油或高壓電能，且極易引發惡臭外溢與粉塵自燃安全隱憂。",
-                        "濾板及配件屬於消耗品，維護保養需要整塊更換，成本昂貴、人工繁瑣。"
-                    ],
-                    solution: [
-                        "獨家結合「專利內部加熱型板框」在固液分離時直接進行中壓物理擠壓，預先脫除大量游離水。",
-                        "後段系統直接施以「高真空負壓環境」，使物料在 70~85°C 的超低溫狀態下快速蒸發乾化，效率大升。",
-                        "充分介接廠內廢熱、低品位餘熱蒸汽或熱水，能源成本極低。採用可拆卸式專利隔膜片，無須整塊更換濾板。"
-                    ],
-                    specs: [
-                        { label: "脫水含水率", val: "穩定低於 20%" },
-                        { label: "熱源能耗", val: "廢熱/低溫餘熱節能 50%" },
-                        { label: "隔膜膜片", val: "可拆卸式低運維設計" }
-                    ],
+                    short: "專利加熱板框擠壓與高真空低溫蒸發複合工藝。專為突破傳統生物污泥（如活性污泥）難脫水之世紀難題開發。",
+                    pain: ["泥餅含水率仍在 70%~80% 高點。", "烘乾耗能巨大且具惡臭外溢與粉塵安全隱憂。", "運維繁瑣需要更換整塊濾板。"],
+                    solution: ["加熱型板框在固液分離時同步擠壓脫水。", "高真空負壓環境使水分在 70~85°C 快速蒸發。", "介接廠內廢熱節能 50%，配件可拆卸保養。"],
+                    specs: [{ label: "脫水含水率", val: "穩定低於 20%" }, { label: "節能效果", val: "廢熱利用節能 50%+" }, { label: "低運維", val: "可拆卸隔膜設計" }],
                     badge: "發明型專利"
                 },
                 {
                     title: "高 COD 特異性裂解",
                     icon: "flask-conical",
-                    short: "小佔地高能裂解系統搭配專利特異藥劑，深度清除難降解有機廢水。",
-                    pain: [
-                        "化學鎳廢液、振動研磨廢水濃度極高，生物法常會毒死微生物；而芬頓法（Fenton）則會產生鋪天蓋地的廢鐵污泥，得不償失。",
-                        "使用傳統芬頓法（Fenton）需要添加海量鐵鹽，會產出鋪天蓋地的廢鐵污泥，衍生更多二度污染與處置費。"
-                    ],
-                    solution: [
-                        "「高 COD 裂解系統」佔地極小。配合自研專業藥劑（如 TRT-OC 溶解性 COD 分解劑、CaO 催化劑搭配觸媒塔），針對特異性 COD、硝酸鹽氮進行高能深度裂解與清除，無化學鐵污泥負擔。",
-                        "在極短時間內切斷廢水中強螯合鍵，將大分子有機物、氨氮、硝酸鹽氮深度裂解成無害氮氣與二氧化碳，完全不產生鐵污泥。"
-                    ],
-                    specs: [
-                        { label: "COD 降解率", val: "原水由 24,000ppm 降至 600ppm 以下" },
-                        { label: "氰化分解率", val: "99.9% 劇毒深度裂解" },
-                        { label: "污泥生成量", val: "無二次化學鐵污泥負擔" }
-                    ],
+                    short: "小佔地高能量物理觸媒裂解系統。搭配專利藥劑，針對高難度有機廢液結構化分解，免除化學污泥二次污染。",
+                    pain: ["高濃度廢液生物毒性強，微生物池易死菌。", "傳統芬頓法產生鋪天蓋地的廢鐵污泥。"],
+                    solution: ["小佔地「高 COD 裂解系統規劃」節省空間。", "利用 TRT-OC 分解劑切斷強螯合鍵。", "將有機物深度裂解成無害氣體，不產鐵污泥。"],
+                    specs: [{ label: "COD 降解率", val: "24,000ppm 降至 600ppm 以下" }, { label: "氰化分解率", val: "99.9% 劇毒深度裂解" }, { label: "污泥生成量", val: "無二次鐵污泥生成" }],
                     badge: "低化學污泥"
                 },
                 {
                     title: "藥劑設備跨領域整合",
                     icon: "layers",
-                    short: "「藥劑 ＋ 設備 ＋ 跨領域」客製整合，全套規劃，運維零推諉。",
-                    pain: [
-                        "業界藥劑商與設備商各自獨立，遇到案場水質變動或不達標時，雙方常互相推諉，造成業主孤立無援。",
-                        "套用通用設備導致佔地面積過大、運行能耗高、管路與加藥控制無法精準契合，導致加藥量居高不下。"
-                    ],
-                    solution: [
-                        "我們提供「客製藥劑與自研專利一體機」雙管齊下的完美配套。無縫融合電化學、超濾/逆滲透薄膜分離、真空濃縮與離子交換樹脂，大幅減少混凝劑投加，從源頭降低後端污泥產量。"
-                    ],
-                    specs: [
-                        { label: "設備壽命設計", val: "連續穩定運轉 10 - 20 年" },
-                        { label: "技術融合", val: "電化學+薄膜+樹脂+真空一體化" },
-                        { label: "運維保障", val: "藥劑與設備一站式保固" }
-                    ],
+                    short: "跨學科、一體化客製設計。打破賣藥不懂設備、賣設備不懂化學的推諉，提供真正具備連續運轉實力的閉環工程。",
+                    pain: ["藥劑與設備各自獨立，出問題時雙方互相推諉。", "通用設備佔地過大、運行能耗高且無法精準契合。"],
+                    solution: ["客製化配方藥劑與自研專利設備深度標定。", "整合電化學、薄膜、樹脂等多元工藝。", "由源頭大減混凝劑投加，實現極低總體成本。"],
+                    specs: [{ label: "設備壽命", val: "穩定運轉 10 - 20 年" }, { label: "技術整合", val: "跨工藝無縫融合" }, { label: "運維保障", val: "軟硬體一站式保固" }],
                     badge: "客製化技術"
                 }
             ];
 
-            // 實績案例數據 (結構化瘦身，將繁重文字移至彈窗)
             const cases = [
-                {
-                    company: "燁興企業股份有限公司",
-                    industry: "不鏽鋼酸洗",
-                    site: "高雄岡山廠驗收實績",
-                    badges: ["不鏽鋼酸洗", "重金屬污泥", "SGS認證"],
-                    shortOutcome: "污泥含水率降至 11.3%，年度清運處置費節省數百萬",
-                    desc: "燁興企業岡山廠產生之重金屬污泥委外清運費用龐大，且具高環境污染風險。導入雷德斯真空乾燥工藝後，污泥體積大減、脫水烘乾能效極佳。",
-                    metricTitle: "污泥乾燥效能對比",
-                    beforeVal: "85.0% 以上",
-                    afterVal: "11.3%",
-                    afterSub: "極致乾化成效",
-                    icon: "check-circle",
-                    standard: "符合環境部官方標準檢測方法 (NIEA R203.020)",
-                    economics: [
-                        { item: "原污泥年處理成本", val: "約 NT$ 12,000,000" },
-                        { item: "導入 TRT 後處理成本", val: "約 NT$ 2,100,000" },
-                        { item: "年度淨省費用", val: "NT$ 9,900,000 (省 82.5%)" }
-                    ]
-                },
-                {
-                    company: "允強實業股份有限公司",
-                    industry: "工業生物污泥",
-                    site: "雲林斗六廠運轉實績",
-                    badges: ["活性生物污泥", "餘熱利用", "零粉塵溢散"],
-                    shortOutcome: "突破生物污泥難乾燥瓶頸，泥餅含水率穩定維持在 17.2%",
-                    desc: "生物污泥含水率通常難以低於 80%。TRT 利用專利加熱板框配合高真空技術，利用廠區低溫餘熱進行一體化乾燥，零異味及零粉塵飄散。",
-                    metricTitle: "烘乾泥餅含水率",
-                    beforeVal: "80.0%",
-                    afterVal: "17.2%",
-                    afterSub: "全自動連續運轉",
-                    icon: "cpu",
-                    standard: "耐受现场 24 小時高強度連續工作壓力",
-                    economics: [
-                        { item: "原污泥年清運量", val: "3,200 公噸" },
-                        { item: "導入 TRT 後年清運量", val: "約 640 公噸" },
-                        { item: "清運量減幅", val: "直接減量高達 80%" }
-                    ]
-                },
-                {
-                    company: "高難度製程廢水廠",
-                    industry: "振動研磨廢液",
-                    site: "TRT 高效化學藥劑導入",
-                    badges: ["高濃度 COD", "振動研磨", "電泳漆排水"],
-                    shortOutcome: "原水高濃度 COD 自 24,000ppm 劇降至 600ppm 以下",
-                    desc: "振動研磨與化學電鍍製程產生的廢水毒性高且含有高濃度有機物，傳統生物法極易死菌。導入 TRT-NAO 與 TRT-L1 混凝系統後實現極佳沉澱與裂解。",
-                    metricTitle: "放流水 COD 濃度",
-                    beforeVal: "24,000 ppm",
-                    afterVal: "< 600 ppm",
-                    afterSub: "完美符合放流水標準",
-                    icon: "activity",
-                    standard: "完全無常規芬頓法產生之鋪天蓋地廢鐵污泥二次負擔",
-                    economics: [
-                        { item: "原化學用藥與處置成本", val: "NT$ 4,500 / 噸" },
-                        { item: "導入 TRT 後用藥成本", val: "NT$ 1,200 / 噸" },
-                        { item: "藥劑成本節省率", val: "降低達 73.3%" }
-                    ]
-                },
-                {
-                    company: "半導體與 PCB 指標大廠",
-                    industry: "化學鎳與劇毒氰化物",
-                    site: "金屬捕集與氰化裂解系統",
-                    badges: ["化學鎳重金屬", "劇毒氰化物", "加嚴排放"],
-                    shortOutcome: "重金屬鎳離子直接降至 0.5ppm 以下，超越國家加嚴標準",
-                    desc: "半導體與封裝製程中，強螯合物鎳離子及高濃度劇毒氰化物極難處理。應用 TRT-MC2 金屬捕集劑與 TRT-DOW 系統，切斷螯合鍵，極低化學污泥量。",
-                    metricTitle: "放流水鎳離子(Ni)濃度",
-                    beforeVal: "60,000 ppm",
-                    afterVal: "< 0.5 ppm",
-                    afterSub: "極致安全性過濾",
-                    icon: "shield",
-                    standard: "氰化物 (120,000ppm) 分解率高達 99.99% 以上",
-                    economics: [
-                        { item: "鎳離子去除效率", val: "99.99%" },
-                        { item: "氰基（CN-）破壞率", val: "99.99%" },
-                        { item: "二次重金屬污泥產生量", val: "較常規方法降低 60%" }
-                    ]
-                }
+                { company: "燁興企業股份有限公司", industry: "不鏽鋼酸洗", site: "高雄岡山廠驗收實績", badges: ["不鏽鋼酸洗", "重金屬污泥", "SGS認證"], shortOutcome: "含水率降至 11.3%，年度清運處置費節省數百萬", desc: "燁興岡山廠重金屬污泥體積大減、脫水烘乾能效極佳。", metricTitle: "污泥乾燥效能對比", beforeVal: "85.0% 以上", afterVal: "11.3%", afterSub: "極致乾化成效", icon: "check-circle", standard: "環境部官方標準 (NIEA R203.020)", economics: [{ item: "原污泥年處理成本", val: "NT$ 1,200 萬" }, { item: "導入後處理成本", val: "NT$ 210 萬" }, { item: "年度淨省", val: "NT$ 990 萬" }] },
+                { company: "允強實業股份有限公司", industry: "工業生物污泥", site: "雲林斗六廠運轉實績", badges: ["活性生物污泥", "餘熱利用", "零粉塵"], shortOutcome: "泥餅含水率維持在 17.2%，突破生物污泥脫水瓶頸", desc: "TRT 利用專利加熱板框與廢熱技術，實現全自動、無臭乾燥。", metricTitle: "烘乾泥餅含水率", beforeVal: "80.0%", afterVal: "17.2%", afterSub: "穩定連續運轉", icon: "cpu", standard: "24小時高強度現場測試驗證", economics: [{ item: "原年清運量", val: "3,200 公噸" }, { item: "導入後清運量", val: "約 640 公噸" }, { item: "減量比", val: "直降 80%" }] }
             ];
 
-            // 產品與藥劑數據
             const products = {
                 chemicals: [
-                    { 
-                        id: 'trt-nao', 
-                        category: 'cod',
-                        name: 'TRT-NAO 奈米吸附強效混凝劑', 
-                        type: '粉體', 
-                        desc: '專為高有機、高色度廢水開發。具備快速混凝與除臭特性，能有效降解生物難以代謝之 COD。',
-                        dosage: '建議用量：0.5‰ - 2‰ (視原水濃度而定)',
-                        appl: '適用於振動研磨廢液、高濃度有機染色廢水、生物污泥臭味消除。',
-                        case: '實際案場：振動研磨高濃度廢液 COD 由 24,000ppm 直接降至 600ppm 以下。'
-                    },
-                    { 
-                        id: 'trt-l1', 
-                        category: 'cod',
-                        name: 'TRT-L1 多用途強效液態混凝劑', 
-                        type: '液體', 
-                        desc: '通用型多功能液態混凝劑。對於懸浮固體（SS）與溶解性膠體具備極佳的架橋凝聚作用，沈降速度極快。',
-                        dosage: '建議用量：1‰ - 3‰，需搭配少量高分子助凝劑（PAM）',
-                        appl: '高 COD 工業廢水、電泳漆排水、紡織上漿廢水、銀變色防止液廢水。',
-                        case: '實際案場：電泳漆排水 COD 1,000ppm 降至 50ppm 以下，符合加嚴放流水標準。'
-                    },
-                    { 
-                        id: 'trt-mc2', 
-                        category: 'metal',
-                        name: 'TRT-MC2 高效低 COD 金屬捕集劑', 
-                        type: '液體', 
-                        desc: '突破市售捕集劑會大幅拉高放流水 COD 的缺點。本劑用量極省、顆粒巨大，即使在強螯合環境下也能徹底分離金屬離子。',
-                        dosage: '建議用量：依重金屬摩爾比添加，加藥後快速反應',
-                        appl: '化學鎳、印刷電路板(PCB)蝕刻廢水、電鍍製程廢水，可捕捉銅、鎳、鉛、鋅、鉻、鋁等離子。',
-                        case: '實際案場：國內 PCB 指標大廠化學鎳原液，鎳由 60,000ppm 降至 100ppm；含鎳製程排水降至 0.5ppm 以下。'
-                    },
-                    { 
-                        id: 'trt-ca-n', 
-                        category: 'fluoride_nitrogen',
-                        name: 'TRT-CaN 總氮/硝酸鹽氮觸媒劑', 
-                        type: '液體', 
-                        desc: '專利複配催化劑，需搭配電化學系統形成催化分解反應。將總氮、氨氮、亞硝酸鹽與硝酸鹽快速轉化為無害氮氣。',
-                        dosage: '建議用量：需搭配特定電化學反應槽，形成催化反應',
-                        appl: '電子業、不銹鋼酸洗、製藥及高難度高濃度總氮廢水處理。',
-                        case: '實際案場：硝酸製程排水中硝酸鹽氮由 120ppm 降至 10ppm，去除率高達 90％ 以上。'
-                    },
-                    { 
-                        id: 'trt-dow', 
-                        category: 'cyanide',
-                        name: 'TRT-DOW 高濃度氰化物分解劑', 
-                        type: '液體', 
-                        desc: '適用於十萬以上之超高濃度氰化物螯合廢液處理，強效切斷螯合鍵，將氰基（CN-）氧化分解。',
-                        dosage: '建議用量：需搭配特定密閉反應器，並連接廢氣排氣系統',
-                        appl: '高難度表面加工、化學拋光、貴金屬電鍍高濃度廢液。',
-                        case: '實際案場：高濃度氰化物廢液 120,000ppm 經 TRT 技術處理後降至 100ppm 以下，分解率 99.9% 以上。'
-                    }
+                    { id: 'trt-nao', category: 'cod', name: 'TRT-NAO 奈米強效混凝劑', type: '粉體', desc: '專為高有機、高色度廢水開發，能有效降解生物難代謝 COD。' },
+                    { id: 'trt-mc2', category: 'metal', name: 'TRT-MC2 高效金屬捕集劑', type: '液體', desc: '強螯合環境下也能徹底分離金屬離子，且不拉高出水 COD。' },
+                    { id: 'trt-ca-n', category: 'fluoride_nitrogen', name: 'TRT-CaN 總氮觸媒劑', type: '液體', desc: '搭配電化學系統，將硝酸鹽快速轉化為無害氮氣。' }
                 ],
                 equipment: [
-                    {
-                        id: 'rst-3500',
-                        name: 'RST-3500 精密刮泥沈澱槽',
-                        type: '專利設備',
-                        desc: '集合沈澱與污泥濃縮於一體，完全無死角，不積泥、不溢泥。整體採高耐候 FRP 與 304 不鏽鋼精密雷射切割包覆，幾無損耗。',
-                        spec: '模組化結構，處理水量 50 - 500 CMD。',
-                        features: '顯著提高出泥濃度，將污泥烘乾脫水效能提升 100% 以上。'
-                    },
-                    {
-                        id: 'ff-1000ab',
-                        name: 'FF-1000AB 專利自動逆洗過濾塔',
-                        type: '專利設備',
-                        desc: '雙模式自動逆洗（時序 + 壓差），輔以空氣爆破洗滌，徹底瓦解頑強濾層。友善人機介面，全自動免人力維護。',
-                        spec: '耐壓 5 kg/cm²，全防腐材質。',
-                        features: '出水濁度極低，適用於 UF / RO 膜處理系統前置保安過濾。'
-                    },
-                    {
-                        id: 'hpf-800',
-                        name: 'HPF-800 中高壓自動污泥脫水機',
-                        type: '核心設備',
-                        desc: '高強度防變形結構，能承受高達 8kg/cm² 以上之入料壓力。脫水效果與泥餅含水率均遠優於傳統板框式壓濾機。',
-                        spec: '搭配 TRT 沈澱系統，脫水週期縮短 1 倍。',
-                        features: '泥餅乾燥重量提升 10%，一體化運作直接減輕後端乾燥能耗。'
-                    }
+                    { id: 'rst-3500', name: 'RST-3500 精密刮泥沈澱槽', type: '專利設備', desc: '沈澱與濃縮於一體，完全不積泥，極大化烘乾效率。' },
+                    { id: 'hpf-800', name: 'HPF-800 高壓自動脫水機', type: '核心設備', desc: '能承受 8kg/cm² 入料壓力，泥餅含水率遠優於傳統型號。' }
                 ]
             };
 
-            const productData = products;
-
-            // 估算器計算邏輯 (含水率從 initial 降至 20%)
             const calculateSavings = () => {
-                const initialMoistureFraction = initialMoisture / 100;
-                const targetMoistureFraction = 0.20; // 烘乾至 20% 含水率
-                const drySolid = sludgeWeight * (1 - initialMoistureFraction); // 乾固重
-                const driedWeight = drySolid / (1 - targetMoistureFraction); // 乾燥後總重
-                const reductionWeight = sludgeWeight - driedWeight; // 減少的污泥噸數
-                const dailySavings = reductionWeight * disposalCost;
-                const annualSavings = dailySavings * 300; // 假設每年運轉 300 天
-                return {
-                    driedWeight: driedWeight.toFixed(2),
-                    reductionPercent: ((reductionWeight / sludgeWeight) * 100).toFixed(1),
-                    annualSavings: Math.round(annualSavings).toLocaleString()
-                };
+                const drySolid = sludgeWeight * (1 - (initialMoisture / 100));
+                const driedWeight = drySolid / (1 - 0.20);
+                const reductionWeight = sludgeWeight - driedWeight;
+                const annualSavings = reductionWeight * disposalCost * 300;
+                return { reductionPercent: ((reductionWeight / sludgeWeight) * 100).toFixed(1), annualSavings: Math.round(annualSavings).toLocaleString() };
             };
 
-            // 滑動到特定區塊並自動切換對應 Tab 的精準函式
             const handleQuickDiagnose = (index) => {
                 setActiveFeatureTab(index);
-                const element = document.getElementById('company-features-title');
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            };
-
-            // 處理多選框
-            const handleCheckboxChange = (compound) => {
-                const current = [...formData.compounds];
-                const index = current.indexOf(compound);
-                if (index > -1) {
-                    current.splice(index, 1);
-                } else {
-                    current.push(compound);
-                }
-                setFormData({...formData, compounds: current});
-            };
-
-            const handleFormSubmit = (e) => {
-                e.preventDefault();
-                setFormSubmitted(true);
+                document.getElementById('company-features-title')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             };
 
             const savings = calculateSavings();
 
             return (
                 <div className="min-h-screen">
-                    {/* 導覽列 */}
                     <nav className={`fixed w-full z-50 transition-all duration-300 border-b ${scrolled ? 'bg-white/95 backdrop-blur-md border-slate-200/80 shadow-sm py-3' : 'bg-transparent border-white/10 py-5'}`}>
                         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
                             <div className="flex items-center gap-4">
-                                <img src="assets/favicon.webp" alt="Taiwan Raiders Logo" className="w-11 h-11 object-contain rounded-lg shadow-sm" />
+                                <img src="assets/favicon.webp" alt="TRT Logo" className="w-11 h-11 object-contain rounded-lg" />
                                 <div className="flex flex-col border-l border-white/20 pl-4 h-9 justify-center">
-                                    <span className={`text-base md:text-lg font-extrabold tracking-wide leading-none transition-colors duration-300 ${scrolled ? 'text-slate-900' : 'text-white'}`}>
-                                        台灣雷德斯減廢科技股份有限公司
-                                    </span>
-                                    <span className={`text-[8px] md:text-[9px] font-bold uppercase tracking-wider mt-1 transition-colors duration-300 ${scrolled ? 'text-slate-500' : 'text-slate-300/90'}`}>
-                                        Taiwan Raiders Waste Reduction Technology Corp.
-                                    </span>
+                                    <span className={`text-base md:text-lg font-extrabold tracking-wide ${scrolled ? 'text-slate-900' : 'text-white'}`}>台灣雷德斯減廢科技</span>
+                                    <span className={`text-[8px] md:text-[9px] font-bold uppercase ${scrolled ? 'text-slate-500' : 'text-slate-300/90'}`}>Taiwan Raiders Waste Reduction Technology Corp.</span>
                                 </div>
                             </div>
                             <div className={`hidden lg:flex gap-8 font-bold text-sm tracking-widest ${scrolled ? 'text-slate-600' : 'text-white/90'}`}>
-                                <a href="#公司特點" className="hover:text-trt-green transition-colors relative group py-2">技術特點</a>
-                                <a href="#核心業務" className="hover:text-trt-green transition-colors relative group py-2">核心技術</a>
-                                <a href="#實際案例" className="hover:text-trt-green transition-colors relative group py-2">實際案例</a>
-                                <a href="#產品展廳" className="hover:text-trt-green transition-colors relative group py-2">技術產品</a>
-                                <a href="#成本效益" className="hover:text-trt-green transition-colors relative group py-2">效益估算</a>
+                                <a href="#公司特點">技術特點</a><a href="#核心業務">核心技術</a><a href="#實際案例">實際案例</a><a href="#產品展廳">技術產品</a><a href="#成本效益">效益估算</a>
                             </div>
-                            <a href="#線上詢問" className="hidden md:block bg-trt-green text-white hover:bg-trt-blue px-7 py-2.5 rounded-none font-bold text-xs tracking-widest uppercase transition-all duration-300 border border-trt-green">
-                                預約檢測 / 索樣
-                            </a>
+                            <a href="#線上詢問" className="hidden md:block bg-trt-green text-white hover:bg-trt-blue px-7 py-2.5 font-bold text-xs uppercase tracking-widest transition-all">預約索樣</a>
                         </div>
                     </nav>
 
-                    {/* 首頁視覺區 - 已優化文案，更為精煉直接，降低閱讀疲勞 */}
-                    <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden bg-slate-950">
-                        <img 
-                            src="assets/pouring-chemicals-into-flask-3d-rendering-scaled-DM-YLBmA.webp" 
-                            className="absolute inset-0 w-full h-full object-cover opacity-80" 
-                            alt="藥劑倒入角錐瓶背景" 
-                        />
-                        <div className="absolute inset-0 hero-overlay"></div>
+                    {/* 首頁視覺區 - 已更換幻燈片幻燈片 */}
+                    <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+                        {/* 幻燈片容器 */}
+                        <div className="slideshow-container">
+                            <img src="assets/hero-1.webp" className="slide" alt="現場合照" />
+                            <img src="assets/hero-2.webp" className="slide" alt="藍色主設備" />
+                            <img src="assets/hero-3.webp" className="slide" alt="精密工件" />
+                            <img src="assets/hero-4.webp" className="slide" alt="工業罐體" />
+                        </div>
+                        <div className="absolute inset-0 hero-overlay z-10"></div>
                         
-                        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center mt-12">
-                            <span className="inline-block text-trt-green font-extrabold tracking-[0.4em] text-xs md:text-sm uppercase mb-6 animate-fade-in-up">
-                                Taiwan No.1 Industrial Waste Reduction Technology
-                            </span>
+                        <div className="relative z-20 max-w-6xl mx-auto px-6 text-center">
+                            <span className="inline-block text-trt-green font-extrabold tracking-[0.4em] text-xs md:text-sm uppercase mb-6 animate-fade-in-up">Taiwan No.1 Waste Reduction Technology</span>
                             <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-8 tracking-widest animate-fade-in-up">
                                 35年環工經驗<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-trt-green via-teal-300 to-trt-tech-cyan">
-                                    一站式工業廢水與減廢資源化方案
-                                </span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-400 to-trt-tech-cyan">一站式工業廢水與減廢資源化方案</span>
                             </h1>
                             <div className="w-20 h-[3px] bg-trt-green mx-auto mb-8"></div>
-                            
-                            <p className="text-base md:text-lg text-slate-200 mb-12 max-w-3xl mx-auto leading-relaxed tracking-wider font-light">
-                                雷德斯 TRT 結合「自主研發高效藥劑 ＋ 專利耐用設備」，一站式務實解決高難度廢水放流與污泥外運難題，協助企業輕鬆合規、降低 80% 清運成本。
-                            </p>
-
+                            <p className="text-base md:text-lg text-slate-200 mb-12 max-w-4xl mx-auto leading-relaxed tracking-wider font-light">雷德斯 TRT 結合「自主研發高效藥劑 ＋ 專利耐用設備」，務實解決高難度廢水放流與污泥難題，協助企業輕鬆合規、降低 80% 清運成本。</p>
                             <div className="flex flex-wrap justify-center gap-5">
-                                <a href="#線上詢問" className="bg-trt-green text-white hover:bg-white hover:text-trt-blue px-10 py-4.5 font-extrabold text-sm tracking-widest transition-all duration-300 border border-trt-green shadow-lg shadow-trt-green/20 flex items-center gap-3">
-                                    立即預約水質檢測 / 索取藥劑樣品 <Icon name="arrow-right" size={16} />
-                                </a>
-                                <a href="#實際案例" className="bg-transparent text-white hover:bg-white/10 px-10 py-4.5 font-bold text-sm tracking-widest transition-all duration-300 border border-white/20">
-                                    檢視實績案例
-                                </a>
+                                <a href="#線上詢問" className="bg-trt-green text-white hover:bg-white hover:text-trt-blue px-10 py-4.5 font-extrabold text-sm tracking-widest transition-all shadow-lg shadow-trt-green/20">立即預約檢測 / 索取樣品</a>
+                                <a href="#實際案例" className="bg-transparent text-white hover:bg-white/10 px-10 py-4.5 font-bold text-sm tracking-widest border border-white/20 transition-all">檢視實績案例</a>
                             </div>
                         </div>
 
-                        {/* 🖱️ 微互動：滾動引導器 */}
-                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 cursor-pointer opacity-80 hover:opacity-100 transition-opacity"
-                             onClick={() => document.getElementById('客戶痛點')?.scrollIntoView({ behavior: 'smooth' })}>
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 cursor-pointer opacity-80" onClick={() => document.getElementById('客戶痛點')?.scrollIntoView({ behavior: 'smooth' })}>
                             <span className="text-[10px] text-slate-300 tracking-[0.3em] uppercase font-bold">向下探索</span>
-                            <div className="w-5 h-9 border-2 border-trt-green rounded-full flex justify-center p-1">
-                                <div className="w-1 h-2 bg-trt-green rounded-full animate-bounce-slow"></div>
-                            </div>
+                            <div className="w-5 h-9 border-2 border-trt-green rounded-full flex justify-center p-1"><div className="w-1 h-2 bg-trt-green rounded-full animate-bounce-slow"></div></div>
                         </div>
                     </section>
 
-                    {/* 📊 實績信任橋接列 */}
-                    <div className="bg-trt-blue text-white py-8 border-b border-trt-green/20 relative z-10 shadow-lg">
-                        <div className="max-w-7xl mx-auto px-6">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-white/10">
-                                <div className="py-2">
-                                    <div className="text-3xl font-black text-trt-green font-mono mb-1">90%</div>
-                                    <div className="text-xs text-slate-300 tracking-wider font-bold">專利一體機污泥減容極限</div>
-                                </div>
-                                <div className="py-2">
-                                    <div className="text-3xl font-black text-trt-green font-mono mb-1">&lt; 0.5 ppm</div>
-                                    <div className="text-xs text-slate-300 tracking-wider font-bold">重金屬放流水加嚴過濾標準</div>
-                                </div>
-                                <div className="py-2">
-                                    <div className="text-3xl font-black text-trt-green font-mono mb-1">35 年+</div>
-                                    <div className="text-xs text-slate-300 tracking-wider font-bold">深厚高科技產業環工實戰背景</div>
-                                </div>
-                            </div>
+                    <div className="bg-trt-blue text-white py-8 border-b border-trt-green/20 relative z-30 shadow-lg">
+                        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-white/10">
+                            <div><div className="text-3xl font-black text-trt-green font-mono">90%</div><div className="text-xs text-slate-300 font-bold">專利污泥減容極限</div></div>
+                            <div><div className="text-3xl font-black text-trt-green font-mono">&lt; 0.5 ppm</div><div className="text-xs text-slate-300 font-bold">重金屬放流標準</div></div>
+                            <div><div className="text-3xl font-black text-trt-green font-mono">35 年+</div><div className="text-xs text-slate-300 font-bold">環工實戰背景</div></div>
                         </div>
                     </div>
 
-                    {/* ⚡ 1. 客戶痛點導向：一進站即擊中需求 (Padding 加大為 py-32，完美留白) */}
                     <section id="客戶痛點" className="py-32 bg-white border-b border-slate-100">
                         <div className="max-w-7xl mx-auto px-6">
-                            <div className="text-center max-w-3xl mx-auto mb-20">
+                            <div className="text-center mb-20">
                                 <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Industrial Pain Points</span>
-                                <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide">您的工廠，是否也正面臨以下水處置難題？</h2>
-                                <p className="text-slate-500 font-light text-sm mt-4">環安衛主管與廠長常遇到的麻煩，雷德斯 TRT 協助您完美擊碎</p>
-                                <div className="w-12 h-[2px] bg-trt-green mx-auto mt-6"></div>
+                                <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide">您的工廠，是否也面臨以下水處置難題？</h2>
                             </div>
-
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                {/* 痛點 1 */}
-                                <div className="bg-trt-soft-gray p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 hover:shadow-lg transition-all duration-300 relative group">
+                                <div className="bg-trt-soft-gray p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 relative group">
                                     <div className="absolute top-0 left-0 w-full h-[3px] bg-red-400"></div>
-                                    <div>
-                                        <div className="text-red-400 mb-6 font-bold flex items-center gap-2">
-                                            <Icon name="alert-triangle" size={32} />
-                                            <span className="text-xs font-bold tracking-widest uppercase">法規超標與罰款</span>
-                                        </div>
-                                        <h3 className="text-xl font-bold mb-4 text-slate-900">COD、總氮、重金屬放流超標？</h3>
-                                        <p className="text-slate-500 text-sm leading-relaxed font-light">
-                                            化學鎳、高難度有機廢水因複合物螯合作用強烈，導致傳統加藥法沉澱不完全；生物法又常因毒性過高造成微生物大面積死菌，正面臨環保局加嚴罰款威脅。
-                                        </p>
-                                    </div>
-                                    <button onClick={() => handleQuickDiagnose(2)} className="text-left text-trt-green font-bold text-xs hover:text-trt-blue transition-colors flex items-center gap-2">
-                                        一鍵查看特異裂解方案 <Icon name="chevron-right" size={14} />
-                                    </button>
+                                    <div><div className="text-red-400 mb-6 font-bold flex items-center gap-2"><Icon name="alert-triangle" size={32} /></div><h3 className="text-xl font-bold mb-4 text-slate-900">COD、總氮、重金屬放流超標？</h3><p className="text-slate-500 text-sm font-light">高難度有機廢水因螯合作用強烈，導致傳統加藥法沉澱不完全，面臨環保局重罰風險。</p></div>
+                                    <button onClick={() => handleQuickDiagnose(2)} className="text-left text-trt-green font-bold text-xs flex items-center gap-2 transition-colors hover:text-trt-blue">查看特異裂解方案 <Icon name="chevron-right" size={14} /></button>
                                 </div>
-
-                                {/* 痛點 2 */}
-                                <div className="bg-trt-soft-gray p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 hover:shadow-lg transition-all duration-300 relative group">
+                                <div className="bg-trt-soft-gray p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 relative group">
                                     <div className="absolute top-0 left-0 w-full h-[3px] bg-red-400"></div>
-                                    <div>
-                                        <div className="text-red-400 mb-6 font-bold flex items-center gap-2">
-                                            <Icon name="trending-up" size={32} />
-                                            <span className="text-xs font-bold tracking-widest uppercase">運營成本高居不下</span>
-                                        </div>
-                                        <h3 className="text-xl font-bold mb-4 text-slate-900">生物污泥含水率過高、清運費用龐大？</h3>
-                                        <p className="text-slate-500 text-sm leading-relaxed font-light">
-                                            傳統帶濾機、板框脫水機產出的泥餅含水率高達 80% 以上，清運單價不斷調漲。高能耗的表面熱風烘乾運轉不僅耗電巨大，安全係數低且處理量極低。
-                                        </p>
-                                    </div>
-                                    <button onClick={() => handleQuickDiagnose(1)} className="text-left text-trt-green font-bold text-xs hover:text-trt-blue transition-colors flex items-center gap-2">
-                                        一鍵查看高效減量技術 <Icon name="chevron-right" size={14} />
-                                    </button>
+                                    <div><div className="text-red-400 mb-6 font-bold flex items-center gap-2"><Icon name="trending-up" size={32} /></div><h3 className="text-xl font-bold mb-4 text-slate-900">生物污泥含水過高、清運費昂貴？</h3><p className="text-slate-500 text-sm font-light">泥餅含水率高達 80% 以上，清運單價不斷調漲，傳統烘乾耗電巨大且有惡臭安全隱憂。</p></div>
+                                    <button onClick={() => handleQuickDiagnose(1)} className="text-left text-trt-green font-bold text-xs flex items-center gap-2 transition-colors hover:text-trt-blue">查看高效減量技術 <Icon name="chevron-right" size={14} /></button>
                                 </div>
-
-                                {/* 痛點 3 */}
-                                <div className="bg-trt-soft-gray p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 hover:shadow-lg transition-all duration-300 relative group">
+                                <div className="bg-trt-soft-gray p-10 border border-slate-200/60 shadow-sm flex flex-col justify-between h-96 relative group">
                                     <div className="absolute top-0 left-0 w-full h-[3px] bg-red-400"></div>
-                                    <div>
-                                        <div className="text-red-400 mb-6 font-bold flex items-center gap-2">
-                                            <Icon name="dollar-sign" size={32} />
-                                            <span className="text-xs font-bold tracking-widest uppercase">劇毒原料資源浪費</span>
-                                        </div>
-                                        <h3 className="text-xl font-bold mb-4 text-slate-900">硬鉻電鍍等劇毒原料未回收？</h3>
-                                        <p className="text-slate-500 text-sm leading-relaxed font-light">
-                                            含有高濃度劇毒六價鉻的廢水，傳統還原沉澱耗費海量藥品且留存危險污泥。不僅浪費極高價值的鉻酸原料，還使工廠背負極大安全包袱。
-                                        </p>
-                                    </div>
-                                    <button onClick={() => handleQuickDiagnose(0)} className="text-left text-trt-green font-bold text-xs hover:text-trt-blue transition-colors flex items-center gap-2">
-                                        一鍵查看深度純化回收 <Icon name="chevron-right" size={14} />
-                                    </button>
+                                    <div><div className="text-red-400 mb-6 font-bold flex items-center gap-2"><Icon name="dollar-sign" size={32} /></div><h3 className="text-xl font-bold mb-4 text-slate-900">硬鉻電鍍劇毒鉻酸未回收？</h3><p className="text-slate-500 text-sm font-light">劇毒六價鉻廢水傳統處理浪費藥品且產生海量危險污泥，物料成本極高。 </p></div>
+                                    <button onClick={() => handleQuickDiagnose(0)} className="text-left text-trt-green font-bold text-xs flex items-center gap-2 transition-colors hover:text-trt-blue">查看深度純化回收 <Icon name="chevron-right" size={14} /></button>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* Section 2: 互動式四大特點對比展示 (四大核心 - 背景交替為 bg-slate-50，內距 py-32) */}
                     <section id="公司特點" className="py-32 bg-slate-50">
                         <div className="max-w-7xl mx-auto px-6">
-                            <div id="company-features-title" className="text-center max-w-3xl mx-auto mb-16">
+                            <div id="company-features-title" className="text-center mb-16">
                                 <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Our Core Strengths</span>
                                 <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide">雷德斯 TRT 四大獨家技術特點</h2>
-                                <p className="text-slate-500 font-light text-sm mt-4">點擊下方技術分類，快速對比傳統做法與雷德斯的創新突破</p>
-                                <div className="w-12 h-[2px] bg-trt-green mx-auto mt-6"></div>
                             </div>
-                            
-                            {/* 特點互動標籤列 */}
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
                                 {coreFeatures.map((feat, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => setActiveFeatureTab(index)}
-                                        className={`p-6 border transition-all duration-300 text-left flex flex-col justify-between h-40 group ${activeFeatureTab === index ? 'border-trt-green bg-white shadow-lg shadow-trt-green/10' : 'border-slate-200 bg-white/60 hover:bg-white'}`}
-                                    >
-                                        <div className="flex justify-between items-center w-full">
-                                            <Icon name={feat.icon} size={28} className={activeFeatureTab === index ? 'text-trt-green' : 'text-slate-400 group-hover:text-trt-green'} />
-                                            <span className="text-[10px] font-bold text-slate-500 font-mono">0{index + 1}</span>
-                                        </div>
-                                        <div>
-                                            <span className="text-xs text-trt-green font-bold block mb-1">{feat.badge}</span>
-                                            <span className="font-bold text-sm tracking-wider text-slate-800">{feat.title}</span>
-                                        </div>
+                                    <button key={index} onClick={() => setActiveFeatureTab(index)} className={`p-6 border transition-all text-left flex flex-col justify-between h-40 group ${activeFeatureTab === index ? 'border-trt-green bg-white shadow-lg shadow-trt-green/10' : 'border-slate-200 bg-white/60 hover:bg-white'}`}>
+                                        <div className="flex justify-between items-center w-full"><Icon name={feat.icon} size={28} className={activeFeatureTab === index ? 'text-trt-green' : 'text-slate-400'} /><span className="text-[10px] font-bold text-slate-500 font-mono">0{index + 1}</span></div>
+                                        <div><span className="text-xs text-trt-green font-bold block mb-1">{feat.badge}</span><span className="font-bold text-sm tracking-wider text-slate-800">{feat.title}</span></div>
                                     </button>
                                 ))}
                             </div>
-
-                            {/* 特點對比內容區 - 技術白皮書形式重構 */}
-                            <div className="bg-white p-8 md:p-12 border border-slate-200/60 min-h-[450px] transition-all duration-500 shadow-sm">
+                            <div className="bg-white p-8 md:p-12 border border-slate-200/60 min-h-[450px] transition-all shadow-sm">
                                 <div className="grid lg:grid-cols-12 gap-10 items-start">
-                                    
-                                    {/* 左側：核心概述與關鍵技術指標 */}
                                     <div className="lg:col-span-5 space-y-6">
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-xs text-trt-green font-bold tracking-widest uppercase bg-trt-light-green px-3 py-1 rounded-full">
-                                                {coreFeatures[activeFeatureTab].badge}
-                                            </span>
-                                            <span className="text-xs text-slate-400 font-mono">Pillar 0{activeFeatureTab + 1}</span>
-                                        </div>
-                                        <h3 className="text-3xl font-black text-trt-blue">
-                                            {coreFeatures[activeFeatureTab].title}
-                                        </h3>
-                                        <p className="text-slate-600 text-sm leading-relaxed font-light border-b border-slate-100 pb-6">
-                                            {coreFeatures[activeFeatureTab].short}
-                                        </p>
-                                        
-                                        {/* 技術性能核心指標 */}
+                                        <div className="flex items-center gap-3"><span className="text-xs text-trt-green font-bold bg-trt-light-green px-3 py-1 rounded-full">{coreFeatures[activeFeatureTab].badge}</span></div>
+                                        <h3 className="text-3xl font-black text-trt-blue">{coreFeatures[activeFeatureTab].title}</h3>
+                                        <p className="text-slate-600 text-sm font-light border-b border-slate-100 pb-6">{coreFeatures[activeFeatureTab].short}</p>
                                         <div className="space-y-4">
-                                            <h4 className="text-xs font-bold text-trt-green tracking-wider uppercase">📊 專利系統關鍵技術指標：</h4>
+                                            <h4 className="text-xs font-bold text-trt-green uppercase tracking-wider">📊 關鍵指標：</h4>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                {coreFeatures[activeFeatureTab].specs.map((spec, i) => (
-                                                    <div key={i} className="bg-slate-50 p-4 border border-slate-100">
-                                                        <span className="block text-[11px] text-slate-500 font-bold mb-1">{spec.label}</span>
-                                                        <span className="text-sm font-black text-trt-blue">{spec.val}</span>
-                                                    </div>
-                                                ))}
+                                                {coreFeatures[activeFeatureTab].specs.map((spec, i) => (<div key={i} className="bg-slate-50 p-4 border border-slate-100"><span className="block text-[11px] text-slate-500 font-bold mb-1">{spec.label}</span><span className="text-sm font-black text-trt-blue">{spec.val}</span></div>))}
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    {/* 右側：精細痛點與系統解決方案條列 */}
-                                    <div className="lg:col-span-7 grid md:grid-cols-2 gap-8 h-full">
-                                        {/* 傳統做法痛點 */}
-                                        <div className="bg-red-500/5 border border-red-500/10 p-8 rounded-none flex flex-col justify-between">
-                                            <div>
-                                                <div className="flex items-center gap-2 text-red-600 font-bold mb-6 border-b border-red-500/10 pb-3">
-                                                    <Icon name="x-circle" size={18} />
-                                                    <span className="text-xs tracking-wider uppercase">傳統常規工藝瓶頸</span>
-                                                </div>
-                                                <ul className="space-y-4">
-                                                    {coreFeatures[activeFeatureTab].pain.map((item, i) => (
-                                                        <li key={i} className="flex items-start gap-3">
-                                                            <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0"></span>
-                                                            <p className="text-slate-600 text-xs leading-relaxed font-light">{item}</p>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                            <span className="text-[10px] text-red-500 font-bold tracking-widest uppercase mt-8 block">高成本 · 高風險 · 二次污染</span>
-                                        </div>
-
-                                        {/* 雷德斯專利突破 */}
-                                        <div className="bg-emerald-500/5 border border-emerald-500/10 p-8 rounded-none flex flex-col justify-between">
-                                            <div>
-                                                <div className="flex items-center gap-2 text-emerald-600 font-bold mb-6 border-b border-emerald-500/10 pb-3">
-                                                    <Icon name="check-circle" size={18} />
-                                                    <span className="text-xs tracking-wider uppercase">雷德斯 TRT 專利工藝突破</span>
-                                                </div>
-                                                <ul className="space-y-4">
-                                                    {coreFeatures[activeFeatureTab].solution.map((item, i) => (
-                                                        <li key={i} className="flex items-start gap-3">
-                                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0"></span>
-                                                            <p className="text-slate-700 text-xs leading-relaxed font-light">{item}</p>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                            <span className="text-[10px] text-emerald-600 font-bold tracking-widest uppercase mt-8 block">重循環 · 高省藥 · 穩定連續</span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 3: 核心技術服務 (背景交替為 bg-white，內距 py-32) */}
-                    <section id="核心業務" className="py-32 bg-white">
-                        <div className="max-w-7xl mx-auto px-6">
-                            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-20 gap-6">
-                                <div>
-                                    <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Our Services</span>
-                                    <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide">系統與技術服務分類</h2>
-                                </div>
-                                <p className="text-slate-500 max-w-lg leading-relaxed font-light text-sm">
-                                    提供客製化化學藥劑配方、精密自研工程設備以及全套環保系統規劃，確保工廠零環保風險與低運行能耗。
-                                </p>
-                            </div>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {[
-                                    { num: '01', title: '客製化工業廢水藥劑', icon: 'droplet', desc: '自主開發的高效化學混凝系統。精準覆配，徹底降解有機 COD，大幅縮短重金屬沉澱時間。' },
-                                    { num: '02', title: '專利廢水處理設備', icon: 'cpu', desc: '整合多項獨家專利，採高強度抗腐蝕精密不鏽鋼，提供高效率、小佔地、數十年連續運轉不壞的設備承諾。' },
-                                    { num: '03', title: '鉻酸深度純化回收系統', icon: 'recycle', desc: '台灣唯一大型實績，將含有劇毒六價鉻之電鍍原液深度純化，回收原物料並大幅減少化學廢料。' },
-                                    { num: '04', title: '生物污泥真空乾燥減量', icon: 'flame', desc: '結合專利「加熱型板框擠壓」與「高真空技術」，攻克生物污泥脫水世紀難題，清運噸數直降 80% 以上。' },
-                                    { num: '05', title: '跨領域技術整合工程', icon: 'layers', desc: '一體化無縫整合電化學反應、UF/RO膜分離、真空濃縮及離子交換樹脂，提供最合適的客製解決方案。' },
-                                    { num: '06', title: '災害應變與緊急水處理', icon: 'refresh-cw', desc: '模組化移動式淨水應變設備，協助企業在面臨極端氣候、限水天然災害時快速部署，保障產能。' }
-                                ].map((item, i) => (
-                                    <div key={i} className="tafu-card p-10 border border-slate-100 bg-slate-50/50 flex flex-col justify-between relative group">
-                                        <div>
-                                            <div className="flex justify-between items-center mb-8">
-                                                <span className="text-3xl font-light text-slate-300 group-hover:text-trt-green transition-colors duration-300 font-mono">
-                                                    {item.num}
-                                                </span>
-                                                <div className="text-trt-blue group-hover:text-trt-green transition-colors duration-300">
-                                                    <Icon name={item.icon} size={24} />
-                                                </div>
-                                            </div>
-                                            <h3 className="text-xl font-bold mb-4 text-trt-blue">{item.title}</h3>
-                                            <p className="text-slate-500 text-sm leading-relaxed font-light">{item.desc}</p>
-                                        </div>
-                                        <div className="w-0 h-[2px] bg-trt-green absolute bottom-0 left-0 transition-all duration-500 group-hover:w-full"></div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 4: 實際案例展示區 (已根據優化建議瘦身：圖(上)+標記(中)+結果(下)+彈窗白皮書，內距 py-32) */}
-                    <section id="實際案例" className="py-32 bg-slate-50 border-t border-b border-slate-200/40">
-                        <div className="max-w-7xl mx-auto px-6">
-                            <div className="text-center max-w-2xl mx-auto mb-20">
-                                <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Proven Success Case Studies</span>
-                                <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide">實績大廠案例與驗收數據</h2>
-                                <p className="text-slate-500 font-light text-sm mt-4">
-                                    點選案例查看細節，透過最硬實的實際測試結果，驗證台灣雷德斯 TRT 專利實力。
-                                </p>
-                            </div>
-
-                            {/* 瘦身後的卡片網格 (圖+Pill標記+一句核心結果+閱讀更多) */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-                                {cases.map((cs, i) => (
-                                    <div key={i} className="bg-white border border-slate-200/60 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between overflow-hidden">
-                                        {/* 1. 頂部科技感幾何配圖 (附帶淡淡遮罩) */}
-                                        <div className="relative h-48 bg-slate-900 flex items-center justify-center overflow-hidden">
-                                            {/* 使用幾何線條 SVG 代替一般網格圖，色溫調為冷色調 */}
-                                            <svg className="absolute inset-0 w-full h-full opacity-25" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                                <defs>
-                                                    <linearGradient id="cool-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                        <stop offset="0%" stopColor="#0A1E3F" />
-                                                        <stop offset="100%" stopColor="#0D5245" />
-                                                    </linearGradient>
-                                                </defs>
-                                                <path d="M0,50 Q25,30 50,50 T100,50 L100,100 L0,100 Z" fill="url(#cool-grad)" />
-                                                <line x1="0" y1="20" x2="100" y2="80" stroke="#00B175" strokeWidth="0.2" />
-                                                <line x1="0" y1="80" x2="100" y2="20" stroke="#00B175" strokeWidth="0.2" />
-                                            </svg>
-                                            <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[1px]"></div>
-                                            <div className="relative z-10 text-center">
-                                                <div className="w-12 h-12 bg-white/10 text-trt-green rounded-full flex items-center justify-center mx-auto mb-2 border border-white/20">
-                                                    <Icon name={cs.icon} size={24} className="text-white" />
-                                                </div>
-                                                <span className="text-white text-xs font-bold tracking-widest block uppercase">{cs.industry}</span>
-                                            </div>
-                                        </div>
-
-                                        {/* 2. 中間標題與 Pill 標籤 */}
-                                        <div className="p-8 flex-grow">
-                                            <div className="flex flex-wrap gap-2 mb-4">
-                                                {cs.badges.map((badge, bi) => (
-                                                    <span key={bi} className="px-3 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold tracking-wider rounded-full">
-                                                        {badge}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                            <h3 className="text-xl font-black text-trt-blue mb-2 leading-tight">
-                                                {cs.company}
-                                            </h3>
-                                            <p className="text-slate-400 text-xs font-bold block mb-4">{cs.site}</p>
-                                            
-                                            {/* 3. 底部一句簡短結果 */}
-                                            <p className="text-slate-600 text-sm leading-relaxed font-light mb-6">
-                                                {cs.shortOutcome}
-                                            </p>
-                                        </div>
-
-                                        {/* 4. 行動呼籲：彈窗查看詳情 */}
-                                        <div className="px-8 pb-8">
-                                            <button 
-                                                onClick={() => setSelectedCase(cs)}
-                                                className="w-full border border-slate-200 hover:border-trt-green text-trt-blue hover:text-white hover:bg-trt-green py-3 text-xs font-black tracking-widest uppercase transition-all duration-300 text-center flex items-center justify-center gap-2"
-                                            >
-                                                <span>檢視驗收白皮書</span>
-                                                <Icon name="file-text" size={14} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 5: 產品與藥劑目錄 (表格按細節建議優化：無縱向粗黑線，border-b，大 Padding，text-sm) */}
-                    <section id="產品展廳" className="py-32 bg-white">
-                        <div className="max-w-7xl mx-auto px-6">
-                            <div className="text-center max-w-2xl mx-auto mb-20">
-                                <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Product Catalog</span>
-                                <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide mb-6">產品與藥劑目錄</h2>
-                                <p className="text-slate-500 font-light text-sm leading-relaxed">
-                                    自主研發的高效水處理化學藥劑及專利工程設備。符合嚴苛標準，提供工業客戶完美運作保障。
-                                </p>
-                            </div>
-
-                            {/* 大分區切換 */}
-                            <div className="flex justify-center mb-12 border-b border-slate-200">
-                                <button 
-                                    onClick={() => setActiveCatalog('chemicals')}
-                                    className={`px-8 py-4 font-bold text-base tracking-widest transition-all duration-300 ${activeCatalog === 'chemicals' ? 'border-b-2 border-trt-green text-trt-green' : 'text-slate-400 hover:text-slate-700'}`}
-                                >
-                                    水處理高效藥劑
-                                </button>
-                                <button 
-                                    onClick={() => setActiveCatalog('equipment')}
-                                    className={`px-8 py-4 font-bold text-base tracking-widest transition-all duration-300 ${activeCatalog === 'equipment' ? 'border-b-2 border-trt-green text-trt-green' : 'text-slate-400 hover:text-slate-700'}`}
-                                >
-                                    專利技術設備
-                                </button>
-                            </div>
-
-                            {/* 藥劑篩選小標籤 */}
-                            {activeCatalog === 'chemicals' && (
-                                <div className="flex flex-wrap justify-center gap-3 mb-12">
-                                    {[
-                                        { id: 'all', label: '全部藥劑' },
-                                        { id: 'cod', label: '有機 COD 降解' },
-                                        { id: 'metal', label: '重金屬捕捉' },
-                                        { id: 'fluoride_nitrogen', label: '除氟與總氮' },
-                                        { id: 'cyanide', label: '氰化物及高難度' }
-                                    ].map((tab) => (
-                                        <button
-                                            key={tab.id}
-                                            onClick={() => setChemFilter(tab.id)}
-                                            className={`px-5 py-2 text-xs font-bold tracking-wider transition-all duration-300 ${chemFilter === tab.id ? 'bg-trt-green text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
-                                        >
-                                            {tab.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-
-                            {/* 產品規格表 - 極致白皮書簡約感：無縱向線條，寬襯Padding，文字13px */}
-                            <div className="overflow-x-auto border border-slate-150 shadow-sm">
-                                <table className="w-full text-left border-collapse bg-white">
-                                    <thead>
-                                        <tr className="bg-slate-50 border-b border-slate-200/80">
-                                            <th className="px-6 py-5 text-[13px] font-black tracking-widest text-trt-blue uppercase">產品名稱</th>
-                                            <th className="px-6 py-5 text-[13px] font-black tracking-widest text-trt-blue uppercase">技術類別</th>
-                                            <th className="px-6 py-5 text-[13px] font-black tracking-widest text-trt-blue uppercase">工藝特徵與優勢</th>
-                                            <th className="px-6 py-5 text-[13px] font-black tracking-widest text-trt-blue uppercase text-right">規格細節</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-100">
-                                        {productData[activeCatalog]
-                                            .filter(p => activeCatalog === 'equipment' || chemFilter === 'all' || p.category === chemFilter)
-                                            .map((prod) => (
-                                                <tr key={prod.id} className="hover:bg-slate-50/50 transition-colors">
-                                                    <td className="px-6 py-5 text-[13px] font-black text-trt-blue leading-snug">{prod.name}</td>
-                                                    <td className="px-6 py-5 text-[13px]">
-                                                        <span className="px-2.5 py-1 bg-trt-light-green text-trt-green text-[10px] font-bold rounded-full">
-                                                            {prod.type}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-5 text-[13px] text-slate-500 leading-relaxed font-light">{prod.desc}</td>
-                                                    <td className="px-6 py-5 text-right text-[13px]">
-                                                        <button 
-                                                            onClick={() => setSelectedProduct(prod)}
-                                                            className="text-trt-green hover:text-trt-blue font-bold tracking-wider inline-flex items-center gap-1 hover:underline"
-                                                        >
-                                                            <span>查看規格</span>
-                                                            <Icon name="chevron-right" size={14} />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 6: 污泥減量與處理成本計算器 (背景交替為 bg-slate-50，內距 py-32) */}
-                    <section id="成本效益" className="py-32 bg-slate-50 border-t border-slate-100">
-                        <div className="max-w-7xl mx-auto px-6">
-                            <div className="grid lg:grid-cols-2 gap-20 items-center">
-                                <div>
-                                    <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">ROI Estimation Tool</span>
-                                    <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide mb-8 leading-tight">
-                                        您的污泥清運費，<br />能省下多少？
-                                    </h2>
-                                    <p className="text-slate-500 font-light text-sm leading-relaxed mb-10">
-                                        利用雷德斯專利低溫真空脫水乾燥技術，我們能將含水率從 <span className="font-bold text-trt-blue">85% 直接降到 20% 以下</span>。
-                                        請在右方拖動數值，即時試算貴工廠採用 TRT 系統後，每年可減少的污泥處置費與總體清運開銷。
-                                    </p>
-                                    
-                                    <div className="p-6 border-l-4 border-trt-green bg-white">
-                                        <h4 className="font-bold text-trt-blue mb-2">💡 雷德斯技術價值：</h4>
-                                        <p className="text-xs text-slate-500 leading-relaxed font-light">
-                                            降低含水率不僅代表污泥噸數減少，更代表污泥中的可燃物比例上升，有利於後端資源化。依照各大食品與電子廠案場驗收數據，脫水能效十分卓越。
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="bg-white border border-slate-200 p-8 md:p-12">
-                                    <h3 className="text-xl font-bold mb-8 text-trt-blue border-b border-slate-200 pb-4">
-                                        費用節省即時試算
-                                    </h3>
-                                    
-                                    <div className="space-y-6 mb-10">
-                                        {/* 滑桿 1: 每日產量 */}
-                                        <div>
-                                            <div className="flex justify-between text-sm font-bold text-slate-700 mb-2">
-                                                <span>每日污泥產量 (公噸)</span>
-                                                <span className="text-trt-green font-mono">{sludgeWeight} 噸</span>
-                                            </div>
-                                            <input 
-                                                type="range" 
-                                                min="1" 
-                                                max="50" 
-                                                value={sludgeWeight} 
-                                                onChange={(e) => setSludgeWeight(Number(e.target.value))}
-                                                className="w-full accent-trt-green h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer"
-                                            />
-                                        </div>
-
-                                        {/* 滑桿 2: 原始含水率 */}
-                                        <div>
-                                            <div className="flex justify-between text-sm font-bold text-slate-700 mb-2">
-                                                <span>原始污泥含水率 (%)</span>
-                                                <span className="text-trt-green font-mono">{initialMoisture}%</span>
-                                            </div>
-                                            <input 
-                                                type="range" 
-                                                min="75" 
-                                                max="90" 
-                                                value={initialMoisture} 
-                                                onChange={(e) => setInitialMoisture(Number(e.target.value))}
-                                                className="w-full accent-trt-green h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer"
-                                            />
-                                        </div>
-
-                                        {/* 輸入 3: 清運成本 */}
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                污泥清運與處理費 (NT$ / 公噸)
-                                            </label>
-                                            <input 
-                                                type="number" 
-                                                value={disposalCost}
-                                                onChange={(e) => setDisposalCost(Number(e.target.value))}
-                                                className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green font-mono text-slate-700 text-sm font-bold"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* 試算結果面板 */}
-                                    <div className="bg-trt-blue text-white p-8 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-x-12 -translate-y-12"></div>
-                                        <div className="mb-6 border-b border-white/10 pb-4">
-                                            <div className="text-xs text-slate-300 uppercase tracking-widest mb-1">乾燥減量率</div>
-                                            <div className="text-2xl font-black text-trt-green font-mono">約 {savings.reductionPercent}%</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-xs text-slate-300 uppercase tracking-widest mb-1">每年可為貴工廠省下清運費</div>
-                                            <div className="text-3xl md:text-4xl font-black text-white font-mono">
-                                                NT$ <span className="text-trt-green">{savings.annualSavings}</span> 元
-                                            </div>
-                                            <div className="text-[10px] text-slate-400 mt-2 italic font-light">
-                                                * 估算基於每年運行 300 天，TRT 乾燥至標稱含水率 20% 計算。
-                                            </div>
-                                        </div>
+                                    <div className="lg:col-span-7 grid md:grid-cols-2 gap-8">
+                                        <div className="bg-red-500/5 border border-red-500/10 p-8 rounded-none"><div className="flex items-center gap-2 text-red-600 font-bold mb-6 border-b border-red-500/10 pb-3"><Icon name="x-circle" size={18} /><span>傳統瓶頸</span></div><ul className="space-y-4">{coreFeatures[activeFeatureTab].pain.map((item, i) => (<li key={i} className="flex items-start gap-3"><span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2"></span><p className="text-slate-600 text-xs font-light">{item}</p></li>))}</ul></div>
+                                        <div className="bg-emerald-500/5 border border-emerald-500/10 p-8 rounded-none"><div className="flex items-center gap-2 text-emerald-600 font-bold mb-6 border-b border-emerald-500/10 pb-3"><Icon name="check-circle" size={18} /><span>TRT 突破</span></div><ul className="space-y-4">{coreFeatures[activeFeatureTab].solution.map((item, i) => (<li key={i} className="flex items-start gap-3"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2"></span><p className="text-slate-700 text-xs font-light">{item}</p></li>))}</ul></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* Section 7: B2B 結構化線上詢問系統 (背景交替為 bg-white，內距 py-32) */}
-                    <section id="線上詢問" className="py-32 bg-white">
-                        <div className="max-w-4xl mx-auto px-6">
-                            <div className="text-center max-w-2xl mx-auto mb-16">
-                                <span className="text-trt-green font-bold tracking-widest text-xs uppercase block mb-3">Structured Consult</span>
-                                <h2 className="text-3xl md:text-5xl font-black text-trt-blue tracking-wide mb-4">預約免費現場檢測與藥樣</h2>
-                                <p className="text-slate-500 font-light text-sm">
-                                    填寫您的廢水屬性與主要成分，我們將第一時間安排環境工程師為您提供專業諮詢。
-                                </p>
+                    <footer className="bg-slate-950 text-white py-24 px-6">
+                        <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-16 mb-20">
+                            <div className="col-span-2">
+                                <h3 className="text-2xl font-black mb-2">台灣雷德斯減廢科技</h3>
+                                <p className="text-slate-400 text-sm font-light max-w-sm mb-10 leading-relaxed">秉持 35 年深厚技術背景，致力於高難度廢水與污泥資源化回收。務實解決 COD、重金屬、氰化物、總氮超標問題。</p>
+                                <div className="flex gap-4"><a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-trt-green transition-all"><Icon name="mail" size={18}/></a><a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-trt-green transition-all"><Icon name="phone" size={18}/></a></div>
                             </div>
-
-                            {formSubmitted ? (
-                                <div className="bg-white border border-emerald-100 p-12 text-center shadow-md animate-fade-in-up">
-                                    <div className="w-16 h-16 bg-trt-light-green text-trt-green rounded-full flex items-center justify-center mx-auto mb-6">
-                                        <Icon name="check-circle" size={32} />
-                                    </div>
-                                    <h3 className="text-2xl font-black text-trt-blue mb-4">我們已收到您的諮詢申請！</h3>
-                                    <p className="text-slate-500 text-sm max-w-md mx-auto leading-relaxed mb-8">
-                                        雷德斯技術研發部門將立即指派專人與您聯繫（通常在 24 小時之內），並根據您填寫的廢液類型與目標，安排樣品配方小試或現場踏勘。
-                                    </p>
-                                    <button 
-                                        onClick={() => setFormSubmitted(false)}
-                                        className="border border-trt-blue text-trt-blue px-6 py-2.5 text-xs font-bold uppercase hover:bg-slate-50 transition-all"
-                                    >
-                                        重新填寫表單
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="bg-slate-50 border border-slate-200 p-8 md:p-12 shadow-sm">
-                                    <form onSubmit={handleFormSubmit} className="space-y-8">
-                                        <div className="grid md:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">聯絡人姓名 *</label>
-                                                <input 
-                                                    type="text" 
-                                                    required
-                                                    value={formData.name}
-                                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                                    className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm" 
-                                                    placeholder="例：陳經理" 
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">聯絡電話 *</label>
-                                                <input 
-                                                    type="tel" 
-                                                    required
-                                                    value={formData.phone}
-                                                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                                                    className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm" 
-                                                    placeholder="例：0912-345678" 
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="grid md:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">公司名稱 / 廠區 *</label>
-                                                <input 
-                                                    type="text" 
-                                                    required
-                                                    value={formData.company}
-                                                    onChange={(e) => setFormData({...formData, company: e.target.value})}
-                                                    className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm" 
-                                                    placeholder="例：雷德斯電子(股)公司" 
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">您的廢水類型 *</label>
-                                                <select 
-                                                    value={formData.waterType}
-                                                    onChange={(e) => setFormData({...formData, waterType: e.target.value})}
-                                                    className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm"
-                                                >
-                                                    <option>PCB 印刷電路板</option>
-                                                    <option>半導體 / 光電業</option>
-                                                    <option>硬鉻電鍍 / 表面處理</option>
-                                                    <option>振動研磨 / 切削製程</option>
-                                                    <option>化學鎳與特殊錯合製程</option>
-                                                    <option>其他化學工業</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        {/* 主要想解決的成分 (複選框) */}
-                                        <div>
-                                            <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-3">主要想解決的污染成分 (可複選) *</label>
-                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                                {['高濃度 COD', '總氮 / 硝酸鹽氮', '六價鉻劇毒', '化學鎳重金屬', '氟離子超標', '污泥含水過高', '氰化物原液'].map((compound) => (
-                                                    <label key={compound} className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-600 hover:text-trt-blue">
-                                                        <input 
-                                                            type="checkbox" 
-                                                            checked={formData.compounds.includes(compound)}
-                                                            onChange={() => handleCheckboxChange(compound)}
-                                                            className="accent-trt-green w-4 h-4 rounded-none" 
-                                                        />
-                                                        <span>{compound}</span>
-                                                    </label>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        {/* 需求項目 */}
-                                        <div>
-                                            <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">主要需求項目 *</label>
-                                            <select 
-                                                value={formData.needType}
-                                                onChange={(e) => setFormData({...formData, needType: e.target.value})}
-                                                className="w-full bg-white border border-slate-200 px-4 py-3 rounded-none focus:outline-none focus:border-trt-green text-sm"
-                                            >
-                                                <option>索取高效藥劑樣品進行分析試驗</option>
-                                                <option>低溫真空一體機現場踏勘規劃</option>
-                                                <option>既有廢水設備整改及配方優化</option>
-                                                <option>其他緊急諮詢 / 災害應變</option>
-                                            </select>
-                                        </div>
-
-                                        <button 
-                                            type="submit"
-                                            className="w-full bg-trt-green text-white py-5 font-black text-sm tracking-widest uppercase transition-all duration-300 hover:bg-trt-blue hover:shadow-lg shadow-trt-green/10"
-                                        >
-                                            送出諮詢並預約專人聯繫
-                                        </button>
-                                    </form>
-                                </div>
-                            )}
+                            <div><h4 className="font-bold mb-8 text-trt-green uppercase text-xs">聯絡資訊</h4><ul className="space-y-4 text-sm font-bold"><li className="flex items-center gap-3"><Icon name="phone" size={14} className="text-trt-green"/> 02-2286-6693</li><li className="flex items-center gap-3"><Icon name="mail" size={14} className="text-trt-green"/> trt9002@yahoo.com.tw</li><li className="flex items-center gap-3"><Icon name="map-pin" size={14} className="text-trt-green"/> 新北市三重區溪尾街126巷15號</li></ul></div>
                         </div>
-                    </section>
-
-                    {/* 聯絡資訊 */}
-                    <footer id="聯絡資訊" className="bg-slate-950 text-white py-24 px-6 border-t border-white/5">
-                        <div className="max-w-7xl mx-auto">
-                            <div className="grid md:grid-cols-4 gap-16 mb-20">
-                                <div className="col-span-2">
-                                    <h3 className="text-2xl font-black mb-2 text-white">台灣雷德斯減廢科技股份有限公司</h3>
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-8">
-                                        Taiwan Raiders Waste Reduction Technology Corp.
-                                    </p>
-                                    <p className="text-slate-400 max-w-sm mb-10 leading-relaxed font-light text-sm">
-                                        秉持精益求精的環境工程專業技術。從尖端污泥乾燥、熱泵真空濃縮到膜分離技術，務實地為各大高科技工廠解決製程與清運環保難題。
-                                    </p>
-                                    <div className="flex gap-4">
-                                        <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-trt-green hover:text-white transition-all"><Icon name="linkedin" size={18}/></a>
-                                        <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-trt-green hover:text-white transition-all"><Icon name="mail" size={18}/></a>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 className="font-bold mb-8 text-trt-green uppercase text-xs tracking-widest">技術專區</h4>
-                                    <ul className="space-y-4 text-sm text-slate-400 font-light font-bold">
-                                        <li className="hover:text-white transition-colors cursor-pointer">低溫真空脫水乾燥</li>
-                                        <li className="hover:text-white transition-colors cursor-pointer">熱泵真空濃縮系統</li>
-                                        <li className="hover:text-white transition-colors cursor-pointer">膜分離技術應用</li>
-                                        <li className="hover:text-white transition-colors cursor-pointer">離子交換水回收</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h4 className="font-bold mb-8 text-trt-green uppercase text-xs tracking-widest">聯絡資訊</h4>
-                                    <ul className="space-y-4 text-sm text-slate-400 font-light font-bold">
-                                        <li className="flex items-center gap-3"><Icon name="phone" size={14} className="text-trt-green"/> 02-2286-6693</li>
-                                        <li className="flex items-center gap-3"><Icon name="mail" size={14} className="text-trt-green"/> trt9002@yahoo.com.tw</li>
-                                        <li className="flex items-center gap-3"><Icon name="map-pin" size={14} className="text-trt-green"/> 新北市三重區溪尾街126巷15號</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-slate-500 font-black uppercase tracking-[0.3em]">
-                                <span>© 2026 Taiwan Raiders Waste Reduction Technology Corp. | 統一編號: 12755761</span>
-                                <span className="text-slate-600">Professional Environmental Engineering Solutions</span>
-                            </div>
-                        </div>
+                        <div className="pt-8 border-t border-white/5 text-[10px] text-slate-500 uppercase tracking-widest text-center">© 2026 Taiwan Raiders Waste Reduction Technology Corp. | 專業環境工程解決方案</div>
                     </footer>
-
-                    {/* 1. 實際案例規格白皮書彈窗 (Modal) - 採用乾淨表格排版 */}
-                    {selectedCase && (
-                        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div className="bg-white max-w-3xl w-full p-8 border border-slate-200 shadow-2xl relative animate-fade-in-up">
-                                <button 
-                                    onClick={() => setSelectedCase(null)}
-                                    className="absolute top-6 right-6 text-slate-400 hover:text-slate-800 transition-colors"
-                                >
-                                    <Icon name="x" size={24} />
-                                </button>
-                                
-                                <span className="text-xs font-black tracking-widest uppercase text-trt-green bg-trt-light-green px-3 py-1 mb-4 inline-block">
-                                    {selectedCase.industry} 驗收白皮書
-                                </span>
-                                <h3 className="text-2xl font-black text-trt-blue mb-2">{selectedCase.company}</h3>
-                                <p className="text-slate-400 text-xs font-bold mb-6">{selectedCase.site}</p>
-                                
-                                <p className="text-slate-600 text-sm leading-relaxed mb-8 font-light">
-                                    {selectedCase.desc}
-                                </p>
-
-                                {/* 檢驗指標對比 - 精緻無豎線表格 */}
-                                <div className="space-y-6">
-                                    <div>
-                                        <h4 className="text-xs font-bold text-trt-green tracking-wider uppercase mb-3">📈 現場實測與官方認證檢測數據</h4>
-                                        <div className="border border-slate-100 overflow-hidden">
-                                            <table className="w-full text-left border-collapse">
-                                                <thead>
-                                                    <tr className="bg-slate-50 border-b border-slate-200">
-                                                        <th className="px-6 py-4 text-[13px] font-black text-trt-blue">檢驗檢測項目</th>
-                                                        <th className="px-6 py-4 text-[13px] font-black text-slate-500">導入前 (常規)</th>
-                                                        <th className="px-6 py-4 text-[13px] font-black text-trt-green text-right">TRT 處理後 (驗收)</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-slate-100">
-                                                    <tr>
-                                                        <td className="px-6 py-4 text-[13px] font-bold text-slate-800">{selectedCase.metricTitle}</td>
-                                                        <td className="px-6 py-4 text-[13px] text-slate-500 font-mono">{selectedCase.beforeVal}</td>
-                                                        <td className="px-6 py-4 text-[13px] text-trt-green font-black font-mono text-right">{selectedCase.afterVal}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <p className="text-[11px] text-slate-400 mt-2 italic font-light">
-                                            * {selectedCase.standard}
-                                        </p>
-                                    </div>
-
-                                    {/* 經濟效益清單 */}
-                                    <div>
-                                        <h4 className="text-xs font-bold text-trt-green tracking-wider uppercase mb-3">💰 運營經濟效益回報</h4>
-                                        <div className="border border-slate-100 overflow-hidden">
-                                            <table className="w-full text-left border-collapse">
-                                                <thead>
-                                                    <tr className="bg-slate-50 border-b border-slate-200">
-                                                        <th className="px-6 py-4 text-[13px] font-black text-trt-blue">評估分析項目</th>
-                                                        <th className="px-6 py-4 text-[13px] font-black text-trt-green text-right">實測數值 / 比例</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-slate-100">
-                                                    {selectedCase.economics.map((eco, idx) => (
-                                                        <tr key={idx}>
-                                                            <td className="px-6 py-4 text-[13px] text-slate-600 font-light">{eco.item}</td>
-                                                            <td className="px-6 py-4 text-[13px] text-trt-blue font-bold text-right">{eco.val}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div className="mt-8 flex justify-end gap-4 border-t border-slate-100 pt-6">
-                                    <button 
-                                        onClick={() => setSelectedCase(null)}
-                                        className="bg-slate-100 text-slate-600 font-bold text-xs py-3.5 px-6 hover:bg-slate-200 transition-colors"
-                                    >
-                                        關閉
-                                    </button>
-                                    <a 
-                                        href="#線上詢問" 
-                                        onClick={() => setSelectedCase(null)}
-                                        className="bg-trt-green text-white font-bold text-xs py-3.5 px-6 hover:bg-trt-blue transition-colors"
-                                    >
-                                        立即預約免費樣品配方分析
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* 2. 產品規格細節彈窗 (Modal) */}
-                    {selectedProduct && (
-                        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div className="bg-white max-w-2xl w-full p-8 border border-slate-200 shadow-2xl relative animate-fade-in-up">
-                                <button 
-                                    onClick={() => setSelectedProduct(null)}
-                                    className="absolute top-6 right-6 text-slate-400 hover:text-slate-800 transition-colors"
-                                >
-                                    <Icon name="x" size={24} />
-                                </button>
-                                
-                                <span className="text-xs font-black tracking-widest uppercase text-trt-green bg-trt-light-green px-3 py-1 mb-4 inline-block">
-                                    {selectedProduct.type} 技術指標
-                                </span>
-                                <h3 className="text-2xl font-black text-trt-blue mb-4">{selectedProduct.name}</h3>
-                                <p className="text-slate-500 text-sm leading-relaxed mb-6 font-light">{selectedProduct.desc}</p>
-                                
-                                <div className="space-y-4 border-t border-slate-100 pt-6">
-                                    {selectedProduct.dosage && (
-                                        <div>
-                                            <h4 className="font-bold text-trt-blue text-sm mb-1">🧪 使用配比：</h4>
-                                            <p className="text-slate-600 text-sm font-light">{selectedProduct.dosage}</p>
-                                        </div>
-                                    )}
-                                    {selectedProduct.appl && (
-                                        <div>
-                                            <h4 className="font-bold text-trt-blue text-sm mb-1">📍 適用範疇：</h4>
-                                            <p className="text-slate-600 text-sm font-light">{selectedProduct.appl}</p>
-                                        </div>
-                                    )}
-                                    {selectedProduct.case && (
-                                        <div className="bg-trt-light-green p-4 border-l-2 border-trt-green">
-                                            <h4 className="font-bold text-trt-blue text-sm mb-1">📈 案場成效實測：</h4>
-                                            <p className="text-slate-700 text-sm font-light">{selectedProduct.case}</p>
-                                        </div>
-                                    )}
-                                    {selectedProduct.spec && (
-                                        <div>
-                                            <h4 className="font-bold text-trt-blue text-sm mb-1">🔩 設備規格：</h4>
-                                            <p className="text-slate-600 text-sm font-light">{selectedProduct.spec}</p>
-                                        </div>
-                                    )}
-                                    {selectedProduct.features && (
-                                        <div className="bg-trt-light-green p-4 border-l-2 border-trt-green">
-                                            <h4 className="font-bold text-trt-blue text-sm mb-1">🛠️ 技術效能優勢：</h4>
-                                            <p className="text-slate-700 text-sm font-light">{selectedProduct.features}</p>
-                                        </div>
-                                    )}
-                                </div>
-                                
-                                <div className="mt-8 flex justify-end gap-4 border-t border-slate-100 pt-6">
-                                    <button 
-                                        onClick={() => setSelectedProduct(null)}
-                                        className="bg-slate-100 text-slate-600 font-bold text-xs py-3.5 px-6 hover:bg-slate-200 transition-colors"
-                                    >
-                                        關閉
-                                    </button>
-                                    <a 
-                                        href="#線上詢問" 
-                                        onClick={() => setSelectedProduct(null)}
-                                        className="bg-trt-green text-white font-bold text-xs py-3.5 px-6 hover:bg-trt-blue transition-colors"
-                                    >
-                                        立即索取此藥劑/設備規劃
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    )}
                 </div>
             );
         };
