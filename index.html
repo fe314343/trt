@@ -163,10 +163,17 @@
                 { num: "08", title: "自動逆洗精密過濾塔", icon: "refresh-cw", layman: "濾層快堵塞時全自動啟動反洗清洗，自動恢復過濾能力，無需人工拆保。", professional: "採用高靈敏壓差傳送器與 PLC 連動，全自動開啟氣水聯合逆洗程序，清除濾料表面微粒。" }
             ];
 
+            const cases = [
+                { company: "燁興企業股份有限公司", industry: "不鏽鋼酸洗", site: "高雄岡山廠驗收實績", badges: ["不鏽鋼酸洗", "重金屬污泥", "SGS認證"], shortOutcome: "含水率降至 11.3%，年度清運處置費節省數百萬", desc: "燁興岡山廠重金屬污泥體積大減、脫水烘乾能效極佳。", metricTitle: "污泥乾燥效能對比", beforeVal: "85.0% 以上", afterVal: "11.3%", afterSub: "極致乾化成效", icon: "check-circle", standard: "環境部官方標準 (NIEA R203.020)", economics: [{ item: "原污泥年處理成本", val: "NT$ 1,200 萬" }, { item: "導入後處理成本", val: "NT$ 210 萬" }, { item: "年度淨省", val: "NT$ 990 萬" }] },
+                { company: "允強實業股份有限公司", industry: "工業生物污泥", site: "雲林斗六廠運轉實績", badges: ["活性生物污泥", "餘熱利用", "零粉塵"], shortOutcome: "泥餅含水率維持在 17.2%，突破生物污泥脫水瓶頸", desc: "TRT 利用專利加熱板框與廢熱技術，實現全自動、無臭乾燥。", metricTitle: "烘乾泥餅含水率", beforeVal: "80.0%", afterVal: "17.2%", afterSub: "穩定連續運轉", icon: "cpu", standard: "24小時高強度現場測試驗證", economics: [{ item: "原年清運量", val: "3,200 公噸" }, { item: "導入後清運量", val: "約 640 公噸" }, { item: "減量比", val: "直降 80%" }] },
+                { company: "高難度製程廢水廠", industry: "振動研磨廢液", site: "TRT 高效化學藥劑導入", badges: ["高濃度 COD", "振動研磨", "電泳漆排水"], shortOutcome: "原水高濃度 COD 自 24,000ppm 劇降至 600ppm 以下", desc: "振動研磨與化學電鍍製程產生的廢水毒性高且含有高濃度有機物，傳統生物法極易死菌。導入 TRT-NAO 與 TRT-L1 混凝系統後實現極佳沉澱與裂解。", metricTitle: "放流水 COD 濃度", beforeVal: "24,000 ppm", afterVal: "< 600 ppm", afterSub: "符合放流水標準", icon: "activity", standard: "完全無常規芬頓法產生之鋪天蓋地廢鐵污泥二次負擔", economics: [{ item: "原化學用藥與處置成本", val: "NT$ 4,500 / 噸" }, { item: "導入 TRT 後用藥成本", val: "NT$ 1,200 / 噸" }, { item: "藥劑成本節省率", val: "降低達 73.3%" }] },
+                { company: "半導體與 PCB 指標大廠", industry: "化學鎳與劇毒氰化物", site: "重金屬捕集與氰化裂解系統", badges: ["化學鎳重金屬", "劇毒氰化物", "加嚴排放"], shortOutcome: "重金屬鎳離子直接降至 0.5ppm 以下，超越國家加嚴標準", desc: "半導體與封裝製程中，強螯合物鎳離子及高濃度劇毒氰化物極難處理。應用 TRT-MC2 金屬捕集劑與 TRT-DOW 系統，切斷螯合鍵，極低化學污泥量。", metricTitle: "放流水鎳離子(Ni)濃度", beforeVal: "60,000 ppm", afterVal: "< 0.5 ppm", afterSub: "超越國家加嚴放流水標準", icon: "shield", standard: "氰化物 (120,000ppm) 分解率高達 99.99% 以上", economics: [{ item: "鎳離子去除效率", val: "99.99%" }, { item: "氰基（CN-）破壞率", val: "99.99%" }, { item: "二次重金屬污泥產生量", val: "較常規方法降低 60%" }] }
+            ];
+
             const products = {
                 chemicals: [
                     { id: 'trt-nao', category: 'cod', name: 'TRT-NAO 奈米強效混凝劑', type: '粉體', desc: '專為高有機、高色度廢水開發，能有效降解生物難代謝之 COD。' },
-                    { id: 'trt-mc2', category: 'metal', name: 'TRT-MC2 高效金屬捕集劑', type: '液體', desc: '強螯合環境下也能徹底分離金屬離子，且不拉高放流水 COD。' },
+                    { id: 'trt-mc2', category: 'metal', name: 'TRT-MC2 高效金屬捕集劑', type: '液體', desc: '強螯合環境下也能徹底分離金屬離子，且不拉高出水 COD。' },
                     { id: 'trt-ca-n', category: 'fluoride_nitrogen', name: 'TRT-CaN 總氮觸媒劑', type: '液體', desc: '配合觸媒塔，將硝酸鹽快速轉化為無害氮氣排放。' }
                 ],
                 equipment: [
@@ -255,15 +262,22 @@
                             {/* 🧪 黑科技秒懂：通俗比喻 ➔ 深度專業剖析 */}
                             <section id="技術原理" className="py-32 bg-slate-50 border-t border-b border-slate-100">
                                 <div className="max-w-7xl mx-auto px-6">
-                                    {/* 新增區塊：經驗與實績：圖片與文字 (全寬，在科普上方) */}
-                                    <div className="p-10 bg-white border border-slate-200/60 shadow-sm flex flex-col md:flex-row gap-10 mb-20">
-                                        <div className="flex-1 max-w-sm">
+                                    {/* 新增區塊：經驗與實績：圖片與文字 (全寬，在科普上方) - 已完美融合最新文案且字體適度放大 */}
+                                    <div className="p-10 bg-white border border-slate-200/60 shadow-sm flex flex-col md:flex-row gap-10 mb-20 items-center animate-fade-in-up">
+                                        <div className="flex-1 max-w-sm shrink-0">
                                             {/* 使用上傳的文件 assets/customer.webp (客戶合照) */}
-                                            <img src="assets/customer.webp" alt="客戶現場與實務處理合照" className="w-full h-auto object-contain" />
+                                            <img src="assets/customer.webp" alt="客戶現場與實務處理合照" className="w-full h-auto object-contain rounded-lg" />
                                         </div>
-                                        <div className="flex-2 max-w-2xl text-slate-600 text-sm leading-relaxed font-light space-y-4">
-                                            <p>雷德斯TRT有超過35年豐富的工業製程廢水廢液實務處理經驗，開發出佔地小具有高效率高效能的廢水系統處理設備，能夠應對各種不同類型的廢水處理問題。</p>
-                                            <p>根據客戶的需求提供全方位的解決方案，以確保最佳處理效果，又因講究細節，實際設備連續運轉長達數十年，為客戶生產提高整體產能獲得高度評價。</p>
+                                        <div className="flex-2 max-w-3xl text-slate-600 text-base md:text-lg leading-relaxed font-light space-y-6">
+                                            <p>
+                                                <span className="text-trt-blue font-bold">雷德斯 TRT</span> 秉持精益求精的環境工程專業技術，擁有超過 <span className="text-trt-green font-bold">35 年豐富的工業製程廢水廢液實務處理經驗</span>。我們開發出佔地小、具有高效率高效能的廢水系統處理設備，能夠應對並務實解決 <span className="text-slate-900 font-semibold">COD、金屬、氰化物、氟、總氮（氨氮、亞硝酸鹽、硝酸鹽氮）</span> 等不同高低濃度的廢水廢液處理需求。
+                                            </p>
+                                            <p>
+                                                因應各項環保法規及放流水標準，我們獨家研發的高效工業廢水處理藥劑與穩固耐用的工業廢水處理設備，能特別針對如 <span className="text-trt-green font-semibold">「振動研磨廢水處理」</span> 及 <span className="text-trt-green font-semibold">「化學鎳工業製程高濃度廢液處理」</span> 等高難度產業製程進行優化，根據客戶的不同需求提供全方位的解決方案，以確保放流水最佳的處理效果。
+                                            </p>
+                                            <p>
+                                                雷德斯 TRT 專注且講究每一個工程細節，使我們的實際設備能<span className="text-slate-900 font-semibold">連續穩定運轉長達數十年</span>。我們不仅能幫助客戶降低生產排污成本、大減廢水藥劑流失並降低污泥產量，更能全方位為客戶生產提高整體產能，在市場上獲得各大工業指標客戶的青睞、高度評價與長期不懈配合。
+                                            </p>
                                         </div>
                                     </div>
 
@@ -320,7 +334,7 @@
                                                 <div className="space-y-2">
                                                     <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">🔬 內行看門道（深度學術理論）：</span>
                                                     <p className="text-slate-500 text-xs leading-relaxed font-light">
-                                                        TRT一體機乾燥室採用「中壓板框物理擠壓」與「高真空低溫汽化」複合工藝。將系統壓力嚴格控制在 -0.095MPa 以下，使污泥內部水的汽化點降至 70~85°C。利用潛熱回收機制與專利加熱型隔膜擠壓，突破活性污泥乾燥難關。
+                                                        TRT一體機乾燥室採用「中壓板框物理擠壓」與「高真空低溫汽化」複合工藝。將系統壓力營格控制在 -0.095MPa 以下，使污泥內部水的汽化點降至 70~85°C。利用潛熱回收機制與專利加熱型隔膜擠壓，突破活性污泥乾燥難關。
                                                     </p>
                                                 </div>
                                             </div>
