@@ -301,7 +301,7 @@
                 { icon: "recycle", title: "資源「可再利用」", desc: "將原本的污染物返回成為原物料，不僅減少污染和廢棄物產生，還可以從經濟效益上創造價值，實現環保和經濟的雙贏。" }
             ];
 
-            const handleFormSubmit = (e) => {
+            const handleFormSubmit = (e, selectedProvider) => {
                 e.preventDefault();
                 const bodyLines = [
                     `姓名：${formData.name}`,
@@ -313,7 +313,17 @@
                     `指定藥劑：${formData.product || '未指定'}`
                 ];
                 const mailtoUrl = `mailto:trt9002@yahoo.com.tw?subject=${encodeURIComponent('【官網詢問】' + formData.company + ' - ' + formData.needType)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
-                window.location.href = mailtoUrl;
+                const provider = selectedProvider || e.nativeEvent?.submitter?.value || 'gmail';
+                if (provider === 'gmail') {
+                    const params = new URLSearchParams({
+                        view: 'cm', fs: '1', to: 'trt9002@yahoo.com.tw',
+                        su: '【官網詢問】' + formData.company + ' - ' + formData.needType,
+                        body: bodyLines.join('\n')
+                    });
+                    window.open('https://mail.google.com/mail/?' + params.toString(), '_blank', 'noopener,noreferrer');
+                } else {
+                    window.location.href = mailtoUrl;
+                }
                 setFormSubmitted(true);
             };
 
@@ -577,9 +587,13 @@
 
                                 {formSubmitted ? (
                                     <div className="bg-clarity/5 rounded-xl shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)] p-12 text-center animate-fade-in-up flex flex-col justify-center items-center">
-                                        <Icon name="check-circle" size={44} className="text-clarity mb-6" />
+                                        <Icon name="mail" size={44} className="text-clarity mb-6" />
                                         <h3 className="font-serif text-2xl font-bold text-ink-text mb-4">請完成郵件寄送</h3>
-                                        <p className="text-steel text-base">已嘗試開啟您的郵件軟體，請在郵件中按下「寄送」才算完成申請。此網頁無法確認郵件是否寄出；若沒有開啟，請直接來電或寄信至 trt9002@yahoo.com.tw。</p>
+                                        <p className="text-steel text-base">請在 Gmail 或郵件軟體確認內容，並按下「傳送／寄送」才算完成申請。使用 Gmail 需先登入您的帳號；網站無法確認郵件是否寄出。若未開啟，可使用下方按鈕重試，或直接寄信至 trt9002@yahoo.com.tw。</p>
+                                        <div className="mt-6 flex flex-wrap justify-center gap-3">
+                                            <button type="button" onClick={(e) => handleFormSubmit(e, 'gmail')} className="bg-clarity text-white px-5 py-3">開啟 Gmail 寄送</button>
+                                            <button type="button" onClick={(e) => handleFormSubmit(e, 'other')} className="border border-steel/30 px-5 py-3">使用其他郵件軟體</button>
+                                        </div>
                                         <button onClick={() => setFormSubmitted(false)} className="mt-8 text-clarity font-mono text-sm underline">重新填寫</button>
                                     </div>
                                 ) : (
@@ -611,8 +625,9 @@
                                                 <option>設備報價諮詢</option>
                                                 <option>其他技術問題</option>
                                             </select>
-                                            <button type="submit" className="w-full bg-clarity hover:bg-clarity-light text-ink py-4 font-mono font-semibold text-base tracking-widest uppercase transition-all">開啟郵件並填入諮詢內容</button>
-                                            <p className="text-sm text-steel">按下後會開啟郵件軟體，請確認內容並自行寄送；網頁不會直接傳送或儲存資料。</p>
+                                            <button type="submit" name="provider" value="gmail" className="w-full bg-clarity hover:bg-clarity-light text-ink py-4 font-mono font-semibold text-base tracking-widest uppercase transition-all">使用 Gmail 寄送</button>
+                                            <button type="submit" name="provider" value="other" className="w-full border border-steel/30 py-3 text-base text-ink-text">使用其他郵件軟體</button>
+                                            <p className="text-sm text-steel">Gmail 會在新分頁開啟並帶入詢問內容，請登入後確認收件人為 trt9002@yahoo.com.tw，再按「傳送」。也可選用其他郵件軟體；網站不會直接寄出或儲存資料。</p>
                                         </form>
                                     </div>
                                 )}
