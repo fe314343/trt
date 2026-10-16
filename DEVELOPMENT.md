@@ -19,3 +19,9 @@ Category URLs: #wastewater, #sludge, #automation.
 Below 1024px, tapping a chemical product opens an accessible dialog with a photo,
 description, and sample inquiry action. Closing restores focus without scrolling
 the original list. At 1024px and above, product details remain in the right column.
+
+The wastewater page includes a collapsible chemical-nickel treatment test case.
+Its six original photos are stored as nickel-test-01.webp through nickel-test-06.webp.
+Update nickelTestSteps in src/app.jsx when confirmed process details are available.
+Only MC2 is currently identified; no removal-rate or discharge-compliance claims
+are made for this photo case. The final two photos show settling observations.

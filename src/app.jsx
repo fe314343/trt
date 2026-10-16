@@ -9,6 +9,72 @@
             </svg>;
         };
 
+        const nickelTestSteps = [
+            { title: '原水外觀', description: '試驗開始時的廢液呈綠色，記錄處理前的外觀。' },
+            { title: '前段反應紀錄', description: '前段測試的液體外觀紀錄，此時仍可見綠色液體。' },
+            { title: '反應變化', description: '液體中可觀察到深色固體，記錄反應過程中的外觀變化。' },
+            { title: '加入 MC2 後', description: '加入 MC2 金屬捕集劑後的反應紀錄，液體呈深色，可見深色固體。' },
+            { title: '靜置沉澱', description: '後續不再添加其他藥劑，靜置觀察固體沉降與液層變化。' },
+            { title: '沉澱分層', description: '可觀察到上層液體與下層沉澱分層，呈現本次試驗的沉澱外觀。' }
+        ];
+
+        const WastewaterTestCase = ({ onContact }) => {
+            const [step, setStep] = useState(0);
+            const current = nickelTestSteps[step];
+            return <section id="wastewater-tests" className="mb-14 scroll-mt-28">
+                <span className="font-mono text-clarity text-xs tracking-widest uppercase block mb-3">Treatment in Action</span>
+                <h2 className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-3">廢水處理實例</h2>
+                <p className="text-steel leading-relaxed mb-6">從實際試驗，看見加藥反應與沉澱分層的過程。</p>
+                <details className="group bg-white rounded-xl overflow-hidden shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)]">
+                    <summary className="cursor-pointer list-none p-5 md:p-8 focus-visible:outline-offset-[-4px]">
+                        <div className="grid md:grid-cols-2 gap-6 items-center">
+                            <div>
+                                <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-clarity/10 text-clarity mb-4">化學鎳廢液・瓶杯試驗</span>
+                                <h3 className="font-serif text-xl md:text-2xl font-bold text-ink-text mb-3">高濃度化學鎳廢液處理測試</h3>
+                                <p className="text-steel text-sm leading-relaxed mb-4">以六張現場試驗照片，記錄原水、反應變化，以及 MC2 金屬捕集劑加入後的靜置沉澱過程。</p>
+                                <div className="text-sm text-ink-text mb-5">使用藥劑：<strong className="text-clarity">MC2 金屬捕集劑</strong></div>
+                                <span className="inline-flex items-center gap-2 rounded-lg bg-ink text-white px-4 py-3 text-sm font-medium group-open:hidden">查看 6 階段反應照片 <Icon name="chevron-down" size={16} /></span>
+                                <span className="hidden group-open:inline-flex items-center gap-2 text-clarity text-sm font-medium">收合反應過程 <Icon name="chevron-up" size={16} /></span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                {[{ number: 1, label: '原水外觀' }, { number: 6, label: '沉澱分層' }].map(photo => <figure key={photo.number} className="bg-mist rounded-lg overflow-hidden">
+                                    <img loading="lazy" decoding="async" src={'./assets/nickel-test-0' + photo.number + '.webp'} alt={photo.label} className="w-full h-44 md:h-52 object-contain" />
+                                    <figcaption className="text-center py-2 text-xs font-medium text-steel">{photo.label}</figcaption>
+                                </figure>)}
+                            </div>
+                        </div>
+                    </summary>
+                    <div className="p-5 md:p-8 border-t border-steel/15">
+                        <p className="text-sm text-steel mb-4">依照實際拍攝順序排列。點選階段或使用下一張，查看各階段的試驗外觀。</p>
+                        <div role="group" aria-label="選擇試驗階段" className="grid grid-cols-3 md:grid-cols-6 gap-2 mb-5">
+                            {nickelTestSteps.map((item, index) => <button type="button" key={item.title} aria-pressed={step === index} onClick={() => setStep(index)}
+                                className={'rounded-lg border px-2 py-3 text-xs md:text-sm transition-colors ' + (step === index ? 'bg-ink text-white border-ink' : 'bg-mist text-steel border-steel/20 hover:border-clarity')}>
+                                <span className="block font-mono mb-1">0{index + 1}</span>{item.title}
+                            </button>)}
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-6 items-center">
+                            <figure className="bg-mist rounded-lg overflow-hidden">
+                                <img key={step} src={'./assets/nickel-test-0' + (step + 1) + '.webp'} alt={current.title + '：' + current.description} decoding="async" className="w-full h-[48vh] md:h-[480px] object-contain animate-fade-in-up" />
+                            </figure>
+                            <div>
+                                <div aria-live="polite" aria-atomic="true">
+                                    <span className="font-mono text-xs text-clarity block mb-2">STEP 0{step + 1} / 06</span>
+                                    <h4 className="font-serif text-xl font-bold text-ink-text mb-3">{current.title}</h4>
+                                    <p className="text-steel leading-relaxed mb-6">{current.description}</p>
+                                </div>
+                                <div className="flex justify-between gap-3">
+                                    <button type="button" disabled={step === 0} onClick={() => setStep(value => value - 1)} className="border border-steel/25 rounded-lg px-4 py-3 text-sm disabled:opacity-30">上一張</button>
+                                    <button type="button" disabled={step === 5} onClick={() => setStep(value => value + 1)} className="bg-ink text-white rounded-lg px-4 py-3 text-sm disabled:opacity-30">下一張</button>
+                                </div>
+                            </div>
+                        </div>
+                        <p className="mt-6 text-xs text-steel leading-relaxed border-t border-steel/15 pt-4">照片呈現本次試驗的外觀變化；處理成效與是否符合排放要求，需依水質檢測結果判定。實際使用方案依廢水特性評估。</p>
+                        <button type="button" onClick={onContact} className="mt-5 bg-clarity text-white rounded-lg px-5 py-3 text-sm font-medium">諮詢化學鎳廢液處理方案</button>
+                    </div>
+                </details>
+            </section>;
+        };
+
         const App = () => {
             const [scrolled, setScrolled] = useState(false);
             const [selectedCase, setSelectedCase] = useState(null);
@@ -670,6 +736,15 @@
                                                         雷德斯TRT自主研發的水處理藥劑，主要用於去除高濃度工業廢水中的 COD，並針對氟、金屬等污染物提供 95%～99% 的高效去除率，協助客戶穩定達成放流水標準。
                                                     </p>
 
+                                                    <div className="flex flex-wrap gap-3 mb-10" role="group" aria-label="廢水處理頁快速導覽">
+                                                        {[['wastewater-tests', '處理實例'], ['wastewater-products', '藥劑產品'], ['wastewater-equipment', '處理設備']].map(([id, label]) => <button type="button" key={id} onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })} className="bg-white border border-steel/20 rounded-full px-4 py-2 text-sm text-ink-text hover:border-clarity">{label}</button>)}
+                                                    </div>
+                                                    <WastewaterTestCase onContact={() => {
+                                                        setFormSubmitted(false);
+                                                        setFormData(previous => ({ ...previous, waterType: '高濃度化學鎳廢液', product: 'MC2 金屬捕集劑', needType: '其他技術問題' }));
+                                                        goToContactSection();
+                                                    }} />
+
                                                     <div className="bg-white rounded-xl shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)] p-8 md:p-10 mb-14">
                                                         <span className="font-mono text-clarity text-xs uppercase tracking-widest inline-flex items-center gap-2 mb-3">
                                                             <Icon name="droplet" size={14} />高低濃度工業廢水處理解決方案
@@ -686,7 +761,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div className="bg-white rounded-xl shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)] p-8 md:p-10">
+                                                    <div id="wastewater-equipment" className="scroll-mt-28 bg-white rounded-xl shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)] p-8 md:p-10">
                                                         <h2 className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-4">雷德斯減廢科技 專業廢水處理設備</h2>
                                                         <p className="text-steel font-light text-base leading-relaxed mb-8">雷德斯TRT研發的廢水處理設備，具備新型專利設計，且能依客戶目標，從水質、濃度、水量以及設備佔地空間等，客製出滿足客戶整體需求的系統規劃，大幅提升工廠製程廢液的處理效能，豐富的國內外工程實績，優良口碑相傳。雷德斯獨家廢水處理設備，擁有多項競爭優勢與特色，茲舉例如下：</p>
                                                         <div className="grid sm:grid-cols-2 gap-x-10 gap-y-5">
@@ -699,7 +774,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div className="mt-16 mb-8">
+                                                    <div id="wastewater-products" className="scroll-mt-28 mt-16 mb-8">
                                                         <span className="font-mono text-clarity tracking-widest text-xs uppercase block mb-3">Chemical Reagents Portfolio</span>
                                                         <h2 className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-2">TRT 藥劑產品系列</h2>
                                                         <p className="hidden lg:block text-steel font-light text-base">點選左側類別與品項，右側即時顯示藥劑外觀、適用對象與技術特性。</p>
