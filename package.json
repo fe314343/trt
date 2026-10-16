@@ -1,0 +1,6 @@
+{
+  "name": "trt-website",
+  "private": true,
+  "scripts": { "build": "node build.cjs && tailwindcss -c tailwind.config.cjs -i src/styles.css -o assets/styles.css --minify" },
+  "devDependencies": { "@babel/core": "7.23.5", "@babel/preset-react": "7.23.3", "tailwindcss": "3.4.17" }
+}
