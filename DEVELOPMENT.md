@@ -15,3 +15,7 @@ The inquiry form opens Gmail compose in a new tab, with a mailto fallback. Visit
 This static website does not store inquiries or verify delivery.
 
 Category URLs: #wastewater, #sludge, #automation.
+
+Below 1024px, tapping a chemical product opens an accessible dialog with a photo,
+description, and sample inquiry action. Closing restores focus without scrolling
+the original list. At 1024px and above, product details remain in the right column.

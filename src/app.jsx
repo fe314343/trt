@@ -23,7 +23,13 @@
             const [menuOpen, setMenuOpen] = useState(false);
             const [activePage, setActivePage] = useState(() => ['wastewater', 'sludge', 'automation'].includes(location.hash.slice(1)) ? location.hash.slice(1) : null);
             const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-            const dialogRef = useRef(null); // null | 'wastewater' | 'sludge' | 'automation'
+            const dialogRef = useRef(null);
+            const [chemicalDialogOpen, setChemicalDialogOpen] = useState(false);
+            const chemicalDialogRef = useRef(null);
+            const selectChemical = (id) => {
+                setSelectedChemId(id);
+                if (window.matchMedia('(max-width: 1023px)').matches) setChemicalDialogOpen(true);
+            };
 
             const inquiryCategories = [
                 { key: 'wastewater', label: '廢水處理', sub: '高COD、高濃度廢液', blurb: '高 COD、高濃度廢水廢液處理藥劑與設備', icon: 'flask-conical' },
@@ -42,6 +48,7 @@
             const goHome = () => navigate('top');
             const goToContactSection = () => navigate('聯絡我們');
             const requestSample = () => {
+                setChemicalDialogOpen(false);
                 setFormSubmitted(false);
                 setFormData(previous => ({ ...previous, product: currentChem.name, needType: '索取藥劑樣品' }));
                 goToContactSection();
@@ -50,6 +57,7 @@
                 const syncLocation = () => {
                     let target;
                     try { target = decodeURIComponent(location.hash.slice(1)); } catch { target = 'top'; }
+                    setChemicalDialogOpen(false);
                     setActivePage(['wastewater', 'sludge', 'automation'].includes(target) ? target : null);
                     setMobileMenuOpen(false);
                     setMenuOpen(false);
@@ -73,26 +81,33 @@
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []);
             useEffect(() => {
-                if (!selectedCase) return;
+                if (!selectedCase && !chemicalDialogOpen) return;
+                const activeDialogRef = chemicalDialogOpen ? chemicalDialogRef : dialogRef;
                 const previousFocus = document.activeElement;
                 const previousOverflow = document.body.style.overflow;
                 document.body.style.overflow = 'hidden';
-                dialogRef.current?.focus();
+                activeDialogRef.current?.focus({ preventScroll: true });
                 const handleKey = (event) => {
-                    if (event.key === 'Escape') setSelectedCase(null);
+                    if (event.key === 'Escape') { setSelectedCase(null); setChemicalDialogOpen(false); }
                     if (event.key !== 'Tab') return;
-                    const nodes = [...dialogRef.current.querySelectorAll('button, a[href], input, select, textarea, [tabindex="0"]')];
+                    const nodes = [...activeDialogRef.current.querySelectorAll('button, a[href], input, select, textarea, [tabindex="0"]')];
                     const first = nodes[0], last = nodes[nodes.length - 1];
-                    if (event.shiftKey && (document.activeElement === first || document.activeElement === dialogRef.current)) { event.preventDefault(); last?.focus(); }
-                    else if (!event.shiftKey && (document.activeElement === last || document.activeElement === dialogRef.current)) { event.preventDefault(); first?.focus(); }
+                    if (event.shiftKey && (document.activeElement === first || document.activeElement === activeDialogRef.current)) { event.preventDefault(); last?.focus(); }
+                    else if (!event.shiftKey && (document.activeElement === last || document.activeElement === activeDialogRef.current)) { event.preventDefault(); first?.focus(); }
                 };
                 document.addEventListener('keydown', handleKey);
                 return () => {
                     document.removeEventListener('keydown', handleKey);
                     document.body.style.overflow = previousOverflow;
-                    previousFocus?.focus();
+                    if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
                 };
-            }, [selectedCase]);
+            }, [selectedCase, chemicalDialogOpen]);
+            useEffect(() => {
+                const desktop = window.matchMedia('(min-width: 1024px)');
+                const closeOnDesktop = () => { if (desktop.matches) setChemicalDialogOpen(false); };
+                desktop.addEventListener('change', closeOnDesktop);
+                return () => desktop.removeEventListener('change', closeOnDesktop);
+            }, []);
 
             const coreFeatures = [
                 { title: "鉻酸深度純化回收", icon: "recycle", badge: "台灣唯一實績", highlight: "獨家離子分離純化技術，將劇毒六價鉻廢水轉化為可回收再利用的高純度製程原料，大幅減少劇毒污泥與清運費用。", stat: "鉻酸回收率最高達 95%" },
@@ -687,7 +702,8 @@
                                                     <div className="mt-16 mb-8">
                                                         <span className="font-mono text-clarity tracking-widest text-xs uppercase block mb-3">Chemical Reagents Portfolio</span>
                                                         <h2 className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-2">TRT 藥劑產品系列</h2>
-                                                        <p className="text-steel font-light text-base">點選左側類別與品項，右側即時顯示藥劑外觀、適用對象與技術特性。</p>
+                                                        <p className="hidden lg:block text-steel font-light text-base">點選左側類別與品項，右側即時顯示藥劑外觀、適用對象與技術特性。</p>
+                                                        <p className="lg:hidden text-steel font-light text-base">選擇類別後，點一下藥劑名稱，即可開啟圖片與產品介紹。</p>
                                                     </div>
                                                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                                                         <div className="lg:col-span-5 space-y-3">
@@ -703,7 +719,7 @@
                                                                     {selectedChemGroup === groupKey && (
                                                                         <div className="bg-white divide-y divide-steel/15 animate-fade-in-up">
                                                                             {chemicalDatabase[groupKey].items.map((item) => (
-                                                                                <button key={item.id} onClick={() => setSelectedChemId(item.id)}
+                                                                                <button key={item.id} onClick={() => selectChemical(item.id)} aria-haspopup="dialog"
                                                                                     className={`w-full text-left p-3.5 text-sm font-medium tracking-wide flex justify-between items-center transition-all ${selectedChemId === item.id ? 'bg-clarity/5 text-clarity pl-5 border-l-2 border-clarity' : 'text-steel hover:bg-mist'}`}>
                                                                                     <span>{item.name}</span>
                                                                                     <span className="text-[10px] font-mono uppercase opacity-70 border border-current px-1.5 py-0.5">{item.type}</span>
@@ -714,7 +730,7 @@
                                                                 </div>
                                                             ))}
                                                         </div>
-                                                        <div className="lg:col-span-7">
+                                                        <div className="hidden lg:block lg:col-span-7">
                                                             {currentChem && (
                                                                 <div className="rounded-xl shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)] p-8 bg-white sticky top-28">
                                                                     <div className="bg-mist border border-steel/15 p-6 mb-6 flex justify-center items-center h-64 overflow-hidden">
@@ -824,6 +840,33 @@
                                 })()}
                             </div>
                         </section>
+                    )}
+
+                    {chemicalDialogOpen && activePage === 'wastewater' && currentChem && (
+                        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-ink/70 backdrop-blur-sm p-3" onClick={() => setChemicalDialogOpen(false)}>
+                            <div ref={chemicalDialogRef} role="dialog" aria-modal="true" aria-labelledby="chemical-dialog-title" tabIndex={-1}
+                                className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90dvh] overflow-y-auto overscroll-contain animate-fade-in-up"
+                                onClick={(event) => event.stopPropagation()}>
+                                <div className="sticky top-0 z-10 bg-white border-b border-steel/15 px-5 py-3 flex items-center justify-between gap-3">
+                                    <span className="text-sm font-medium text-steel">藥劑產品介紹</span>
+                                    <button type="button" onClick={() => setChemicalDialogOpen(false)} aria-label="關閉藥劑介紹，返回選單"
+                                        className="inline-flex items-center gap-2 px-3 py-2 text-ink-text bg-mist rounded-lg">
+                                        <Icon name="x" size={20} />關閉
+                                    </button>
+                                </div>
+                                <div className="p-5">
+                                    <h2 id="chemical-dialog-title" className="font-serif text-xl font-bold text-ink-text mb-4">{currentChem.name}</h2>
+                                    <div className="bg-mist rounded-lg p-4 mb-5 h-56 flex items-center justify-center overflow-hidden">
+                                        {currentChem.imgUrl ? <img src={currentChem.imgUrl} alt={currentChem.name} decoding="async" className="max-h-full max-w-full object-contain" />
+                                            : <Icon name={currentChem.type === '粉體' ? 'package' : 'beaker'} size={56} className="text-steel" />}
+                                    </div>
+                                    <MonoTag>{currentChem.type} 藥劑</MonoTag>
+                                    <p className="mt-4 text-steel text-base leading-relaxed">{currentChem.desc}</p>
+                                    <button type="button" onClick={requestSample} className="mt-6 w-full bg-clarity text-white rounded-lg px-5 py-4 font-semibold">索取此藥劑樣品</button>
+                                    <p className="mt-3 text-sm text-steel">將前往聯絡表單，並自動帶入這款藥劑名稱；填寫後可選擇 Gmail 寄送。</p>
+                                </div>
+                            </div>
+                        </div>
                     )}
 
                     {/* 頁尾 */}
