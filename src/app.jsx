@@ -16,58 +16,72 @@
             { photo: 6, title: '沉澱分層', description: '可觀察到上層液體與下層沉澱分層，呈現本次試驗的沉澱外觀。' }
         ];
 
-        const WastewaterTestCase = ({ onContact }) => {
+        const zincNickelTestSteps = [
+            { photo: 2, title: '鋅鎳合金鍍液', description: '鋅鎳合金鍍液的處理前外觀。' },
+            { photo: 1, title: '稀釋 20 倍', description: '依線上稀釋比例稀釋 20 倍，記錄稀釋後的液體外觀。' },
+            { photo: 6, title: '加入藥劑一', description: '加入藥劑一後的反應外觀紀錄。' },
+            { photo: 5, title: '加入藥劑二', description: '接續加入藥劑二，記錄此階段的反應外觀。' },
+            { photo: 4, title: '加入藥劑三', description: '接續加入藥劑三，記錄此階段的反應外觀。' },
+            { photo: 3, title: '沉澱分層', description: '靜置後可觀察到上層液體與下層沉澱分層。' }
+        ];
+
+        const WastewaterTestCase = ({ onContact, variant = 'nickel' }) => {
             const [step, setStep] = useState(0);
-            const current = nickelTestSteps[step];
-            return <section id="wastewater-tests" className="mb-14 scroll-mt-28">
+            const isZinc = variant === 'zinc';
+            const steps = isZinc ? zincNickelTestSteps : nickelTestSteps;
+            const prefix = isZinc ? './assets/zinc-nickel-cutout-0' : './assets/nickel-cutout-0';
+            const current = steps[step];
+            const previews = [steps[0], steps[steps.length - 1]];
+            return <section id={isZinc ? "wastewater-tests-zinc" : "wastewater-tests"} className="mb-14 scroll-mt-28">
+                {!isZinc && <>
                 <span className="font-mono text-clarity text-xs tracking-widest uppercase block mb-3">Treatment in Action</span>
                 <h2 className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-3">廢水處理實例</h2>
-                <p className="text-steel leading-relaxed mb-6">從實際試驗，看見加藥反應與沉澱分層的過程。</p>
+                <p className="text-steel leading-relaxed mb-6">從實際試驗，看見加藥反應與沉澱分層的過程。</p></>}
                 <details className="group bg-white rounded-xl overflow-hidden shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)]">
                     <summary className="cursor-pointer list-none p-5 md:p-8 focus-visible:outline-offset-[-4px]">
                         <div className="grid md:grid-cols-2 gap-6 items-center">
                             <div>
-                                <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-clarity/10 text-clarity mb-4">化學鎳廢液・瓶杯試驗</span>
-                                <h3 className="font-serif text-xl md:text-2xl font-bold text-ink-text mb-3">高濃度化學鎳廢液處理測試</h3>
-                                <p className="text-steel text-sm leading-relaxed mb-4">以四張現場試驗照片，記錄原水、MC2 金屬捕集劑加入後的反應，以及靜置沉澱過程。</p>
-                                <div className="text-sm text-ink-text mb-5">使用藥劑：<strong className="text-clarity">MC2 金屬捕集劑</strong></div>
-                                <span className="inline-flex items-center gap-2 rounded-lg bg-ink text-white px-4 py-3 text-sm font-medium group-open:hidden">查看 4 階段反應照片 <Icon name="chevron-down" size={16} /></span>
+                                <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-clarity/10 text-clarity mb-4">{isZinc ? '鋅鎳合金鍍液・燒杯試驗' : '化學鎳廢液・瓶杯試驗'}</span>
+                                <h3 className="font-serif text-xl md:text-2xl font-bold text-ink-text mb-3">{isZinc ? '鋅鎳合金鍍液處理測試' : '高濃度化學鎳廢液處理測試'}</h3>
+                                <p className="text-steel text-sm leading-relaxed mb-4">{isZinc ? '依線上比例稀釋 20 倍後，依序加入藥劑一、藥劑二與藥劑三，記錄反應變化及沉澱分層的過程。' : '以四張現場試驗照片，記錄原水、MC2 金屬捕集劑加入後的反應，以及靜置沉澱過程。'}</p>
+                                <div className="text-sm text-ink-text mb-5">使用藥劑：<strong className="text-clarity">{isZinc ? '藥劑一／藥劑二／藥劑三' : 'MC2 金屬捕集劑'}</strong></div>
+                                <span className="inline-flex items-center gap-2 rounded-lg bg-ink text-white px-4 py-3 text-sm font-medium group-open:hidden">查看 {steps.length} 階段反應照片 <Icon name="chevron-down" size={16} /></span>
                                 <span className="hidden group-open:inline-flex items-center gap-2 text-clarity text-sm font-medium">收合反應過程 <Icon name="chevron-up" size={16} /></span>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
-                                {[{ number: 1, label: '原水外觀' }, { number: 6, label: '沉澱分層' }].map(photo => <figure key={photo.number} className="bg-mist rounded-lg overflow-hidden">
-                                    <img loading="lazy" decoding="async" src={'./assets/nickel-cutout-0' + photo.number + '.webp'} alt={photo.label} className="w-full h-44 md:h-52 object-contain" />
-                                    <figcaption className="text-center py-2 text-xs font-medium text-steel">{photo.label}</figcaption>
+                                {previews.map(photo => <figure key={photo.photo} className="bg-mist rounded-lg overflow-hidden">
+                                    <img loading="lazy" decoding="async" src={prefix + photo.photo + '.webp'} alt={photo.title} className="w-full h-44 md:h-52 object-contain" />
+                                    <figcaption className="text-center py-2 text-xs font-medium text-steel">{photo.title}</figcaption>
                                 </figure>)}
                             </div>
                         </div>
                     </summary>
                     <div className="p-5 md:p-8 border-t border-steel/15">
                         <p className="text-sm text-steel mb-4">依照實際拍攝順序排列。點選階段或使用下一張，查看各階段的試驗外觀。</p>
-                        <div role="group" aria-label="選擇試驗階段" className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
-                            {nickelTestSteps.map((item, index) => <button type="button" key={item.title} aria-pressed={step === index} onClick={() => setStep(index)}
+                        <div role="group" aria-label="選擇試驗階段" className={'grid grid-cols-2 ' + (isZinc ? 'md:grid-cols-6' : 'md:grid-cols-4') + ' gap-2 mb-5'}>
+                            {steps.map((item, index) => <button type="button" key={item.title} aria-pressed={step === index} onClick={() => setStep(index)}
                                 className={'rounded-lg border px-2 py-3 text-xs md:text-sm transition-colors ' + (step === index ? 'bg-ink text-white border-ink' : 'bg-mist text-steel border-steel/20 hover:border-clarity')}>
                                 <span className="block font-mono mb-1">0{index + 1}</span>{item.title}
                             </button>)}
                         </div>
                         <div className="grid md:grid-cols-2 gap-6 items-center">
                             <figure className="bg-mist rounded-lg overflow-hidden">
-                                <img key={step} src={'./assets/nickel-cutout-0' + current.photo + '.webp'} alt={current.title + '：' + current.description} decoding="async" className="w-full h-[48vh] md:h-[480px] object-contain animate-fade-in-up" />
+                                <img key={step} src={prefix + current.photo + '.webp'} alt={current.title + '：' + current.description} decoding="async" className="w-full h-[48vh] md:h-[480px] object-contain animate-fade-in-up" />
                             </figure>
                             <div>
                                 <div aria-live="polite" aria-atomic="true">
-                                    <span className="font-mono text-xs text-clarity block mb-2">STEP 0{step + 1} / 0{nickelTestSteps.length}</span>
+                                    <span className="font-mono text-xs text-clarity block mb-2">STEP 0{step + 1} / 0{steps.length}</span>
                                     <h4 className="font-serif text-xl font-bold text-ink-text mb-3">{current.title}</h4>
                                     <p className="text-steel leading-relaxed mb-6">{current.description}</p>
                                 </div>
                                 <div className="flex justify-between gap-3">
                                     <button type="button" disabled={step === 0} onClick={() => setStep(value => value - 1)} className="border border-steel/25 rounded-lg px-4 py-3 text-sm disabled:opacity-30">上一張</button>
-                                    <button type="button" disabled={step === nickelTestSteps.length - 1} onClick={() => setStep(value => value + 1)} className="bg-ink text-white rounded-lg px-4 py-3 text-sm disabled:opacity-30">下一張</button>
+                                    <button type="button" disabled={step === steps.length - 1} onClick={() => setStep(value => value + 1)} className="bg-ink text-white rounded-lg px-4 py-3 text-sm disabled:opacity-30">下一張</button>
                                 </div>
                             </div>
                         </div>
                         <p className="mt-6 text-xs text-steel leading-relaxed border-t border-steel/15 pt-4">照片呈現本次試驗的外觀變化；處理成效與是否符合排放要求，需依水質檢測結果判定。實際使用方案依廢水特性評估。</p>
-                        <button type="button" onClick={onContact} className="mt-5 bg-clarity text-white rounded-lg px-5 py-3 text-sm font-medium">諮詢化學鎳廢液處理方案</button>
+                        <button type="button" onClick={onContact} className="mt-5 bg-clarity text-white rounded-lg px-5 py-3 text-sm font-medium">{isZinc ? '諮詢鋅鎳合金鍍液處理方案' : '諮詢化學鎳廢液處理方案'}</button>
                     </div>
                 </details>
             </section>;
@@ -740,6 +754,11 @@
                                                     <WastewaterTestCase onContact={() => {
                                                         setFormSubmitted(false);
                                                         setFormData(previous => ({ ...previous, waterType: '高濃度化學鎳廢液', product: 'MC2 金屬捕集劑', needType: '其他技術問題' }));
+                                                        goToContactSection();
+                                                    }} />
+                                                    <WastewaterTestCase variant="zinc" onContact={() => {
+                                                        setFormSubmitted(false);
+                                                        setFormData(previous => ({ ...previous, waterType: '鋅鎳合金鍍液（依線上比例稀釋 20 倍）', product: '藥劑一／藥劑二／藥劑三', needType: '其他技術問題' }));
                                                         goToContactSection();
                                                     }} />
 
