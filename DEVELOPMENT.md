@@ -35,3 +35,9 @@ Stages: plating solution, 20x online dilution, reagent 1, reagent 2, reagent 3,
 settling. Reagent 1 is an oxidizer; reagent 2 assists the oxidizer in decomplexation.
 Reagent 3 is MC2 for capturing remaining metals. No measured results supplied.
 Transparent assets: zinc-nickel-cutout-01.webp through -06.webp.
+
+Cyanide wastewater case: original photo order 1,2,6,3,4,5.
+Descriptions follow the provided trial stages; no reagent identities, pH targets,
+dosages or measured removal outcomes are supplied. Transparent photo cutouts
+retain the vessel assembly and contents; hands and thermometers are removed.
+Assets: cyanide-cutout-01.webp through -06.webp.

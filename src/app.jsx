@@ -25,15 +25,45 @@
             { photo: 3, title: '沉澱分層', description: '靜置後可觀察到上層液體與下層沉澱分層。' }
         ];
 
+        const cyanideTestSteps = [
+            { photo: 1, title: '高濃度氰化物廢水', description: '本次高濃度氰化物廢水試驗的原水外觀。' },
+            { photo: 2, title: '加入反應劑一', description: '加入反應劑一，記錄此階段的反應外觀。' },
+            { photo: 6, title: '持續加入反應劑一', description: '接續添加反應劑一，記錄反應過程中的液體與泡沫變化。' },
+            { photo: 3, title: '反應一完成', description: '依本次試驗紀錄，反應劑一的添加與此階段反應已完成；照片呈現當時外觀。' },
+            { photo: 4, title: '加入反應劑二並調整 pH', description: '接續加入反應劑二並進行 pH 調整，記錄此階段的液體外觀。' },
+            { photo: 5, title: '沉澱分層', description: '靜置後可觀察到液體與沉澱物分層，呈現本次試驗的沉澱外觀。' }
+        ];
+
+        const wastewaterTestCases = {
+            nickel: {
+                steps: nickelTestSteps, prefix: './assets/nickel-cutout-0',
+                badge: '化學鎳廢液・瓶杯試驗', title: '高濃度化學鎳廢液處理測試',
+                description: '以四張現場試驗照片，記錄原水、MC2 金屬捕集劑加入後的反應，以及靜置沉澱過程。',
+                reagents: 'MC2 金屬捕集劑', contactLabel: '諮詢化學鎳廢液處理方案'
+            },
+            zinc: {
+                steps: zincNickelTestSteps, prefix: './assets/zinc-nickel-cutout-0',
+                badge: '鋅鎳合金鍍液・燒杯試驗', title: '鋅鎳合金鍍液處理測試',
+                description: '依線上比例稀釋 20 倍後，以氧化劑搭配輔助藥劑進行破螯合處理，再加入 MC2 金屬捕集劑捕集剩餘金屬，最後靜置沉澱分層。',
+                reagents: '氧化劑／氧化劑輔助藥劑／MC2 金屬捕集劑', contactLabel: '諮詢鋅鎳合金鍍液處理方案'
+            },
+            cyanide: {
+                steps: cyanideTestSteps, prefix: './assets/cyanide-cutout-0',
+                badge: '氰化物廢水・試驗紀錄', title: '高濃度氰化物廢水處理測試',
+                description: '以六個階段記錄原水、反應劑一的添加與反應、反應劑二及 pH 調整，以及最後的沉澱分層。',
+                reagents: '反應劑一／反應劑二', contactLabel: '諮詢氰化物廢水處理方案'
+            }
+        };
+
         const WastewaterTestCase = ({ onContact, variant = 'nickel' }) => {
             const [step, setStep] = useState(0);
-            const isZinc = variant === 'zinc';
-            const steps = isZinc ? zincNickelTestSteps : nickelTestSteps;
-            const prefix = isZinc ? './assets/zinc-nickel-cutout-0' : './assets/nickel-cutout-0';
+            const config = wastewaterTestCases[variant] || wastewaterTestCases.nickel;
+            const steps = config.steps;
+            const prefix = config.prefix;
             const current = steps[step];
             const previews = [steps[0], steps[steps.length - 1]];
-            return <section id={isZinc ? "wastewater-tests-zinc" : "wastewater-tests"} className="mb-14 scroll-mt-28">
-                {!isZinc && <>
+            return <section id={variant === 'nickel' ? 'wastewater-tests' : 'wastewater-tests-' + variant} className="mb-14 scroll-mt-28">
+                {variant === 'nickel' && <>
                 <span className="font-mono text-clarity text-xs tracking-widest uppercase block mb-3">Treatment in Action</span>
                 <h2 className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-3">廢水處理實例</h2>
                 <p className="text-steel leading-relaxed mb-6">從實際試驗，看見加藥反應與沉澱分層的過程。</p></>}
@@ -41,10 +71,10 @@
                     <summary className="cursor-pointer list-none p-5 md:p-8 focus-visible:outline-offset-[-4px]">
                         <div className="grid md:grid-cols-2 gap-6 items-center">
                             <div>
-                                <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-clarity/10 text-clarity mb-4">{isZinc ? '鋅鎳合金鍍液・燒杯試驗' : '化學鎳廢液・瓶杯試驗'}</span>
-                                <h3 className="font-serif text-xl md:text-2xl font-bold text-ink-text mb-3">{isZinc ? '鋅鎳合金鍍液處理測試' : '高濃度化學鎳廢液處理測試'}</h3>
-                                <p className="text-steel text-sm leading-relaxed mb-4">{isZinc ? '依線上比例稀釋 20 倍後，以氧化劑搭配輔助藥劑進行破螯合處理，再加入 MC2 金屬捕集劑捕集剩餘金屬，最後靜置沉澱分層。' : '以四張現場試驗照片，記錄原水、MC2 金屬捕集劑加入後的反應，以及靜置沉澱過程。'}</p>
-                                <div className="text-sm text-ink-text mb-5">使用藥劑：<strong className="text-clarity">{isZinc ? '氧化劑／氧化劑輔助藥劑／MC2 金屬捕集劑' : 'MC2 金屬捕集劑'}</strong></div>
+                                <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-clarity/10 text-clarity mb-4">{config.badge}</span>
+                                <h3 className="font-serif text-xl md:text-2xl font-bold text-ink-text mb-3">{config.title}</h3>
+                                <p className="text-steel text-sm leading-relaxed mb-4">{config.description}</p>
+                                <div className="text-sm text-ink-text mb-5">使用藥劑：<strong className="text-clarity">{config.reagents}</strong></div>
                                 <span className="inline-flex items-center gap-2 rounded-lg bg-ink text-white px-4 py-3 text-sm font-medium group-open:hidden">查看 {steps.length} 階段反應照片 <Icon name="chevron-down" size={16} /></span>
                                 <span className="hidden group-open:inline-flex items-center gap-2 text-clarity text-sm font-medium">收合反應過程 <Icon name="chevron-up" size={16} /></span>
                             </div>
@@ -58,7 +88,7 @@
                     </summary>
                     <div className="p-5 md:p-8 border-t border-steel/15">
                         <p className="text-sm text-steel mb-4">依照實際拍攝順序排列。點選階段或使用下一張，查看各階段的試驗外觀。</p>
-                        <div role="group" aria-label="選擇試驗階段" className={'grid grid-cols-2 ' + (isZinc ? 'md:grid-cols-6' : 'md:grid-cols-4') + ' gap-2 mb-5'}>
+                        <div role="group" aria-label="選擇試驗階段" className={'grid grid-cols-2 ' + (steps.length === 6 ? 'md:grid-cols-6' : 'md:grid-cols-4') + ' gap-2 mb-5'}>
                             {steps.map((item, index) => <button type="button" key={item.title} aria-pressed={step === index} onClick={() => setStep(index)}
                                 className={'rounded-lg border px-2 py-3 text-xs md:text-sm transition-colors ' + (step === index ? 'bg-ink text-white border-ink' : 'bg-mist text-steel border-steel/20 hover:border-clarity')}>
                                 <span className="block font-mono mb-1">0{index + 1}</span>{item.title}
@@ -81,7 +111,7 @@
                             </div>
                         </div>
                         <p className="mt-6 text-xs text-steel leading-relaxed border-t border-steel/15 pt-4">照片呈現本次試驗的外觀變化；處理成效與是否符合排放要求，需依水質檢測結果判定。實際使用方案依廢水特性評估。</p>
-                        <button type="button" onClick={onContact} className="mt-5 bg-clarity text-white rounded-lg px-5 py-3 text-sm font-medium">{isZinc ? '諮詢鋅鎳合金鍍液處理方案' : '諮詢化學鎳廢液處理方案'}</button>
+                        <button type="button" onClick={onContact} className="mt-5 bg-clarity text-white rounded-lg px-5 py-3 text-sm font-medium">{config.contactLabel}</button>
                     </div>
                 </details>
             </section>;
@@ -759,6 +789,11 @@
                                                     <WastewaterTestCase variant="zinc" onContact={() => {
                                                         setFormSubmitted(false);
                                                         setFormData(previous => ({ ...previous, waterType: '鋅鎳合金鍍液（依線上比例稀釋 20 倍）', product: '氧化劑／氧化劑輔助藥劑／MC2 金屬捕集劑', needType: '其他技術問題' }));
+                                                        goToContactSection();
+                                                    }} />
+                                                    <WastewaterTestCase variant="cyanide" onContact={() => {
+                                                        setFormSubmitted(false);
+                                                        setFormData(previous => ({ ...previous, waterType: '高濃度氰化物廢水', product: '反應劑一／反應劑二', needType: '其他技術問題' }));
                                                         goToContactSection();
                                                     }} />
 
