@@ -32,5 +32,6 @@ background versions with external objects removed. Original photos remain retain
 
 Zinc-nickel alloy plating solution case: original photo order 2,1,6,5,4,3.
 Stages: plating solution, 20x online dilution, reagent 1, reagent 2, reagent 3,
-settling. No specific reagent product IDs or measured treatment results supplied.
+settling. Reagent 1 is an oxidizer; reagent 2 assists the oxidizer in decomplexation.
+Reagent 3 is MC2 for capturing remaining metals. No measured results supplied.
 Transparent assets: zinc-nickel-cutout-01.webp through -06.webp.

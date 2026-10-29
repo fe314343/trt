@@ -19,9 +19,9 @@
         const zincNickelTestSteps = [
             { photo: 2, title: '鋅鎳合金鍍液', description: '鋅鎳合金鍍液的處理前外觀。' },
             { photo: 1, title: '稀釋 20 倍', description: '依線上稀釋比例稀釋 20 倍，記錄稀釋後的液體外觀。' },
-            { photo: 6, title: '加入藥劑一', description: '加入藥劑一後的反應外觀紀錄。' },
-            { photo: 5, title: '加入藥劑二', description: '接續加入藥劑二，記錄此階段的反應外觀。' },
-            { photo: 4, title: '加入藥劑三', description: '接續加入藥劑三，記錄此階段的反應外觀。' },
+            { photo: 6, title: '加入氧化劑', description: '加入藥劑一（氧化劑），啟動前段破螯合處理，並記錄此階段的反應外觀。' },
+            { photo: 5, title: '加入輔助藥劑', description: '接續加入藥劑二（氧化劑輔助藥劑），配合氧化劑進行原液的破螯合處理，為後續金屬捕集作準備。' },
+            { photo: 4, title: '加入 MC2', description: '加入藥劑三（MC2 金屬捕集劑），用於捕集破螯合處理後的剩餘金屬，再進行沉澱分離。' },
             { photo: 3, title: '沉澱分層', description: '靜置後可觀察到上層液體與下層沉澱分層。' }
         ];
 
@@ -43,8 +43,8 @@
                             <div>
                                 <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-clarity/10 text-clarity mb-4">{isZinc ? '鋅鎳合金鍍液・燒杯試驗' : '化學鎳廢液・瓶杯試驗'}</span>
                                 <h3 className="font-serif text-xl md:text-2xl font-bold text-ink-text mb-3">{isZinc ? '鋅鎳合金鍍液處理測試' : '高濃度化學鎳廢液處理測試'}</h3>
-                                <p className="text-steel text-sm leading-relaxed mb-4">{isZinc ? '依線上比例稀釋 20 倍後，依序加入藥劑一、藥劑二與藥劑三，記錄反應變化及沉澱分層的過程。' : '以四張現場試驗照片，記錄原水、MC2 金屬捕集劑加入後的反應，以及靜置沉澱過程。'}</p>
-                                <div className="text-sm text-ink-text mb-5">使用藥劑：<strong className="text-clarity">{isZinc ? '藥劑一／藥劑二／藥劑三' : 'MC2 金屬捕集劑'}</strong></div>
+                                <p className="text-steel text-sm leading-relaxed mb-4">{isZinc ? '依線上比例稀釋 20 倍後，以氧化劑搭配輔助藥劑進行破螯合處理，再加入 MC2 金屬捕集劑捕集剩餘金屬，最後靜置沉澱分層。' : '以四張現場試驗照片，記錄原水、MC2 金屬捕集劑加入後的反應，以及靜置沉澱過程。'}</p>
+                                <div className="text-sm text-ink-text mb-5">使用藥劑：<strong className="text-clarity">{isZinc ? '氧化劑／氧化劑輔助藥劑／MC2 金屬捕集劑' : 'MC2 金屬捕集劑'}</strong></div>
                                 <span className="inline-flex items-center gap-2 rounded-lg bg-ink text-white px-4 py-3 text-sm font-medium group-open:hidden">查看 {steps.length} 階段反應照片 <Icon name="chevron-down" size={16} /></span>
                                 <span className="hidden group-open:inline-flex items-center gap-2 text-clarity text-sm font-medium">收合反應過程 <Icon name="chevron-up" size={16} /></span>
                             </div>
@@ -758,7 +758,7 @@
                                                     }} />
                                                     <WastewaterTestCase variant="zinc" onContact={() => {
                                                         setFormSubmitted(false);
-                                                        setFormData(previous => ({ ...previous, waterType: '鋅鎳合金鍍液（依線上比例稀釋 20 倍）', product: '藥劑一／藥劑二／藥劑三', needType: '其他技術問題' }));
+                                                        setFormData(previous => ({ ...previous, waterType: '鋅鎳合金鍍液（依線上比例稀釋 20 倍）', product: '氧化劑／氧化劑輔助藥劑／MC2 金屬捕集劑', needType: '其他技術問題' }));
                                                         goToContactSection();
                                                     }} />
 
