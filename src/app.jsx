@@ -36,7 +36,7 @@
                             </div>
                             <div className="grid grid-cols-2 gap-3">
                                 {[{ number: 1, label: '原水外觀' }, { number: 6, label: '沉澱分層' }].map(photo => <figure key={photo.number} className="bg-mist rounded-lg overflow-hidden">
-                                    <img loading="lazy" decoding="async" src={'./assets/nickel-test-0' + photo.number + '.webp'} alt={photo.label} className="w-full h-44 md:h-52 object-contain" />
+                                    <img loading="lazy" decoding="async" src={'./assets/nickel-cutout-0' + photo.number + '.webp'} alt={photo.label} className="w-full h-44 md:h-52 object-contain" />
                                     <figcaption className="text-center py-2 text-xs font-medium text-steel">{photo.label}</figcaption>
                                 </figure>)}
                             </div>
@@ -52,7 +52,7 @@
                         </div>
                         <div className="grid md:grid-cols-2 gap-6 items-center">
                             <figure className="bg-mist rounded-lg overflow-hidden">
-                                <img key={step} src={'./assets/nickel-test-0' + current.photo + '.webp'} alt={current.title + '：' + current.description} decoding="async" className="w-full h-[48vh] md:h-[480px] object-contain animate-fade-in-up" />
+                                <img key={step} src={'./assets/nickel-cutout-0' + current.photo + '.webp'} alt={current.title + '：' + current.description} decoding="async" className="w-full h-[48vh] md:h-[480px] object-contain animate-fade-in-up" />
                             </figure>
                             <div>
                                 <div aria-live="polite" aria-atomic="true">

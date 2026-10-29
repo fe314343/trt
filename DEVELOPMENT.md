@@ -26,3 +26,6 @@ Original photos 02 and 03 are no longer displayed.
 Update nickelTestSteps in src/app.jsx when confirmed process details are available.
 Only MC2 is currently identified; no removal-rate or discharge-compliance claims
 are made for this photo case. The final two photos show settling observations.
+
+The displayed case photos use nickel-cutout-01/04/05/06.webp, transparent
+background versions with external objects removed. Original photos remain retained.
