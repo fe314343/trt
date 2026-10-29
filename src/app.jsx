@@ -10,12 +10,10 @@
         };
 
         const nickelTestSteps = [
-            { title: '原水外觀', description: '試驗開始時的廢液呈綠色，記錄處理前的外觀。' },
-            { title: '前段反應紀錄', description: '前段測試的液體外觀紀錄，此時仍可見綠色液體。' },
-            { title: '反應變化', description: '液體中可觀察到深色固體，記錄反應過程中的外觀變化。' },
-            { title: '加入 MC2 後', description: '加入 MC2 金屬捕集劑後的反應紀錄，液體呈深色，可見深色固體。' },
-            { title: '靜置沉澱', description: '後續不再添加其他藥劑，靜置觀察固體沉降與液層變化。' },
-            { title: '沉澱分層', description: '可觀察到上層液體與下層沉澱分層，呈現本次試驗的沉澱外觀。' }
+            { photo: 1, title: '原水外觀', description: '試驗開始時的廢液呈綠色，記錄處理前的外觀。' },
+            { photo: 4, title: '加入 MC2 後', description: '加入 MC2 金屬捕集劑後的反應紀錄，液體呈深色，可見深色固體。' },
+            { photo: 5, title: '靜置沉澱', description: '後續不再添加其他藥劑，靜置觀察固體沉降與液層變化。' },
+            { photo: 6, title: '沉澱分層', description: '可觀察到上層液體與下層沉澱分層，呈現本次試驗的沉澱外觀。' }
         ];
 
         const WastewaterTestCase = ({ onContact }) => {
@@ -31,9 +29,9 @@
                             <div>
                                 <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-clarity/10 text-clarity mb-4">化學鎳廢液・瓶杯試驗</span>
                                 <h3 className="font-serif text-xl md:text-2xl font-bold text-ink-text mb-3">高濃度化學鎳廢液處理測試</h3>
-                                <p className="text-steel text-sm leading-relaxed mb-4">以六張現場試驗照片，記錄原水、反應變化，以及 MC2 金屬捕集劑加入後的靜置沉澱過程。</p>
+                                <p className="text-steel text-sm leading-relaxed mb-4">以四張現場試驗照片，記錄原水、MC2 金屬捕集劑加入後的反應，以及靜置沉澱過程。</p>
                                 <div className="text-sm text-ink-text mb-5">使用藥劑：<strong className="text-clarity">MC2 金屬捕集劑</strong></div>
-                                <span className="inline-flex items-center gap-2 rounded-lg bg-ink text-white px-4 py-3 text-sm font-medium group-open:hidden">查看 6 階段反應照片 <Icon name="chevron-down" size={16} /></span>
+                                <span className="inline-flex items-center gap-2 rounded-lg bg-ink text-white px-4 py-3 text-sm font-medium group-open:hidden">查看 4 階段反應照片 <Icon name="chevron-down" size={16} /></span>
                                 <span className="hidden group-open:inline-flex items-center gap-2 text-clarity text-sm font-medium">收合反應過程 <Icon name="chevron-up" size={16} /></span>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
@@ -46,7 +44,7 @@
                     </summary>
                     <div className="p-5 md:p-8 border-t border-steel/15">
                         <p className="text-sm text-steel mb-4">依照實際拍攝順序排列。點選階段或使用下一張，查看各階段的試驗外觀。</p>
-                        <div role="group" aria-label="選擇試驗階段" className="grid grid-cols-3 md:grid-cols-6 gap-2 mb-5">
+                        <div role="group" aria-label="選擇試驗階段" className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
                             {nickelTestSteps.map((item, index) => <button type="button" key={item.title} aria-pressed={step === index} onClick={() => setStep(index)}
                                 className={'rounded-lg border px-2 py-3 text-xs md:text-sm transition-colors ' + (step === index ? 'bg-ink text-white border-ink' : 'bg-mist text-steel border-steel/20 hover:border-clarity')}>
                                 <span className="block font-mono mb-1">0{index + 1}</span>{item.title}
@@ -54,17 +52,17 @@
                         </div>
                         <div className="grid md:grid-cols-2 gap-6 items-center">
                             <figure className="bg-mist rounded-lg overflow-hidden">
-                                <img key={step} src={'./assets/nickel-test-0' + (step + 1) + '.webp'} alt={current.title + '：' + current.description} decoding="async" className="w-full h-[48vh] md:h-[480px] object-contain animate-fade-in-up" />
+                                <img key={step} src={'./assets/nickel-test-0' + current.photo + '.webp'} alt={current.title + '：' + current.description} decoding="async" className="w-full h-[48vh] md:h-[480px] object-contain animate-fade-in-up" />
                             </figure>
                             <div>
                                 <div aria-live="polite" aria-atomic="true">
-                                    <span className="font-mono text-xs text-clarity block mb-2">STEP 0{step + 1} / 06</span>
+                                    <span className="font-mono text-xs text-clarity block mb-2">STEP 0{step + 1} / 0{nickelTestSteps.length}</span>
                                     <h4 className="font-serif text-xl font-bold text-ink-text mb-3">{current.title}</h4>
                                     <p className="text-steel leading-relaxed mb-6">{current.description}</p>
                                 </div>
                                 <div className="flex justify-between gap-3">
                                     <button type="button" disabled={step === 0} onClick={() => setStep(value => value - 1)} className="border border-steel/25 rounded-lg px-4 py-3 text-sm disabled:opacity-30">上一張</button>
-                                    <button type="button" disabled={step === 5} onClick={() => setStep(value => value + 1)} className="bg-ink text-white rounded-lg px-4 py-3 text-sm disabled:opacity-30">下一張</button>
+                                    <button type="button" disabled={step === nickelTestSteps.length - 1} onClick={() => setStep(value => value + 1)} className="bg-ink text-white rounded-lg px-4 py-3 text-sm disabled:opacity-30">下一張</button>
                                 </div>
                             </div>
                         </div>
