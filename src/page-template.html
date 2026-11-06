@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./assets/image-af4dd8c8635d.webp" type="image/webp">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.354.0/dist/umd/lucide.min.js"></script>
+
+    <link rel="stylesheet" href="./assets/styles.css?v=9e1a16528048">
+
+    <style>
+        body { font-family: 'Noto Sans TC', system-ui, sans-serif; scroll-behavior: smooth; background:#F2F6F5; }
+        section[id] { scroll-margin-top: 110px; }
+        :focus-visible { outline: 3px solid #4FC3AC; outline-offset: 4px; }
+        h1, h2, h3, h4 { text-wrap: balance; }
+        .hero-bg {
+            position: absolute; inset: 0; z-index: 0;
+            background-size: cover; background-position: center; opacity: .5;
+        }
+        .hero-wash {
+            background:
+                radial-gradient(ellipse 60% 55% at 84% 6%, rgba(27,140,122,.35), transparent 60%),
+                radial-gradient(ellipse 55% 45% at 4% 100%, rgba(176,122,62,.22), transparent 60%),
+                linear-gradient(180deg, rgba(12,31,30,.55), rgba(12,31,30,.92));
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+        }
+    </style>
+</head>
+<body class="text-ink-text antialiased">
+    <div id="root"></div>
+
+    <script src="./assets/app.js?v=083897d50204"></script>
+</body>
+</html>

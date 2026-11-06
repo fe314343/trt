@@ -1,4 +1,6 @@
 
+        const pagePaths = { wastewater: 'wastewater.html', sludge: 'sludge.html', automation: 'automation.html' };
+        const readPage = () => Object.keys(pagePaths).find(key => location.pathname.endsWith('/' + pagePaths[key])) || (Object.keys(pagePaths).includes(location.hash.slice(1)) ? location.hash.slice(1) : null);
         const { useState, useEffect, useRef } = React;
 
         const Icon = ({ name, size = 20, className = "" }) => {
@@ -110,6 +112,12 @@
                                 </div>
                             </div>
                         </div>
+                        <details className="mt-6 border-t border-steel/15 pt-4">
+                            <summary className="cursor-pointer text-sm font-medium text-clarity">完整反應流程說明</summary>
+                            <ol className="list-decimal pl-5 mt-3 space-y-3 text-sm text-steel leading-relaxed">
+                                {steps.map(item => <li key={item.title}><strong className="text-ink-text">{item.title}：</strong>{item.description}</li>)}
+                            </ol>
+                        </details>
                         <p className="mt-6 text-xs text-steel leading-relaxed border-t border-steel/15 pt-4">照片呈現本次試驗的外觀變化；處理成效與是否符合排放要求，需依水質檢測結果判定。實際使用方案依廢水特性評估。</p>
                         <button type="button" onClick={onContact} className="mt-5 bg-clarity text-white rounded-lg px-5 py-3 text-sm font-medium">{config.contactLabel}</button>
                     </div>
@@ -302,7 +310,7 @@
 
             // 詢問欄（分類導覽）
             const [menuOpen, setMenuOpen] = useState(false);
-            const [activePage, setActivePage] = useState(() => ['wastewater', 'sludge', 'automation'].includes(location.hash.slice(1)) ? location.hash.slice(1) : null);
+            const [activePage, setActivePage] = useState(readPage);
             const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
             const dialogRef = useRef(null);
             const [chemicalDialogOpen, setChemicalDialogOpen] = useState(false);
@@ -321,9 +329,10 @@
             const navigate = (target) => {
                 setMobileMenuOpen(false);
                 setMenuOpen(false);
-                if (location.hash === '#' + target) {
-                    document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' });
-                } else location.hash = target;
+                const url = pagePaths[target] ? './' + pagePaths[target] : './' + (target === 'top' ? '' : '#' + encodeURIComponent(target));
+                history.pushState(null, '', url);
+                window.dispatchEvent(new Event('popstate'));
+                if (!pagePaths[target]) requestAnimationFrame(() => document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' }));
             };
             const goToCategory = (key) => navigate(key);
             const goHome = () => navigate('top');
@@ -339,14 +348,25 @@
                     let target;
                     try { target = decodeURIComponent(location.hash.slice(1)); } catch { target = 'top'; }
                     setChemicalDialogOpen(false);
-                    setActivePage(['wastewater', 'sludge', 'automation'].includes(target) ? target : null);
+                    setActivePage(readPage());
                     setMobileMenuOpen(false);
                     setMenuOpen(false);
                 };
                 window.addEventListener('hashchange', syncLocation);
-                return () => window.removeEventListener('hashchange', syncLocation);
+                window.addEventListener('popstate', syncLocation);
+                // Preserve old shared links and give them the service's permanent URL.
+                if (pagePaths[location.hash.slice(1)]) history.replaceState(null, '', './' + pagePaths[location.hash.slice(1)]);
+                return () => { window.removeEventListener('hashchange', syncLocation); window.removeEventListener('popstate', syncLocation); };
             }, []);
             useEffect(() => {
+                const meta = window.TRT_SEO?.pages[activePage || 'home'];
+                if (meta) {
+                    document.title = meta.title;
+                    const values = { 'meta[name="description"]': ['content', meta.description], 'link[rel="canonical"]': ['href', meta.url], 'meta[property="og:title"]': ['content', meta.title], 'meta[property="og:description"]': ['content', meta.description], 'meta[property="og:url"]': ['content', meta.url], 'meta[name="twitter:title"]': ['content', meta.title], 'meta[name="twitter:description"]': ['content', meta.description] };
+                    Object.entries(values).forEach(([selector, [attribute, value]]) => document.querySelector(selector)?.setAttribute(attribute, value));
+                    const schema = document.getElementById('page-schema');
+                    if (schema) schema.textContent = JSON.stringify(meta.schema);
+                }
                 const frame = requestAnimationFrame(() => {
                     let target;
                     try { target = decodeURIComponent(location.hash.slice(1)); } catch { target = 'top'; }
@@ -636,16 +656,17 @@
 
             return (
                 <div className="min-h-screen bg-mist">
+                    {/* Permanent service links are also present in the initial HTML. */}
                     {/* ==================== 導覽列 ==================== */}
                     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-ink/95 backdrop-blur-md border-b border-white/10 py-3' : 'bg-ink/30 backdrop-blur-sm py-5'}`}>
                         <div className="max-w-7xl mx-auto pl-4 pr-16 lg:px-6 flex justify-between items-center gap-4">
-                            <button onClick={goHome} className="flex items-center gap-2 sm:gap-4 min-w-0">
+                            <a href="./" className="flex items-center gap-2 sm:gap-4 min-w-0">
                                 <img decoding="async" src="./assets/image-af4dd8c8635d.webp" alt="TRT Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain shrink-0" />
                                 <div className="flex flex-col border-l border-white/15 pl-2 sm:pl-4 min-h-9 justify-center text-left min-w-0">
                                     <span className="text-xs sm:text-base font-bold sm:tracking-wide text-mist font-serif whitespace-nowrap">台灣雷德斯減廢科技有限公司</span>
                                     <span className="text-[8px] sm:text-[9px] font-serif italic text-steel leading-tight">Taiwan Reduce-pollutant Technology Co. Ltd</span>
                                 </div>
-                            </button>
+                            </a>
                             <div className="flex items-center gap-4 sm:gap-6 shrink-0">
                                 {!activePage && (
                                     <div className="hidden lg:flex gap-8 font-mono text-sm tracking-widest text-mist/80 uppercase">
@@ -665,7 +686,7 @@
                         </button>
                         {mobileMenuOpen && <div id="mobile-navigation" className="lg:hidden bg-ink px-6 py-5 grid gap-4 text-mist">
                             <button onClick={goHome} className="text-left">首頁</button>
-                            {inquiryCategories.map(cat => <button key={cat.key} onClick={() => goToCategory(cat.key)} className="text-left">{cat.label}</button>)}
+                            {inquiryCategories.map(cat => <a key={cat.key} href={"./" + pagePaths[cat.key]} className="text-left">{cat.label}</a>)}
                             {['服務項目', '實績案例', '聯絡我們'].map(target => <button key={target} onClick={() => navigate(target)} className="text-left">{target}</button>)}
                         </div>}
                     </nav>
@@ -680,7 +701,7 @@
                                 <span className="w-6 h-px bg-clarity-light/60"></span>EST. 1990 · 35 YEARS<span className="w-6 h-px bg-clarity-light/60"></span>
                             </span>
                             <h1 className="font-serif text-3xl md:text-5xl font-bold text-mist leading-[1.35] mb-6 max-w-3xl mx-auto" style={{ textWrap: 'balance' }}>
-                                <span className="text-clarity-light">雷德斯TRT</span>｜秉持精益求精的<br className="hidden md:block" />環境工程專業技術
+                                <span className="text-clarity-light">雷德斯 TRT</span>｜工業廢水處理藥劑<br className="hidden md:block" />設備與自動化整合
                             </h1>
                             <p className="font-sans text-base md:text-lg text-mist/75 leading-[1.9] max-w-xl mx-auto mb-7">
                                 因應各項環保法規及放流水標準，開發高效工業廢水處理藥劑/藥品與穩固耐用之處理設備，廣泛得到客戶青睞肯定與長期配合。
@@ -706,9 +727,9 @@
                                 {menuOpen && (
                                     <div id="category-menu" className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/10 border border-white/10 mt-px animate-fade-in-up">
                                         {inquiryCategories.map((cat) => (
-                                            <button
+                                            <a
                                                 key={cat.key}
-                                                onClick={() => goToCategory(cat.key)}
+                                                href={"./" + pagePaths[cat.key]}
                                                 className="bg-ink hover:bg-ink-2 p-5 text-left flex items-start gap-4 transition-colors"
                                             >
                                                 <div className="w-10 h-10 border border-clarity/30 text-clarity-light flex items-center justify-center shrink-0"><Icon name={cat.icon} size={18} /></div>
@@ -716,7 +737,7 @@
                                                     <span className="block text-base font-bold text-mist">{cat.label}</span>
                                                     <span className="block text-xs font-mono text-steel mt-0.5">{cat.sub}</span>
                                                 </div>
-                                            </button>
+                                            </a>
                                         ))}
                                     </div>
                                 )}
@@ -744,7 +765,7 @@
                                             </span>
                                             <h3 className="font-serif text-2xl font-bold text-ink-text leading-snug" style={{ textWrap: 'balance' }}>{item.title}</h3>
                                             <p className="text-sm text-steel font-light leading-relaxed flex-grow">{item.desc}</p>
-                                            <button onClick={() => goToCategory(item.linkTo)} className="self-start text-sm font-mono font-medium text-clarity border-t border-steel/20 pt-4 mt-2 hover:text-clarity-light">深入了解 →</button>
+                                            <a href={"./" + pagePaths[item.linkTo]} className="self-start text-sm font-mono font-medium text-clarity border-t border-steel/20 pt-4 mt-2 hover:text-clarity-light">深入了解 →</a>
                                         </div>
                                     </div>
                                 ))}
@@ -936,12 +957,12 @@
                                         <div>
                                             <div className="w-14 h-14 border border-clarity/30 text-clarity flex items-center justify-center mb-6"><Icon name={cat.icon} size={26} /></div>
                                             <span className="font-mono text-clarity tracking-widest text-xs uppercase block mb-3">{cat.sub}</span>
-                                            <h1 className="font-serif text-3xl md:text-4xl font-bold text-ink-text mb-8">{cat.label}</h1>
+                                            <h1 className="font-serif text-3xl md:text-4xl font-bold text-ink-text mb-8">{{ wastewater: '工業廢水處理藥劑與設備', sludge: '污泥減量與脫水處理設備', automation: '廢水處理人機介面與 PLC 自動化整合' }[activePage]}</h1>
 
                                             {activePage === 'wastewater' && (
                                                 <div className="mb-14">
                                                     <p className="text-steel text-base md:text-lg leading-relaxed mb-10">
-                                                        雷德斯TRT自主研發的水處理藥劑，主要用於去除高濃度工業廢水中的 COD，並針對氟、金屬等污染物提供 95%～99% 的高效去除率，協助客戶穩定達成放流水標準。
+                                                        台灣雷德斯提供工業廢水處理藥劑與設備整合，涵蓋高 COD 廢水、化學鎳廢液、鋅鎳合金鍍液與含氰廢水等處理需求。透過實際水樣試驗，評估氧化破除螯合、MC2 金屬捕集及沉澱分離的適用方案；實際成效依水質與檢測結果確認。
                                                     </p>
 
                                                     <div className="flex flex-wrap gap-3 mb-10" role="group" aria-label="廢水處理頁快速導覽">
@@ -1155,6 +1176,12 @@
                     </footer>
 
                     {/* 浮動聯絡按鈕 */}
+                    <nav aria-label="服務頁面導覽" className="bg-ink border-t border-white/10 px-6 py-6 flex flex-wrap justify-center gap-6 text-sm text-mist">
+                        <a href="./" className="hover:text-clarity-light">公司首頁</a>
+                        {inquiryCategories.map(cat => <a href={'./' + pagePaths[cat.key]} key={cat.key} aria-current={activePage === cat.key ? 'page' : undefined} className="hover:text-clarity-light">{cat.label === '人機自動化' ? '人機介面與 PLC 自動化' : cat.label}</a>)}
+                        <a href="./#聯絡我們" className="hover:text-clarity-light">聯絡雷德斯</a>
+                    </nav>
+
                     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
                         <a href="tel:0222866693" aria-label="電話聯絡" className="w-14 h-14 bg-clarity text-ink flex items-center justify-center shadow-xl hover:bg-clarity-light transition-all">
                             <Icon name="phone" size={20} />
