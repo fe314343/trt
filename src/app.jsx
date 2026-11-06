@@ -117,6 +117,179 @@
             </section>;
         };
 
+        const automationPhotos = [
+            {
+                id: 'filter-left', tab: '左塔控制', title: '左側過濾塔｜流程與時間設定',
+                image: './assets/automation-filter-left.webp', icon: 'filter',
+                description: '將過濾塔、管路、閥件與泵浦畫在同一個流程畫面，搭配操作模式與時間參數，讓操作人員對照設備掌握處理進度。',
+                details: ['過濾、逆洗與清洗等操作項目集中呈現。', '空氣攪拌、逆洗與清洗時間可在畫面中查看與設定。'],
+                tag: '流程可視化'
+            },
+            {
+                id: 'filter-right', tab: '右塔控制', title: '右側過濾塔｜分塔操作與狀態',
+                image: './assets/automation-filter-right.webp', icon: 'sliders-horizontal',
+                description: '左右過濾塔各有對應的操作畫面，方便辨識目前查看的塔別，並對照過濾泵、閥件與液位相關狀態。',
+                details: ['以塔別區分操作介面，方便現場核對。', '搭配畫面中的模式指示與參數，確認設備目前狀態。'],
+                tag: '操作更直覺'
+            },
+            {
+                id: 'equipment-status', tab: '設備總覽', title: '設備與液位｜集中查看各接點狀態',
+                image: './assets/automation-equipment-status.webp', icon: 'layout-dashboard',
+                description: '將泵浦、鼓風機、加藥設備、液位與壓力等接點集中呈現，協助人員從總覽畫面判別需要關注的設備。',
+                details: ['抽水泵、過濾泵、調勻泵與加藥設備的狀態集中查看。', '整合槽體高低液位、藥槽低液位與壓力等監控項目。'],
+                tag: '狀態集中管理'
+            },
+            {
+                id: 'alarm-history', tab: '異常紀錄', title: '警報歷史｜讓異常有跡可循',
+                image: './assets/automation-alarm-history.webp', icon: 'bell',
+                description: '以列表保留警報訊息、觸發與恢復時間及發生次數，讓現場人員能回看異常發生的時間與重複情形，作為檢修查找的依據。',
+                details: ['依日期與時間回查異常事件。', '結合異常內容、恢復時間與發生次數，協助追蹤反覆發生的問題。'],
+                tag: '異常可追溯'
+            },
+            {
+                id: 'home', tab: '操作首頁', title: '操作入口｜品牌首頁與語言選擇',
+                image: './assets/automation-home.webp', icon: 'languages',
+                description: '以清楚的首頁作為操作入口，畫面提供目錄與繁體中文、泰文選項；可依現場人員的使用需求規劃對應介面。',
+                details: ['首頁整合品牌資訊與目錄入口。', '依專案需求規劃語言選項與畫面文字。'],
+                tag: '貼近現場需求'
+            }
+        ];
+
+        const AutomationPage = ({ onContact }) => {
+            const [activePhoto, setActivePhoto] = useState(0);
+            const [lightboxOpen, setLightboxOpen] = useState(false);
+            const [zoomed, setZoomed] = useState(false);
+            const photoDialog = useRef(null);
+            const current = automationPhotos[activePhoto];
+            const selectPhoto = (index) => { setActivePhoto(index); setZoomed(false); };
+            const movePhoto = (offset) => selectPhoto((activePhoto + offset + automationPhotos.length) % automationPhotos.length);
+            const openPhoto = () => { setZoomed(false); setLightboxOpen(true); };
+            const closePhoto = () => { setLightboxOpen(false); setZoomed(false); };
+            useEffect(() => {
+                if (!lightboxOpen) return;
+                const dialog = photoDialog.current;
+                const previousOverflow = document.body.style.overflow;
+                document.body.style.overflow = 'hidden';
+                if (dialog && !dialog.open) dialog.showModal();
+                return () => {
+                    if (dialog?.open) dialog.close();
+                    document.body.style.overflow = previousOverflow;
+                };
+            }, [lightboxOpen]);
+            return <div className="space-y-14 md:space-y-20 mb-14">
+                <section className="rounded-2xl bg-ink text-mist overflow-hidden border border-clarity/20">
+                    <div className="grid lg:grid-cols-2">
+                        <div className="p-6 sm:p-8 md:p-10 flex flex-col justify-center">
+                            <span className="font-mono text-clarity-light text-xs tracking-widest uppercase mb-5">PLC × HMI Integration</span>
+                            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold leading-snug mb-5">把現場流程，<br />變成看得懂的操作畫面。</h2>
+                            <p className="text-mist/75 text-base leading-relaxed mb-6">從過濾與逆洗，到液位監看與異常追蹤，透過 PLC 搭配人機介面，將設備操作、參數設定與警報資訊整合在同一套系統中。</p>
+                            <div className="flex flex-wrap gap-2 mb-8">
+                                {['流程可視化', '狀態易判讀', '異常可追溯'].map(label => <span key={label} className="text-xs px-3 py-1.5 border border-white/20 rounded-full text-mist/90">{label}</span>)}
+                            </div>
+                            <div className="flex flex-wrap gap-3">
+                                <button type="button" onClick={() => document.getElementById('automation-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'start' })} className="inline-flex items-center gap-2 bg-clarity-light text-ink rounded-lg px-5 py-3 text-sm font-semibold">查看實際畫面 <Icon name="arrow-down" size={16} /></button>
+                                <button type="button" onClick={onContact} className="border border-white/30 text-mist rounded-lg px-5 py-3 text-sm hover:bg-white/10">諮詢自動化整合</button>
+                            </div>
+                        </div>
+                        <button type="button" onClick={() => { selectPhoto(0); openPhoto(); }} aria-label="放大查看左側過濾塔實際操作畫面" className="relative bg-ink-2 p-4 sm:p-6 lg:p-8 flex flex-col justify-center text-left group">
+                            <img src={automationPhotos[0].image} alt="FATEK 人機介面的左側過濾塔流程與時間設定實機照片" width="1477" height="1108" decoding="async" className="w-full h-auto rounded-lg border border-white/15" />
+                            <span className="mt-3 flex items-center justify-between gap-3 text-xs text-mist/70"><span>TRT 現場人機介面｜過濾塔控制</span><span className="inline-flex items-center gap-1 shrink-0 text-clarity-light"><Icon name="maximize-2" size={14} />點圖放大</span></span>
+                        </button>
+                    </div>
+                </section>
+
+                <section aria-labelledby="automation-capabilities-title">
+                    <div className="max-w-2xl mb-7">
+                        <span className="font-mono text-xs text-clarity tracking-widest uppercase block mb-3">Built for Daily Operation</span>
+                        <h2 id="automation-capabilities-title" className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-3">讓操作、巡檢與異常處理更有依據</h2>
+                        <p className="text-steel text-base leading-relaxed">把分散的設備訊號，整理成現場人員容易對照的流程、狀態與紀錄。</p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-5">
+                        {[
+                            { icon: 'git-branch', title: '流程與參數，一起掌握', text: '以圖像對照過濾塔、管路與閥件，在相應畫面查看操作模式與時間設定。' },
+                            { icon: 'layout-dashboard', title: '設備接點，集中查看', text: '整合泵浦、加藥、槽體液位與壓力等狀態，作為現場巡檢與異常判讀的參考。' },
+                            { icon: 'history', title: '警報紀錄，回查追蹤', text: '保留觸發與恢復時間及發生次數，協助人員回溯異常事件，安排後續檢查。' }
+                        ].map(item => <article key={item.title} className="bg-white border border-steel/15 rounded-xl p-6 md:p-7">
+                            <span className="w-11 h-11 rounded-lg bg-clarity/10 text-clarity inline-flex items-center justify-center mb-5"><Icon name={item.icon} size={22} /></span>
+                            <h3 className="font-serif text-lg font-bold text-ink-text mb-3">{item.title}</h3>
+                            <p className="text-sm text-steel leading-relaxed">{item.text}</p>
+                        </article>)}
+                    </div>
+                </section>
+
+                <section id="automation-gallery" className="scroll-mt-28" aria-labelledby="automation-gallery-title">
+                    <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+                        <div><span className="font-mono text-xs text-clarity tracking-widest uppercase block mb-3">On-site Interface Gallery</span><h2 id="automation-gallery-title" className="font-serif text-2xl md:text-3xl font-bold text-ink-text">實際介面，逐一看懂</h2></div>
+                        <p className="text-sm text-steel">切換分類查看說明，點照片可放大細節。</p>
+                    </div>
+                    <div role="group" aria-label="選擇人機介面照片" className="flex gap-2 overflow-x-auto pb-3 mb-3">
+                        {automationPhotos.map((photo, index) => <button key={photo.id} type="button" aria-pressed={activePhoto === index} onClick={() => selectPhoto(index)} className={'inline-flex shrink-0 items-center gap-2 rounded-lg px-4 py-3 text-sm border transition-colors ' + (activePhoto === index ? 'bg-ink text-white border-ink' : 'bg-white text-steel border-steel/20 hover:border-clarity')}><Icon name={photo.icon} size={16} />{photo.tab}</button>)}
+                    </div>
+                    <div className="rounded-xl bg-white border border-steel/15 overflow-hidden">
+                        <div className="grid lg:grid-cols-12">
+                            <button type="button" onClick={openPhoto} aria-label={'放大查看：' + current.title} className="lg:col-span-8 bg-ink-2 p-3 sm:p-5 text-left">
+                                <img key={current.id} src={current.image} alt={current.title + '，現場人機介面實機照片'} width="1477" height="1108" decoding="async" className="w-full h-auto object-contain rounded-lg animate-fade-in-up" />
+                                <span className="mt-3 flex items-center justify-between text-mist/80 text-xs"><span className="font-mono">0{activePhoto + 1} / 05</span><span className="inline-flex items-center gap-1"><Icon name="maximize-2" size={14} />點選照片放大</span></span>
+                            </button>
+                            <div className="lg:col-span-4 p-6 md:p-8 flex flex-col justify-center" aria-live="polite" aria-atomic="true">
+                                <span className="inline-flex self-start text-xs text-clarity bg-clarity/10 rounded-full px-3 py-1 mb-4">{current.tag}</span>
+                                <h3 className="font-serif text-xl font-bold text-ink-text mb-4">{current.title}</h3>
+                                <p className="text-steel text-sm leading-relaxed mb-5">{current.description}</p>
+                                <ul className="space-y-3 border-t border-steel/15 pt-5">{current.details.map(detail => <li key={detail} className="flex items-start gap-2 text-sm text-steel leading-relaxed"><Icon name="check" size={16} className="text-clarity mt-1 shrink-0" />{detail}</li>)}</ul>
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-steel/15">
+                            <button type="button" onClick={() => movePhoto(-1)} aria-label="上一張人機介面照片" className="inline-flex items-center gap-1 px-3 py-2 text-sm text-ink-text"><Icon name="chevron-left" size={16} />上一張</button>
+                            <span className="text-xs text-steel">共 5 張現場畫面</span>
+                            <button type="button" onClick={() => movePhoto(1)} aria-label="下一張人機介面照片" className="inline-flex items-center gap-1 px-3 py-2 text-sm text-ink-text">下一張<Icon name="chevron-right" size={16} /></button>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="grid lg:grid-cols-12 gap-8 md:gap-10 items-start" aria-labelledby="automation-planning-title">
+                    <div className="lg:col-span-4">
+                        <span className="font-mono text-xs text-clarity tracking-widest uppercase block mb-3">From Site to Screen</span>
+                        <h2 id="automation-planning-title" className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-4">依現場流程，<br />規劃適合的控制介面。</h2>
+                        <p className="text-steel text-sm leading-relaxed">監控項目、操作順序與異常條件，應和實際設備及操作習慣一起考量，讓系統成為日常管理的一部分。</p>
+                    </div>
+                    <ol className="lg:col-span-8 grid sm:grid-cols-2 gap-4">
+                        {[
+                            ['盤點設備與訊號', '確認泵浦、閥件、液位、壓力及既有控制條件，整理需要監控的接點。'],
+                            ['整理操作與異常條件', '依現場需求規劃模式、時間參數、上下限與警報訊息。'],
+                            ['設計對應操作畫面', '將流程、設備總覽與警報紀錄分頁呈現，搭配清楚的文字與狀態指示。'],
+                            ['現場確認與調整', '依實際運轉與使用回饋確認畫面和設備對應，調整操作與判讀方式。']
+                        ].map(([title, detail], index) => <li key={title} className="rounded-xl border border-steel/15 bg-white p-6"><span className="font-mono text-clarity text-xs block mb-3">0{index + 1}</span><h3 className="font-semibold text-ink-text mb-2">{title}</h3><p className="text-sm text-steel leading-relaxed">{detail}</p></li>)}
+                    </ol>
+                </section>
+
+                <section className="rounded-2xl bg-ink text-mist p-6 md:p-10 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+                    <div className="max-w-2xl"><span className="font-mono text-clarity-light text-xs tracking-widest uppercase block mb-3">Talk About Your Process</span><h2 className="font-serif text-2xl md:text-3xl font-bold mb-3">讓我們從你的現場需求開始。</h2><p className="text-sm text-mist/75 leading-relaxed">提供現有設備照片、流程與想改善的操作問題，方便一起評估 PLC 與人機介面的整合方向。</p></div>
+                    <button type="button" onClick={onContact} className="shrink-0 inline-flex items-center gap-2 bg-clarity-light text-ink px-5 py-4 rounded-lg text-sm font-semibold">預約自動化需求評估 <Icon name="arrow-up-right" size={17} /></button>
+                </section>
+                <p className="text-xs text-steel leading-relaxed">以上為現場介面照片與功能介紹；實際顯示項目、語言與操作條件依專案規劃。照片中的數值為拍攝當時畫面。</p>
+
+                <dialog ref={photoDialog} className="automation-photo-dialog rounded-xl bg-white text-ink-text p-0 w-[calc(100%-24px)] max-w-6xl max-h-[94dvh] overflow-y-auto" aria-labelledby="automation-photo-title" onClose={closePhoto} onCancel={closePhoto} onClick={event => { if (event.target === event.currentTarget) closePhoto(); }} onKeyDown={event => { if (event.key === 'ArrowLeft') { event.preventDefault(); movePhoto(-1); } if (event.key === 'ArrowRight') { event.preventDefault(); movePhoto(1); } }}>
+                    <div>
+                        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 bg-white px-4 py-3 border-b border-steel/15">
+                            <h2 id="automation-photo-title" className="text-sm md:text-base font-semibold min-w-0">{current.title}</h2>
+                            <button type="button" autoFocus onClick={closePhoto} aria-label="關閉放大照片" className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-mist px-3 py-2 text-sm"><Icon name="x" size={18} />關閉</button>
+                        </div>
+                        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm">
+                            <span className="text-steel text-xs">0{activePhoto + 1} / 05</span>
+                            <button type="button" onClick={() => setZoomed(value => !value)} aria-pressed={zoomed} className="inline-flex items-center gap-2 text-clarity px-3 py-2"><Icon name={zoomed ? 'minimize-2' : 'zoom-in'} size={17} />{zoomed ? '適應畫面' : '放大細節'}</button>
+                        </div>
+                        <div tabIndex={0} role="region" aria-label="照片檢視區，放大後可左右與上下捲動" className="max-h-[65dvh] overflow-auto bg-ink-2 overscroll-contain p-2">
+                            <img src={current.image} alt={current.title} decoding="async" className={zoomed ? 'max-w-none' : 'w-full max-h-[62dvh] object-contain'} style={zoomed ? { width: '1477px', maxWidth: 'none' } : undefined} />
+                        </div>
+                        <div className="flex items-center justify-between px-4 py-3 border-t border-steel/15">
+                            <button type="button" onClick={() => movePhoto(-1)} aria-label="放大檢視上一張" className="inline-flex items-center gap-1 px-3 py-2 text-sm"><Icon name="chevron-left" size={16} />上一張</button>
+                            <button type="button" onClick={() => movePhoto(1)} aria-label="放大檢視下一張" className="inline-flex items-center gap-1 px-3 py-2 text-sm">下一張<Icon name="chevron-right" size={16} /></button>
+                        </div>
+                    </div>
+                </dialog>
+            </div>;
+        };
+
         const App = () => {
             const [scrolled, setScrolled] = useState(false);
             const [selectedCase, setSelectedCase] = useState(null);
@@ -302,13 +475,6 @@
                 "操作維護技術簡單、維護成本低",
                 "雷德斯TRT研發新型專利設計",
                 "系統回收處理穩定性極高"
-            ];
-
-            const automationFeatures = [
-                "廢水廠各處理接點導入 PLC（可程式控制器）人機介面進行即時監控",
-                "可依現場製程需求，個別設定各接點的異常上下限",
-                "接點數值超過設定上下限時，系統自動產生異常訊息紀錄",
-                "同步顯示異常燈號，現場人員只需依燈號判別即可立即前往處理"
             ];
 
             const chemicalDatabase = {
@@ -759,7 +925,7 @@
                     </section>
                     </>) : (
                         <section className="pt-40 pb-32 min-h-[70vh] bg-mist">
-                            <div className={`mx-auto px-6 ${(activePage === 'wastewater' || activePage === 'sludge') ? 'max-w-6xl' : 'max-w-3xl'}`}>
+                            <div className={`mx-auto px-6 ${(activePage === 'wastewater' || activePage === 'sludge' || activePage === 'automation') ? 'max-w-6xl' : 'max-w-3xl'}`}>
                                 <button onClick={goHome} className="inline-flex items-center gap-2 font-mono text-sm text-clarity mb-10 hover:underline">
                                     <Icon name="arrow-left" size={14} />回首頁
                                 </button>
@@ -928,30 +1094,13 @@
                                                 </div>
                                             )}
 
-                                            {activePage === 'automation' && (
-                                                <div className="mb-14">
-                                                    <p className="text-steel text-base md:text-lg leading-relaxed mb-10">
-                                                        廢水廠各處理接點採用 PLC（可程式控制器）人機介面進行監控與設定異常上下限，當接點數值超過上下限時會產生異常訊息紀錄與燈號，現場人員只需以燈號判別再前往處理即可，大幅提升廠務監控效率與應變速度。
-                                                    </p>
+                                            {activePage === 'automation' && <AutomationPage onContact={() => {
+                                                setFormSubmitted(false);
+                                                setFormData(previous => ({ ...previous, waterType: 'PLC／人機自動化整合需求', product: 'PLC 與人機介面整合評估', needType: '預約現場勘查' }));
+                                                goToContactSection();
+                                            }} />}
 
-                                                    <div className="bg-white rounded-xl shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)] p-8 md:p-10">
-                                                        <span className="font-mono text-clarity text-xs uppercase tracking-widest inline-flex items-center gap-2 mb-3">
-                                                            <Icon name="cpu" size={14} />PLC 監控系統
-                                                        </span>
-                                                        <h2 className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-4">人機自動化監控機制</h2>
-                                                        <div className="grid sm:grid-cols-2 gap-x-10 gap-y-5">
-                                                            {automationFeatures.map((f, i) => (
-                                                                <div key={i} className="flex items-start gap-3">
-                                                                    <Icon name="bell" size={17} className="text-clarity shrink-0 mt-0.5" />
-                                                                    <p className="text-sm text-steel font-light leading-relaxed">{f}</p>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            <div className="rounded-xl shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)] bg-white p-8 md:p-10">
+                                            {activePage !== 'automation' && <div className="rounded-xl shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)] bg-white p-8 md:p-10">
                                                 <p className="text-steel leading-relaxed text-base mb-6">
                                                     {(activePage === 'wastewater' || activePage === 'sludge' || activePage === 'automation')
                                                         ? `以上為「${cat.label}」相關技術與藥劑資訊，實際導入方案需依現場水質與產量客製，歡迎直接聯繫我們安排評估。`
@@ -961,7 +1110,7 @@
                                                     <a href="tel:0222866693" className="inline-flex items-center gap-2 font-mono text-base text-ink-text hover:text-clarity"><Icon name="phone" size={15} className="text-clarity" />02-2286-6693</a>
                                                     <a href="mailto:trt9002@yahoo.com.tw" className="inline-flex items-center gap-2 font-mono text-base text-ink-text hover:text-clarity"><Icon name="mail" size={15} className="text-clarity" />trt9002@yahoo.com.tw</a>
                                                 </div>
-                                            </div>
+                                            </div>}
                                         </div>
                                     );
                                 })()}

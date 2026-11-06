@@ -41,3 +41,9 @@ Descriptions follow the provided trial stages; no reagent identities, pH targets
 dosages or measured removal outcomes are supplied. Transparent photo cutouts
 retain the vessel assembly and contents; hands and thermometers are removed.
 Assets: cyanide-cutout-01.webp through -06.webp.
+
+The automation page presents five original FATEK HMI site photos in a gallery.
+Photo mapping: 39886937 left filter, 39886936 right filter, 39886938 alarm history,
+39886940 equipment overview, 39886939 brand home/language selection.
+Gallery photos open in a native modal dialog with full-size detail viewing.
+Contact actions prefill the automation inquiry; shown panel values are photo records.
