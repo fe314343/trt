@@ -408,7 +408,7 @@
                     icon: 'flask-conical',
                     eyebrow: '跨領域整合水處理藥劑',
                     title: '工業廢水處理藥劑　效果更好且用藥更合理',
-                    desc: '台灣雷德斯減廢科技股份有限公司提供客製化廢水處理藥劑服務，跨領域的技術整合（如：搭配電化學、UF膜、UV光學、真空濃縮、離子交換樹脂），可提供客戶優質且節省成本的藥劑規劃方案，尤其是在振動研磨廢水、化學鎳、鉻酸純化等各工業製程領域取得卓越成績，除確保廢水處理效果達到排放標準且符合法規外，若輔以業主的配合，可成功轉為資源化再利用，協助客戶節省數百萬元。',
+                    desc: '台灣雷德斯減廢科技有限公司提供客製化廢水處理藥劑服務，跨領域的技術整合（如：搭配電化學、UF膜、UV光學、真空濃縮、離子交換樹脂），可提供客戶優質且節省成本的藥劑規劃方案，尤其是在振動研磨廢水、化學鎳、鉻酸純化等各工業製程領域取得卓越成績，除確保廢水處理效果達到排放標準且符合法規外，若輔以業主的配合，可成功轉為資源化再利用，協助客戶節省數百萬元。',
                     imgUrl: './assets/image-d22b470de169.webp',
                     linkTo: 'wastewater'
                 },
@@ -1147,7 +1147,7 @@
 
                     {/* 頁尾 */}
                     <footer className="bg-ink text-mist py-14 px-6 text-center">
-                        <h3 className="font-serif text-xl font-bold mb-2">台灣雷德斯減廢科技股份有限公司</h3>
+                        <h3 className="font-serif text-xl font-bold mb-2">台灣雷德斯減廢科技有限公司</h3>
                         <p className="text-steel text-sm font-mono">統一編號：12755761｜新北市三重區溪尾街126巷15號｜02-2286-6693</p>
                         <div className="mt-8 pt-6 border-t border-white/10 text-[11px] font-mono text-steel tracking-widest uppercase">
                             © 2026 Taiwan Raiders Waste Reduction Technology Corp.
