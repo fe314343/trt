@@ -639,11 +639,11 @@
                     {/* ==================== 導覽列 ==================== */}
                     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-ink/95 backdrop-blur-md border-b border-white/10 py-3' : 'bg-ink/30 backdrop-blur-sm py-5'}`}>
                         <div className="max-w-7xl mx-auto pl-4 pr-16 lg:px-6 flex justify-between items-center gap-4">
-                            <button onClick={goHome} className="flex items-center gap-4 min-w-0">
-                                <img decoding="async" src="./assets/image-af4dd8c8635d.webp" alt="TRT Logo" className="w-10 h-10 object-contain shrink-0" />
-                                <div className="flex flex-col border-l border-white/15 pl-4 h-9 justify-center text-left min-w-0">
-                                    <span className="text-base font-bold tracking-wide text-mist font-serif truncate">台灣雷德斯減廢科技</span>
-                                    <span className="text-[9px] font-mono uppercase text-steel tracking-wider truncate">Taiwan Raiders Waste Reduction Technology Corp.</span>
+                            <button onClick={goHome} className="flex items-center gap-2 sm:gap-4 min-w-0">
+                                <img decoding="async" src="./assets/image-af4dd8c8635d.webp" alt="TRT Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain shrink-0" />
+                                <div className="flex flex-col border-l border-white/15 pl-2 sm:pl-4 min-h-9 justify-center text-left min-w-0">
+                                    <span className="text-xs sm:text-base font-bold sm:tracking-wide text-mist font-serif whitespace-nowrap">台灣雷德斯減廢科技有限公司</span>
+                                    <span className="text-[8px] sm:text-[9px] font-serif italic text-steel leading-tight">Taiwan Reduce-pollutant Technology Co. Ltd</span>
                                 </div>
                             </button>
                             <div className="flex items-center gap-4 sm:gap-6 shrink-0">
@@ -1150,7 +1150,7 @@
                         <h3 className="font-serif text-xl font-bold mb-2">台灣雷德斯減廢科技有限公司</h3>
                         <p className="text-steel text-sm font-mono">統一編號：12755761｜新北市三重區溪尾街126巷15號｜02-2286-6693</p>
                         <div className="mt-8 pt-6 border-t border-white/10 text-[11px] font-mono text-steel tracking-widest uppercase">
-                            © 2026 Taiwan Raiders Waste Reduction Technology Corp.
+                            © 2026 Taiwan Reduce-pollutant Technology Co. Ltd
                         </div>
                     </footer>
 
