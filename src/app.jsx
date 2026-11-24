@@ -1170,6 +1170,7 @@
                     <footer className="bg-ink text-mist py-14 px-6 text-center">
                         <h3 className="font-serif text-xl font-bold mb-2">台灣雷德斯減廢科技有限公司</h3>
                         <p className="text-steel text-sm font-mono">統一編號：12755761｜新北市三重區溪尾街126巷15號｜02-2286-6693</p>
+                        <p className="text-steel text-sm font-mono" style={{ marginTop: '8px' }}>服務地區：台中市、新北市</p>
                         <div className="mt-8 pt-6 border-t border-white/10 text-[11px] font-mono text-steel tracking-widest uppercase">
                             © 2026 Taiwan Reduce-pollutant Technology Co. Ltd
                         </div>
