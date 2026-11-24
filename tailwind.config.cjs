@@ -29,4 +29,4 @@ module.exports = {
                 }
             }
         };
-module.exports.content=["./index.html","./src/app.jsx"];
+module.exports.content=["./index.html","./src/**/*.jsx"];

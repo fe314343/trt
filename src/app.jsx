@@ -1,5 +1,5 @@
 
-        const pagePaths = { wastewater: 'wastewater.html', sludge: 'sludge.html', automation: 'automation.html' };
+        const pagePaths = { wastewater: 'wastewater.html', sludge: 'sludge.html', automation: 'automation.html', ...Object.fromEntries(Object.values(detailPages).map(page => [page.key, page.file])) };
         const readPage = () => Object.keys(pagePaths).find(key => location.pathname.endsWith('/' + pagePaths[key])) || (Object.keys(pagePaths).includes(location.hash.slice(1)) ? location.hash.slice(1) : null);
         const { useState, useEffect, useRef } = React;
 
@@ -122,6 +122,7 @@
                         <button type="button" onClick={onContact} className="mt-5 bg-clarity text-white rounded-lg px-5 py-3 text-sm font-medium">{config.contactLabel}</button>
                     </div>
                 </details>
+                <a href={'./' + detailPages[variant].file} className="inline-block mt-4 text-base font-semibold text-clarity underline underline-offset-4">閱讀{detailPages[variant].label}完整圖文</a>
             </section>;
         };
 
@@ -773,6 +774,9 @@
                         </div>
                     </section>
 
+                    <ServiceArea />
+                    <div className="max-w-6xl mx-auto px-6"><KnowledgeLinks /></div>
+
                     {/* ==================== 雷德斯環境工程設計三原則 ==================== */}
                     <section id="設計三原則" className="bg-gradient-to-b from-white to-mist py-24 md:py-32 border-b border-steel/15">
                         <div className="max-w-7xl mx-auto px-6">
@@ -946,18 +950,31 @@
                     </section>
                     </>) : (
                         <section className="pt-40 pb-32 min-h-[70vh] bg-mist">
-                            <div className={`mx-auto px-6 ${(activePage === 'wastewater' || activePage === 'sludge' || activePage === 'automation') ? 'max-w-6xl' : 'max-w-3xl'}`}>
+                            <div className="max-w-6xl mx-auto px-6">
                                 <button onClick={goHome} className="inline-flex items-center gap-2 font-mono text-sm text-clarity mb-10 hover:underline">
                                     <Icon name="arrow-left" size={14} />回首頁
                                 </button>
                                 {(() => {
-                                    const cat = inquiryCategories.find(c => c.key === activePage);
+                                    const cat = inquiryCategories.find(c => c.key === activePage) || detailPages[activePage];
                                     if (!cat) return null;
                                     return (
                                         <div>
                                             <div className="w-14 h-14 border border-clarity/30 text-clarity flex items-center justify-center mb-6"><Icon name={cat.icon} size={26} /></div>
                                             <span className="font-mono text-clarity tracking-widest text-xs uppercase block mb-3">{cat.sub}</span>
-                                            <h1 className="font-serif text-3xl md:text-4xl font-bold text-ink-text mb-8">{{ wastewater: '工業廢水處理藥劑與設備', sludge: '污泥減量與脫水處理設備', automation: '廢水處理人機介面與 PLC 自動化整合' }[activePage]}</h1>
+                                            <h1 className="font-serif text-3xl md:text-4xl font-bold text-ink-text mb-8">{{ wastewater: '工業廢水處理藥劑與設備', sludge: '污泥減量與脫水處理設備', automation: '廢水處理人機介面與 PLC 自動化整合' }[activePage] || detailPages[activePage]?.title}</h1>
+
+                                            {['wastewater', 'sludge'].includes(activePage) && <ServiceOverview kind={activePage} />}
+                                            {activePage === 'mc2' && <MC2Page onContact={() => {
+                                                setFormSubmitted(false);
+                                                setFormData(previous => ({ ...previous, product: 'MC2 金屬捕集劑', waterType: '重金屬廢水處理評估', needType: '索取藥劑樣品' }));
+                                                goToContactSection();
+                                            }} />}
+                                            {detailPages[activePage]?.variant && <CaseDetailPage variant={detailPages[activePage].variant} onContact={() => {
+                                                const test = wastewaterTestCases[detailPages[activePage].variant];
+                                                setFormSubmitted(false);
+                                                setFormData(previous => ({ ...previous, waterType: test.title, product: test.reagents, needType: '其他技術問題' }));
+                                                goToContactSection();
+                                            }} />}
 
                                             {activePage === 'wastewater' && (
                                                 <div className="mb-14">
@@ -1015,7 +1032,7 @@
 
                                                     <div id="wastewater-products" className="scroll-mt-28 mt-16 mb-8">
                                                         <span className="font-mono text-clarity tracking-widest text-xs uppercase block mb-3">Chemical Reagents Portfolio</span>
-                                                        <h2 className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-2">TRT 藥劑產品系列</h2>
+                                                        <h2 className="font-serif text-2xl md:text-3xl font-bold text-ink-text mb-2">TRT 藥劑產品系列</h2><a href="./mc2-metal-capture.html" className="inline-block text-base text-clarity underline underline-offset-4 my-3">MC2 金屬捕集劑用途與評估方式</a>
                                                         <p className="hidden lg:block text-steel font-light text-base">點選左側類別與品項，右側即時顯示藥劑外觀、適用對象與技術特性。</p>
                                                         <p className="lg:hidden text-steel font-light text-base">選擇類別後，點一下藥劑名稱，即可開啟圖片與產品介紹。</p>
                                                     </div>
@@ -1067,6 +1084,8 @@
                                                     </div>
                                                 </div>
                                             )}
+
+                                            {activePage === 'wastewater' && <KnowledgeLinks />}
 
                                             {activePage === 'sludge' && (
                                                 <div className="mb-14">
@@ -1121,7 +1140,15 @@
                                                 goToContactSection();
                                             }} />}
 
-                                            {activePage !== 'automation' && <div className="rounded-xl shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)] bg-white p-8 md:p-10">
+                                            {['wastewater', 'sludge'].includes(activePage) && <>
+                                                <AssessmentPanel kind={activePage} onContact={() => {
+                                                    setFormSubmitted(false);
+                                                    setFormData(previous => ({ ...previous, waterType: activePage === 'sludge' ? '污泥脫水與乾燥設備評估' : '工業廢水處理評估', product: activePage === 'sludge' ? '污泥處理設備' : '', needType: '設備報價諮詢' }));
+                                                    goToContactSection();
+                                                }} />
+                                                <ServiceFAQ kind={activePage} />
+                                            </>}
+                                            {!detailPages[activePage] && activePage !== 'automation' && <div className="rounded-xl shadow-[0_10px_30px_-14px_rgba(16,32,31,0.25)] bg-white p-8 md:p-10">
                                                 <p className="text-steel leading-relaxed text-base mb-6">
                                                     {(activePage === 'wastewater' || activePage === 'sludge' || activePage === 'automation')
                                                         ? `以上為「${cat.label}」相關技術與藥劑資訊，實際導入方案需依現場水質與產量客製，歡迎直接聯繫我們安排評估。`
@@ -1180,6 +1207,7 @@
                     <nav aria-label="服務頁面導覽" className="bg-ink border-t border-white/10 px-6 py-6 flex flex-wrap justify-center gap-6 text-sm text-mist">
                         <a href="./" className="hover:text-clarity-light">公司首頁</a>
                         {inquiryCategories.map(cat => <a href={'./' + pagePaths[cat.key]} key={cat.key} aria-current={activePage === cat.key ? 'page' : undefined} className="hover:text-clarity-light">{cat.label === '人機自動化' ? '人機介面與 PLC 自動化' : cat.label}</a>)}
+                        <a href="./mc2-metal-capture.html" className="hover:text-clarity-light">MC2 金屬捕集劑</a>
                         <a href="./#聯絡我們" className="hover:text-clarity-light">聯絡雷德斯</a>
                     </nav>
 

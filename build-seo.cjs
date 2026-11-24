@@ -10,12 +10,13 @@ const organization = {
   '@type': 'Organization', '@id': base + '#organization', name: config.company,
   alternateName: ['雷德斯 TRT', 'Taiwan Reduce-pollutant Technology Co. Ltd'],
   url: base, logo: image, telephone: '+886-2-2286-6693', email: 'trt9002@yahoo.com.tw',
+  areaServed: [{ '@type': 'City', name: '新北市' }, { '@type': 'City', name: '台中市' }],
   address: { '@type': 'PostalAddress', streetAddress: '溪尾街126巷15號', addressLocality: '三重區', addressRegion: '新北市', addressCountry: 'TW' }
 };
 const pages = Object.fromEntries(Object.entries(config.pages).map(([key, page]) => {
   const url = key === 'home' ? base : base + page.file;
   const graph = [organization, { '@type': 'WebSite', '@id': base + '#website', url: base, name: config.company, inLanguage: 'zh-TW', publisher: { '@id': organization['@id'] } }, { '@type': 'WebPage', '@id': url + '#webpage', url, name: page.title, description: page.description, inLanguage: 'zh-TW', isPartOf: { '@id': base + '#website' }, about: { '@id': organization['@id'] } }];
-  if (page.service) graph.push({ '@type': 'Service', '@id': url + '#service', name: page.service, description: page.description, url, provider: { '@id': organization['@id'] } });
+  if (page.service) graph.push({ '@type': 'Service', '@id': url + '#service', name: page.service, areaServed: organization.areaServed, description: page.description, url, provider: { '@id': organization['@id'] } });
   return [key, { ...page, url, schema: { '@context': 'https://schema.org', '@graph': graph } }];
 }));
 const esc = value => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -35,4 +36,4 @@ for (const [key, page] of Object.entries(pages)) {
   fs.writeFileSync(page.file, template.replace('</head>', head + '</head>').replace('<div id="root"></div>', '<div id="root">' + markup + '</div>'));
 }
 fs.writeFileSync('sitemap.xml', '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + Object.values(pages).map(p => `  <url><loc>${p.url}</loc></url>`).join('\n') + '\n</urlset>\n');
-console.log('Pre-rendered 4 public pages and sitemap for ' + base);
+console.log('Pre-rendered ' + Object.keys(pages).length + ' public pages and sitemap for ' + base);
